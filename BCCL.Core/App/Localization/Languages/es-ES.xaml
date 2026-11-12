@@ -1,0 +1,28 @@
+﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xml:space="preserve">
+
+    <!-- Meta -->
+
+    <sys:String x:Key="Meta.Code">es-ES</sys:String>
+    <sys:String x:Key="Meta.Name">Español (España)</sys:String>
+
+    <sys:String x:Key="Setup.Ui.Basic.LiquidGlass">Liquid Glass</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.LiquidGlass.ToolTip">Añade transparencia, desenfoque de fondo y reflejos a la navegación y las tarjetas. Desactiva esta opción para restaurar la apariencia normal.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Title">Optimizar memoria</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.ToolTip">Reduce el uso de memoria física del sistema, incluido Minecraft. La cantidad depende del uso actual.&#10;Los discos mecánicos pueden sufrir ralentizaciones temporales. Puede requerir autorización del administrador.&#10;Inicia BCCL como administrador con --memory para ejecutarlo sin interfaz.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Busy">La optimización sigue en curso. Espera un momento.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Running">Optimizando memoria…</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Finished">Optimización completada. La memoria disponible aumentó {0}; quedan {1}.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.NoChange">Optimización completada. Memoria disponible: {0}.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Cancelled">Optimización de memoria cancelada.</sys:String>
+    <sys:String x:Key="Tools.Test.Memory.Failed">La optimización falló. Comprueba los permisos de administrador y el registro.</sys:String>
+    <sys:String x:Key="Launch.Account.Microsoft.Settings.Title">Microsoft login settings</sys:String>
+    <sys:String x:Key="Launch.Account.Microsoft.Settings.Description">Enter the application (client) ID registered for BCCL, with personal accounts and public client flows enabled. No password or client secret is needed. Complete authorization on the Microsoft website.</sys:String>
+    <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
+    <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">Iniciar sesión en el lanzador oficial no inicia sesión en BCCL. La importación de sesiones oficiales aún no está disponible.</sys:String>
+    <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">Guarda el Client ID en la configuración de inicio de sesión y autoriza en el sitio web de Microsoft.</sys:String>
+</ResourceDictionary>

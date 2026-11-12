@@ -1,0 +1,117 @@
+<local:MyPageRight x:Class="BCCL.PageMultiplayerExtras"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:BCCL"
+    PanScroll="{Binding ElementName=PanBack}">
+    <local:MyPageRight.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrush1}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabBorder" Background="Transparent" CornerRadius="8" Padding="12,9" Margin="0,0,6,0">
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True"><Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ColorBrush7}" /><Setter Property="FontWeight" Value="SemiBold" /></Trigger>
+                            <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="TabBorder" Property="Background" Value="{DynamicResource ColorBrush7}" /></Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TabBorder" Property="BorderThickness" Value="1" /><Setter TargetName="TabBorder" Property="BorderBrush" Value="{DynamicResource ColorBrush3}" /></Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </local:MyPageRight.Resources>
+    <local:MyScrollViewer x:Name="PanBack" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="22,22,22,18" MaxWidth="900">
+            <TextBlock Text="其他功能" FontSize="24" FontWeight="SemiBold" />
+            <TextBlock Text="和大厅里的朋友聊天、分享文件、语音通话或共享屏幕。" Opacity="0.65" TextWrapping="Wrap" Margin="0,6,0,16" />
+            <local:MyCard Margin="0,0,0,14">
+                <StackPanel Margin="18,16">
+                    <TextBlock x:Name="LabConnection" Text="请先到联机大厅创建或加入房间。" TextWrapping="Wrap" FontSize="15" />
+                    <TextBlock Text="这些功能供同一大厅内的 BCCL Beta 0.1.0 及以上版本成员使用。文件只会在你点击接收后下载。" Opacity="0.6" TextWrapping="Wrap" Margin="0,7,0,0" />
+                    <TextBlock x:Name="LabActivity" Text="麦克风关闭 · 屏幕共享关闭 · 无远程控制授权" TextWrapping="Wrap" Margin="0,10,0,0" />
+                    <local:MyButton x:Name="BtnStopAll" Text="停止语音、屏幕共享和远程控制" Height="34" Margin="0,12,0,0" Click="StopAll_Click" />
+                </StackPanel>
+            </local:MyCard>
+            <Border CornerRadius="10" Padding="12,9" Background="{DynamicResource ColorBrush7}" Margin="0,0,0,14">
+                <TextBlock x:Name="LabNotice" Text="选择下面的功能即可开始。" TextWrapping="Wrap" />
+            </Border>
+            <Border x:Name="PanConsent" Visibility="Collapsed" Background="{DynamicResource ColorBrush7}" CornerRadius="10" Padding="16" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock x:Name="LabConsent" TextWrapping="Wrap" FontWeight="SemiBold" />
+                    <TextBlock Text="允许后，对方可操作你的主显示器。按 Ctrl+Alt+F12 或点击停止按钮可立即收回，15 分钟后授权自动到期。" TextWrapping="Wrap" Opacity="0.7" Margin="0,8,0,10" />
+                    <WrapPanel>
+                        <local:MyButton Text="允许本次控制" Width="130" Height="34" Click="Allow_Click" Margin="0,0,10,0" />
+                        <local:MyButton Text="拒绝" Width="80" Height="34" Click="Deny_Click" />
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+            <TabControl x:Name="Tabs" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource ColorBrush1}" Padding="0,14,0,0">
+                <TabItem Header=" 聊天室 ">
+                    <local:MyCard>
+                        <StackPanel Margin="18,16">
+                            <ScrollViewer x:Name="ChatScroll" Height="180" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="LabChat" Text="消息仅保留在本次启动器会话中。&#10;" TextWrapping="Wrap" LineHeight="24" />
+                            </ScrollViewer>
+                            <local:MyTextBox x:Name="TextChat" MinHeight="36" MaxLength="4000" HintText="输入消息，按 Enter 发送" KeyDown="Chat_KeyDown" Margin="0,14,0,0" />
+                            <local:MyButton Text="发送消息" Width="110" Height="34" HorizontalAlignment="Right" Margin="0,10,0,0" ColorType="Highlight" Click="SendChat_Click" />
+                        </StackPanel>
+                    </local:MyCard>
+                </TabItem>
+                <TabItem Header=" 文件共享 ">
+                    <local:MyCard>
+                        <StackPanel Margin="18,16">
+                            <TextBlock Text="分享文件给大厅里的朋友" FontSize="17" FontWeight="SemiBold" />
+                            <TextBlock Text="选择文件后，朋友可在这里接收。退出大厅会结束分享；下载会校验完整性，不会覆盖已有文件。" Opacity="0.65" TextWrapping="Wrap" Margin="0,8,0,12" />
+                            <local:MyButton Text="选择要分享的文件" Width="160" Height="34" HorizontalAlignment="Left" Click="ShareFile_Click" />
+                            <local:MyButton Text="停止分享所有文件" Width="160" Height="34" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ClearShared_Click" />
+                            <TextBlock x:Name="LabShared" Text="尚未分享文件。" TextWrapping="Wrap" Opacity="0.65" Margin="0,10,0,16" />
+                            <TextBlock Text="朋友分享的文件" FontWeight="SemiBold" Margin="0,0,0,8" />
+                            <ListBox x:Name="ListFiles" MinHeight="150" MaxHeight="250" DisplayMemberPath="Text" Background="Transparent" Foreground="{DynamicResource ColorBrush1}" BorderThickness="0" />
+                            <WrapPanel Margin="0,12,0,0">
+                                <local:MyButton Text="接收选中文件" Width="130" Height="34" Margin="0,0,10,0" Click="ReceiveFile_Click" />
+                                <local:MyButton Text="取消全部接收" Width="120" Height="34" Margin="0,0,10,0" Click="CancelReceiving_Click" />
+                                <local:MyButton Text="打开接收文件夹" Width="140" Height="34" Click="OpenDownloads_Click" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </local:MyCard>
+                </TabItem>
+                <TabItem Header=" 语音通话 ">
+                    <local:MyCard>
+                        <StackPanel Margin="18,16">
+                            <TextBlock Text="边玩边聊" FontSize="17" FontWeight="SemiBold" />
+                            <TextBlock Text="先开启收听，再按需开启麦克风。使用 Windows 默认音频设备，建议佩戴耳机。" Opacity="0.65" TextWrapping="Wrap" Margin="0,8,0,16" />
+                            <local:MyButton x:Name="BtnListen" Text="开启收听" Width="150" Height="36" HorizontalAlignment="Left" Margin="0,0,0,12" Click="Listen_Click" />
+                            <local:MyButton x:Name="BtnMicrophone" Text="开启麦克风" Width="150" Height="36" HorizontalAlignment="Left" Click="Microphone_Click" />
+                            <TextBlock Text="切换页面会关闭麦克风和收听。" TextWrapping="Wrap" Opacity="0.65" Margin="0,16,0,0" />
+                        </StackPanel>
+                    </local:MyCard>
+                </TabItem>
+                <TabItem Header=" 屏幕与远程控制 ">
+                    <local:MyCard>
+                        <StackPanel Margin="18,16">
+                            <TextBlock Text="屏幕共享" FontSize="17" FontWeight="SemiBold" />
+                            <TextBlock Text="共享主显示器给大厅内所有已连接的 BCCL 成员，目标为每秒 60 帧，实际流畅度取决于设备和网络。切换页面会停止共享和控制。" TextWrapping="Wrap" Opacity="0.65" Margin="0,8,0,12" />
+                            <WrapPanel>
+                                <local:MyButton x:Name="BtnScreen" Text="开始共享我的屏幕" Width="170" Height="34" Margin="0,0,10,6" Click="ShareScreen_Click" />
+                                <local:MyButton Text="收回全部控制授权" Width="160" Height="34" Margin="0,0,0,6" Click="Revoke_Click" />
+                            </WrapPanel>
+                            <TextBlock Text="查看朋友的屏幕" FontWeight="SemiBold" Margin="0,18,0,8" />
+                            <local:MyComboBox x:Name="ComboScreens" MinHeight="34" SelectionChanged="ScreenPeer_Changed" />
+                            <TextBlock x:Name="LabScreen" Text="选择成员后，等待对方主动开启屏幕共享。" TextWrapping="Wrap" Opacity="0.65" Margin="0,10,0,8" />
+                            <Border Background="#101820" Height="270" CornerRadius="6">
+                                <Image x:Name="RemoteImage" Stretch="Uniform" Focusable="True" MouseMove="Remote_MouseMove" MouseDown="Remote_MouseDown" MouseUp="Remote_MouseUp" MouseWheel="Remote_MouseWheel" PreviewKeyDown="Remote_KeyDown" PreviewKeyUp="Remote_KeyUp" LostKeyboardFocus="Remote_LostFocus" />
+                            </Border>
+                            <WrapPanel Margin="0,12,0,0">
+                                <local:MyButton x:Name="BtnRequestControl" Text="请求远程控制" Width="130" Height="34" Margin="0,0,10,6" Click="RequestControl_Click" />
+                                <local:MyButton Text="停止控制对方" Width="130" Height="34" Margin="0,0,0,6" Click="StopControl_Click" />
+                            </WrapPanel>
+                            <TextBlock Text="对方同意后，点击画面即可使用鼠标与键盘。远程操作不支持 Windows 授权界面。" TextWrapping="Wrap" Opacity="0.65" Margin="0,8,0,0" />
+                        </StackPanel>
+                    </local:MyCard>
+                </TabItem>
+            </TabControl>
+        </StackPanel>
+    </local:MyScrollViewer>
+</local:MyPageRight>

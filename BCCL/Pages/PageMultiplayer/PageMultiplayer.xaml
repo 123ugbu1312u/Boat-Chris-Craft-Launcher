@@ -1,0 +1,126 @@
+<local:MyPageRight x:Class="BCCL.PageMultiplayer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:BCCL"
+    PanScroll="{Binding ElementName=PanBack}">
+    <local:MyPageRight.Resources>
+        <Style TargetType="Expander">
+            <Setter Property="Foreground" Value="{DynamicResource ColorBrush1}" />
+        </Style>
+    </local:MyPageRight.Resources>
+    <local:MyScrollViewer x:Name="PanBack" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Margin="22,22,22,16" MaxWidth="820">
+            <TextBlock Text="和朋友，进入同一个世界" FontSize="24" FontWeight="SemiBold" TextWrapping="Wrap" Margin="2,0,0,6" />
+            <TextBlock Text="创建一个房间，或输入朋友的房间名称加入。" Opacity="0.65" Margin="2,0,0,18" TextWrapping="Wrap" />
+            <Border x:Name="PanNotice" Visibility="Collapsed" CornerRadius="10" Padding="12,10" Margin="0,0,0,14" Background="{DynamicResource ColorBrush7}">
+                <TextBlock x:Name="LabNotice" TextWrapping="Wrap" Foreground="{DynamicResource ColorBrush3}" />
+            </Border>
+            <local:MyCard x:Name="CardSession" Visibility="Collapsed" Margin="0,0,0,14">
+                <StackPanel Margin="18,16">
+                    <TextBlock x:Name="LabRoomTitle" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock x:Name="LabStatus" Text="尚未连接" Margin="0,7,0,0" TextWrapping="Wrap" Opacity="0.7" />
+                    <TextBlock x:Name="LabSessionHelp" Margin="0,12,0,0" TextWrapping="Wrap" LineHeight="21" />
+                    <WrapPanel Margin="0,14,0,0">
+                        <local:MyButton x:Name="BtnInvite" Text="复制邀请给朋友" Width="144" Height="34" ColorType="Highlight" Margin="0,0,10,4" Click="Invite_Click" />
+                        <local:MyButton x:Name="BtnDisconnect" Text="退出大厅" Width="108" Height="34" Margin="0,0,10,4" Click="Disconnect_Click" />
+                        <local:MyButton x:Name="BtnCancel" Text="取消连接" Width="108" Height="34" Margin="0,0,10,4" Click="Cancel_Click" Visibility="Collapsed" />
+                    </WrapPanel>
+                    <Expander Header="连接详情" Margin="0,10,0,0">
+                        <TextBlock x:Name="LabAddress" Margin="0,8,0,0" Opacity="0.65" TextWrapping="Wrap" />
+                    </Expander>
+                </StackPanel>
+            </local:MyCard>
+            <StackPanel x:Name="PanForm">
+                <local:MyCard x:Name="CardHome" Margin="0,0,0,14">
+                    <StackPanel Margin="20,20,20,22">
+                        <TextBlock Text="你想怎么联机？" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,18" />
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <local:MyButton Text="创建大厅" Height="58" ColorType="Highlight" Click="ChooseCreate_Click" />
+                                <TextBlock Text="我来当房主，邀请朋友一起玩" TextWrapping="Wrap" Opacity="0.65" Margin="4,10,4,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <local:MyButton Text="加入大厅" Height="58" Click="ChooseJoin_Click" />
+                                <TextBlock Text="输入房间名称，或使用朋友的邀请" TextWrapping="Wrap" Opacity="0.65" Margin="4,10,4,0" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </local:MyCard>
+                <local:MyCard x:Name="CardEntry" Visibility="Collapsed" Margin="0,0,0,14">
+                    <StackPanel Margin="18,18,18,16">
+                        <DockPanel Margin="0,0,0,14">
+                            <local:MyButton Text="返回" Width="70" Height="28" DockPanel.Dock="Right" Click="Back_Click" />
+                            <TextBlock x:Name="LabEntryTitle" Text="创建大厅" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        </DockPanel>
+                        <StackPanel Margin="0,0,0,14">
+                            <TextBlock Text="房间名称" Margin="0,0,0,7" />
+                            <local:MyTextBox x:Name="TextRoom" MinHeight="36" MaxLength="64" HintText="创建时留空可自动生成" />
+                            <TextBlock x:Name="LabNameStatus" Text="填写名称后自动检测是否重名。" Opacity="0.7" TextWrapping="Wrap" Margin="0,7,0,0" />
+                            <TextBlock Text="房间密码（选填）" Margin="0,12,0,6" />
+                            <PasswordBox x:Name="TextPassword" Height="34" Padding="8,5"
+                                Background="Transparent" Foreground="{DynamicResource ColorBrush1}" BorderBrush="{DynamicResource ColorBrushGray5}" />
+                            <TextBlock x:Name="LabRoomHelp" Text="留空时，知道房间名称的人即可加入。" Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                        </StackPanel>
+                        <StackPanel x:Name="PanHostPort" Margin="0,0,0,14">
+                            <TextBlock Text="Minecraft 游戏端口" Margin="0,0,0,7" />
+                            <local:MyTextBox x:Name="TextHostPort" MinHeight="36" MaxLength="5" Text="25565" HintText="填写游戏中显示的端口" />
+                            <TextBlock Text="先进入游戏，点击“对局域网开放”，再把显示的端口填到这里。" Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                        </StackPanel>
+                        <Expander x:Name="ExpRoom" Header="使用邀请链接加入（可选）" Visibility="Collapsed" Margin="0,0,0,16">
+                            <StackPanel x:Name="PanJoin" Margin="0,10,0,0">
+                                <local:MyTextBox x:Name="TextInvite" HintText="邀请链接或完整邀请文本" MinHeight="36" MaxLength="12000" />
+                                <TextBlock Text="填写邀请后，点击“加入大厅”会自动读取名称和密码。" Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                            </StackPanel>
+                        </Expander>
+                        <local:MyButton x:Name="BtnCreate" Text="创建大厅" Height="38" ColorType="Highlight" Click="Create_Click" />
+                        <local:MyButton x:Name="BtnJoin" Text="加入大厅" Height="38" ColorType="Highlight" Click="Join_Click" Visibility="Collapsed" />
+                        <TextBlock x:Name="LabEntryHelp" Text="创建后复制邀请发给朋友，无需另外注册账号。" Opacity="0.65" TextWrapping="Wrap" Margin="0,10,0,0" />
+                    </StackPanel>
+                </local:MyCard>
+                <local:MyCard Margin="0,0,0,14">
+                    <Expander Header="联机设置（通常不用改）" Margin="18,14">
+                        <StackPanel x:Name="PanSettings" Margin="0,12,0,2">
+                            <TextBlock Text="我的昵称" Margin="0,0,0,6" />
+                            <local:MyTextBox x:Name="TextNickname" MinHeight="34" MaxLength="32" />
+                            <TextBlock Text="连接方式" Margin="0,12,0,6" />
+                            <local:MyComboBox x:Name="ComboMode" MinHeight="34" SelectedIndex="0">
+                                <local:MyComboBoxItem Content="MC 联机（推荐，加入无需管理员）" />
+                                <local:MyComboBoxItem Content="完整虚拟局域网（需要系统授权）" />
+                            </local:MyComboBox>
+                            <TextBlock Text="连接节点" Margin="0,12,0,6" />
+                            <local:MyTextBox x:Name="TextNode" MinHeight="34" MaxLength="256" Text="tcp://easytier.weiai.org.cn:11010" />
+                            <TextBlock Text="与朋友使用同一个节点；邀请中带有节点时会自动填入。" Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                            <TextBlock Text="本机开放的游戏端口" Margin="0,12,0,6" />
+                            <local:MyTextBox x:Name="TextLocalPortSetting" MinHeight="34" MaxLength="5" Text="{Binding Text, ElementName=TextHostPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock Text="仅分享本机游戏时需要修改。创建房间始终申请管理员权限；加入时，仅完整虚拟局域网模式需要授权。" Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                            <CheckBox x:Name="CheckDirectory" Content="检测并保护房间名称（推荐）" IsChecked="True" Margin="0,16,0,8"
+                                Foreground="{DynamicResource ColorBrush1}" Checked="DirectorySettingChanged" Unchecked="DirectorySettingChanged" />
+                            <local:MyTextBox x:Name="TextDirectory" MinHeight="34" MaxLength="256" Text="wss://mctier.pmhs.top/signaling" />
+                            <TextBlock Text="重名检测以此服务的在线房间为准。连接旧版 BCCL 或直接组网时可关闭，关闭后不检测重名。"
+                                Opacity="0.65" TextWrapping="Wrap" Margin="0,7,0,0" />
+                        </StackPanel>
+                    </Expander>
+                </local:MyCard>
+            </StackPanel>
+            <local:MyCard x:Name="CardGame" Visibility="Collapsed" Margin="0,0,0,14">
+                <Expander x:Name="ExpGame" Header="连接朋友的游戏" IsExpanded="True" Margin="18,16">
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock x:Name="LabMembers" Text="等待朋友加入…" TextWrapping="Wrap" Opacity="0.65" Margin="0,0,0,12" />
+                        <TextBlock Text="1. 选择房主" Margin="0,0,0,7" />
+                        <local:MyComboBox x:Name="ComboPeers" DisplayMemberPath="Display" MinHeight="34" SelectionChanged="Peer_Changed" />
+                        <TextBlock Text="2. 填写房主告诉你的游戏端口" Margin="0,14,0,7" />
+                        <local:MyTextBox x:Name="TextRemotePort" MinHeight="34" MaxLength="5" Text="25565" />
+                        <Expander Header="手动输入房主地址" Margin="0,12,0,0">
+                            <local:MyTextBox x:Name="TextRemoteIp" Margin="0,8,0,0" MinHeight="34" MaxLength="15" HintText="房主的虚拟 IPv4 地址" />
+                        </Expander>
+                        <WrapPanel Margin="0,16,0,0">
+                            <local:MyButton x:Name="BtnForward" Text="连接游戏" Width="116" Height="34" ColorType="Highlight" Margin="0,0,10,4" Click="Forward_Click" />
+                            <local:MyButton x:Name="BtnCopyGame" Text="复制游戏地址" Width="130" Height="34" Margin="0,0,10,4" Click="CopyGame_Click" IsEnabled="False" />
+                        </WrapPanel>
+                        <TextBlock x:Name="LabGameAddress" Text="3. 在 Minecraft → 多人游戏 → 直接连接中填写生成的地址。" Margin="0,10,0,0" TextWrapping="Wrap" Opacity="0.7" />
+                    </StackPanel>
+                </Expander>
+            </local:MyCard>
+        </StackPanel>
+    </local:MyScrollViewer>
+</local:MyPageRight>

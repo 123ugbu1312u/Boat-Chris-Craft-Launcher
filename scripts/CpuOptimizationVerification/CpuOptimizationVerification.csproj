@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework><OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><LangVersion>14</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../BCCL.Core/BCCL.Core.csproj" />
+    <Compile Include="../../BCCL/Modules/UI/CpuOptimizationTool.cs" Link="Production/CpuOptimizationTool.cs" />
+    <EmbeddedResource Include="../../BCCL/metadata.json" LogicalName="BCCL.metadata.json" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+using BCCL.Core.Utils;
+
+namespace BCCL.Core.UI.Animation.Easings;
+
+public class BounceEaseOut : Easing
+{
+    public static BounceEaseOut Shared { get; } = new();
+    
+    protected override double EaseCore(double progress)
+    {
+        return EaseUtils.Bounce(progress);
+    }
+}

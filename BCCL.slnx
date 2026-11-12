@@ -1,0 +1,17 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="CI" />
+    <BuildType Name="Beta" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="AnyCPU" />
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="BCCL.Core\BCCL.Core.csproj" Type="C#" />
+  <Project Path="BCCL.Core.SourceGenerators\BCCL.Core.SourceGenerators.csproj" Type="C#" />
+  <Project Path="BCCL.Core.Test\BCCL.Core.Test.csproj" Type="C#">
+    <Build Solution="*|*" Project="false" />
+    </Project>
+    <Project Path="BCCL\BCCL.csproj" Type="C#" />
+</Solution>

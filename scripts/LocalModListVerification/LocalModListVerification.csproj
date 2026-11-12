@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>14</LangVersion>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../BCCL/BCCL.csproj" />
+    <EmbeddedResource Include="../../BCCL/metadata.json" LogicalName="BCCL.metadata.json" />
+    <Page Include="../../BCCL/Resources/Markdown.xaml" Link="Resources/Markdown.xaml" />
+    <Resource Include="../../BCCL/Images/**/*" Link="Images/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
