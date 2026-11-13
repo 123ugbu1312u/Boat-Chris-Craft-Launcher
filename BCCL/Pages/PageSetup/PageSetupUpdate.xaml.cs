@@ -25,23 +25,26 @@ public partial class PageSetupUpdate
 
         ComboSystemUpdateChannel.SelectedIndex = (int)Config.Update.UpdateChannel;
         ComboSystemUpdateMode.SelectedIndex = (int)Config.Update.UpdateMode;
+        ComboSystemUpdateSource.SelectedIndex = Config.Update.UpdateSource == 1 ? 1 : 0;
 
         TextCurrentVersion.Text = "BCCL " + VersionNameFormat(UpdateManager.BcclVersion);
         ModAnimation.AniControlEnabled -= 1;
         CheckUpdate();
     }
 
-    private async Task<UpdateStatus> IsLatestAsync()
+    private int checkRequestId;
+
+    private async Task<UpdateStatus> IsLatestAsync(UpdatesWrapperModel source, int requestId)
     {
         try
         {
-            // 修复：使用 dynamic 绕过命名空间重名导致的编译期类型冲突，
-            // 或者你可以尝试替换为 BCCL.Core.App.SemVer.Parse(ModBase.versionBaseName)
-            if (await UpdateManager.remoteServer.IsLatestAsync(
+            // Keep the selected source and request together while network work runs off the UI thread.
+            var release = await Task.Run(() => source.GetLatestVersion(
                     UpdateManager.IsCurrentVersionBeta ? UpdateChannel.beta : UpdateChannel.stable,
-                    SystemInfo.IsArm64System ? UpdateArch.arm64 : UpdateArch.x64,
-                    SemVer.Parse(UpdateManager.BcclVersion),
-                    ModBase.versionCode))
+                    SystemInfo.IsArm64System ? UpdateArch.arm64 : UpdateArch.x64));
+            if (requestId != checkRequestId) return UpdateStatus.Error;
+            updateInfo = release;
+            if (SemVer.Parse(release.VersionName) <= SemVer.Parse(UpdateManager.BcclVersion))
             {
                 ModBase.Log("[Update] 已是最新版本");
                 return UpdateStatus.Latest;
@@ -52,6 +55,7 @@ public partial class PageSetupUpdate
         }
         catch (Exception ex)
         {
+            if (requestId != checkRequestId) return UpdateStatus.Error;
             ModBase.Log(
                 ex,
                 Lang.Text("Setup.Update.Error.NetworkFailed"),
@@ -63,22 +67,23 @@ public partial class PageSetupUpdate
 
     public async void CheckUpdate()
     {
+        var requestId = ++checkRequestId;
+        var source = UpdateManager.remoteServer;
+        updateInfo = null;
         ModBase.Log("[Update] 开始检查更新");
         CardUpdate.Visibility = Visibility.Collapsed;
         CardCheck.Visibility = Visibility.Visible;
         TextCurrentDesc.Text = Lang.Text("Setup.Update.Checking");
         BtnCheckAgain.IsEnabled = false;
-        switch (await IsLatestAsync())
+        var status = await IsLatestAsync(source, requestId);
+        if (requestId != checkRequestId) return;
+        switch (status)
         {
             case UpdateStatus.Available:
             {
                 Exception checkUpdateEx = null;
                 try
                 {
-                    updateInfo = UpdateManager.remoteServer.GetLatestVersion(
-                        UpdateManager.IsCurrentVersionBeta
-                            ? UpdateChannel.beta
-                            : UpdateChannel.stable, SystemInfo.IsArm64System ? UpdateArch.arm64 : UpdateArch.x64);
                     TextUpdateName.Text = "BCCL " + VersionNameFormat(updateInfo.VersionName);
                     var summary = updateInfo.Changelog.Between("<summary>", "</summary>");
                     if (!updateInfo.Changelog.Contains("<summary>") || string.IsNullOrWhiteSpace(summary.Trim()))
@@ -178,6 +183,13 @@ public partial class PageSetupUpdate
             Config.Update.UpdateMode = (LauncherAutoUpdateBehavior)ComboSystemUpdateMode.SelectedIndex;
     }
 
+    private void ComboSystemUpdateSource_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ModAnimation.AniControlEnabled != 0 || ComboSystemUpdateSource.SelectedIndex < 0) return;
+        Config.Update.UpdateSource = ComboSystemUpdateSource.SelectedIndex;
+        CheckUpdate();
+    }
+
     private void ComboSystemUpdateBranch_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (ModAnimation.AniControlEnabled != 0)
@@ -256,7 +268,7 @@ public partial class PageSetupUpdate
 
     private void BtnChangelog_Click(object sender, MouseButtonEventArgs e)
     {
-        ModBase.OpenWebsite("https://gitcode.com/BoatMinecraft/BoatChrisCraftLauncher/releases");
+        ModBase.OpenWebsite(UpdateManager.ReleasesUrl);
     }
 
     public string VersionNameFormat(string str)

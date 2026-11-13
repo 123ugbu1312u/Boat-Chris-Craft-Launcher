@@ -349,3 +349,21 @@ MaskFiles/
 
 # Local publisher configuration (public Microsoft OAuth application ID).
 scripts/MicrosoftOAuth.local.json
+
+# Source publishing: README.md is the only Markdown filename included.
+*.[mM][dD]
+!README.md
+/Archives/
+/Temp/
+/Backup/
+/Reports/
+.env
+.env.*
+!.env.example
+*.local.json
+*.pem
+*.key
+*.p12
+*.keystore
+# Restored and verified before the embedded build.
+/ThirdParty/MCTier/shared/builtin-emoji/builtin-v3.pack.gz

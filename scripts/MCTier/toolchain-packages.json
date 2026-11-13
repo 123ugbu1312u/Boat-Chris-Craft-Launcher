@@ -1,0 +1,93 @@
+[
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.Headers",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.Headers.vsix",
+    "Size": 1075,
+    "Sha256": "0a99643482ff9866db4583eaf4d05534e7622497fc7a73e85e5957a2dd46b79b",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/c610cd8c-801b-44b8-a80a-82cc382aeb43/0a99643482ff9866db4583eaf4d05534e7622497fc7a73e85e5957a2dd46b79b/Microsoft.VC.14.44.17.14.CRT.Headers.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.Headers.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.Headers.base.vsix",
+    "Size": 2128977,
+    "Sha256": "852382a9aa73502b7849c1bcadfb603ba7175c4e8b60e6aba03c7de711d4ece5",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/c610cd8c-801b-44b8-a80a-82cc382aeb43/852382a9aa73502b7849c1bcadfb603ba7175c4e8b60e6aba03c7de711d4ece5/Microsoft.VC.14.44.17.14.CRT.Headers.base.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.Headers.Resources",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.Headers.Resources.enu.vsix",
+    "Size": 1081,
+    "Sha256": "a0eb4ce33c8ba099de759f355585cfc963142595af6176971ec3cd053c517d30",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/c610cd8c-801b-44b8-a80a-82cc382aeb43/a0eb4ce33c8ba099de759f355585cfc963142595af6176971ec3cd053c517d30/Microsoft.VC.14.44.17.14.CRT.Headers.Resources.enu.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.Headers.Resources.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.Headers.Resources.base.enu.vsix",
+    "Size": 366489,
+    "Sha256": "7b6ead51c6d5cf775acaf50df36e89486eeea6c805c37785db6a337da20ee340",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/c610cd8c-801b-44b8-a80a-82cc382aeb43/7b6ead51c6d5cf775acaf50df36e89486eeea6c805c37785db6a337da20ee340/Microsoft.VC.14.44.17.14.CRT.Headers.Resources.base.enu.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.vsix",
+    "Size": 1064,
+    "Sha256": "62cd3ce93d8e8d7e1d71699896c5adc4ccf93e6b85a4e2a4ed00eb6b5fd27302",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/62cd3ce93d8e8d7e1d71699896c5adc4ccf93e6b85a4e2a4ed00eb6b5fd27302/Microsoft.VC.14.44.17.14.CRT.x64.Desktop.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.base.vsix",
+    "Size": 51521199,
+    "Sha256": "f01f701a7bcd9587a340898c851424f6a52bb913a70c185ff0d5bf0288c5831a",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/f01f701a7bcd9587a340898c851424f6a52bb913a70c185ff0d5bf0288c5831a/Microsoft.VC.14.44.17.14.CRT.x64.Desktop.base.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre.vsix",
+    "Size": 1069,
+    "Sha256": "9f65b0a8c2061cf91905ed812436b63d460c3079bd5f68fd8fee6d355e28be70",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/9f65b0a8c2061cf91905ed812436b63d460c3079bd5f68fd8fee6d355e28be70/Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre.base.vsix",
+    "Size": 58882910,
+    "Sha256": "6d7cb93cc7fdc206f44999850b414600ae1041d0db7d2fe9d0ff658abfb97b58",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/6d7cb93cc7fdc206f44999850b414600ae1041d0db7d2fe9d0ff658abfb97b58/Microsoft.VC.14.44.17.14.CRT.x64.Desktop.spectre.base.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64",
+    "Name": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.vsix",
+    "Size": 1923,
+    "Sha256": "36dcd2210263fbf8bae46048d930cbd51725481e35176fddbb269c801a3c3f34",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/68398668-2749-47a9-a7be-0f777acfa4bf/36dcd2210263fbf8bae46048d930cbd51725481e35176fddbb269c801a3c3f34/Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.base",
+    "Name": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.base.vsix",
+    "Size": 26662736,
+    "Sha256": "fb0eb9097fcac86ae264917fa543aecb6ab88c6656f29d912de56bfde802c541",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/68398668-2749-47a9-a7be-0f777acfa4bf/fb0eb9097fcac86ae264917fa543aecb6ab88c6656f29d912de56bfde802c541/Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.base.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.Res.base",
+    "Name": "Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.Res.base.enu.vsix",
+    "Size": 225498,
+    "Sha256": "aa79883c5534acad5f506f66a6e4f40c0a1f89b6867c3733d82583c34d7f0b30",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/68398668-2749-47a9-a7be-0f777acfa4bf/aa79883c5534acad5f506f66a6e4f40c0a1f89b6867c3733d82583c34d7f0b30/Microsoft.VC.14.44.17.14.Tools.HostX64.TargetX64.Res.base.enu.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.OneCore.Desktop.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.OneCore.Desktop.base.vsix",
+    "Size": 55385904,
+    "Sha256": "50d68caa9bba363d6209bf5fc8a572f013c9f370f6e203f36f04e3d84f5083ca",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/50d68caa9bba363d6209bf5fc8a572f013c9f370f6e203f36f04e3d84f5083ca/Microsoft.VC.14.44.17.14.CRT.x64.OneCore.Desktop.base.vsix"
+  },
+  {
+    "Id": "Microsoft.VC.14.44.17.14.CRT.x64.Store.base",
+    "Name": "Microsoft.VC.14.44.17.14.CRT.x64.Store.base.vsix",
+    "Size": 28032384,
+    "Sha256": "9135b03c0df53c7a0aa9bef7230a1c2ff4263a0ee7baa7e419d034f484f6bb56",
+    "Url": "https://download.visualstudio.microsoft.com/download/pr/67cf767c-5e71-47c2-a54a-cd5631e28942/9135b03c0df53c7a0aa9bef7230a1c2ff4263a0ee7baa7e419d034f484f6bb56/Microsoft.VC.14.44.17.14.CRT.x64.Store.base.vsix"
+  }
+]

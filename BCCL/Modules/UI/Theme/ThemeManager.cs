@@ -9,6 +9,7 @@ namespace BCCL;
 public static class ThemeManager
 {
     private static bool _contextMenuHandlerRegistered;
+    internal static event Action? AppearanceChanged;
 
     public static bool IsDarkMode => ThemeService.IsDarkMode;
 
@@ -60,6 +61,7 @@ public static class ThemeManager
         }
 
         ModMain.frmMain.PanForm.Background.Freeze();
+        AppearanceChanged?.Invoke();
     }
 
     // 通用ContextMenu主题刷新

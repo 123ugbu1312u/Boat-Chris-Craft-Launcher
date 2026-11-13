@@ -28,14 +28,15 @@ public partial class FormMain
         }
     }
 
-    private void ConfigureWorkspaceLayout(bool launch)
+    private void ConfigureWorkspaceLayout(bool launch, bool fullWidth = false)
     {
         // Keep the original page hosts, lifecycle and launch progress; only place the
         // account/launch context on the right of the home workspace.
-        WorkspaceContextColumn.Width = launch ? new GridLength(1, GridUnitType.Star) : GridLength.Auto;
+        WorkspaceContext.Visibility = fullWidth ? Visibility.Collapsed : Visibility.Visible;
+        WorkspaceContextColumn.Width = fullWidth ? new GridLength(0) : launch ? new GridLength(1, GridUnitType.Star) : GridLength.Auto;
         WorkspaceContentColumn.Width = launch ? GridLength.Auto : new GridLength(1, GridUnitType.Star);
         Grid.SetColumn(WorkspaceContext, launch ? 1 : 0);
         Grid.SetColumn(WorkspaceContent, launch ? 0 : 1);
-        WorkspaceContext.Margin = launch ? new Thickness(0, 18, 20, 20) : new Thickness(16, 18, 0, 20);
+        WorkspaceContext.Margin = fullWidth ? new Thickness(0) : launch ? new Thickness(0, 18, 20, 20) : new Thickness(16, 18, 0, 20);
     }
 }

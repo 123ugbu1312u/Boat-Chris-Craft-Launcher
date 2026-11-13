@@ -112,6 +112,8 @@ public static partial class Config
     /// </summary>
     [ConfigGroup("Update")] partial class UpdateConfigGroup
     {
+        [ConfigItem<int>("SystemUpdateSource", 0, ConfigSource.Local)] public partial int UpdateSource { get; set; }
+
         /// <summary>
         /// 自动更新行为。
         /// </summary>

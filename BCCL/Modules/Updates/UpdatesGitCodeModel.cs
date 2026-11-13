@@ -7,18 +7,38 @@ using BCCL.Core.Utils;
 namespace BCCL;
 
 /// <summary>Updates published by the BCCL owner, including alpha releases.</summary>
-public sealed class UpdatesGitCodeModel : IUpdateSource
+public sealed class UpdatesGitCodeModel : UpdatesGitReleaseModel
 {
-    private const string ApiUrl = "https://api.gitcode.com/api/v5/repos/BoatMinecraft/BoatChrisCraftLauncher/releases?per_page=100";
-    private const string AssetName = "Boat Chris Craft Launcher.exe";
+    public UpdatesGitCodeModel() : base("https://api.gitcode.com/api/v5/repos/BoatMinecraft/BoatChrisCraftLauncher/releases?per_page=100",
+        "https://gitcode.com/BoatMinecraft/BoatChrisCraftLauncher", "BCCL GitCode") { }
+}
+
+public sealed class UpdatesGitHubModel : UpdatesGitReleaseModel
+{
+    public UpdatesGitHubModel() : base("https://api.github.com/repos/123ugbu1312u/Boat-Chris-Craft-Launcher/releases?per_page=100",
+        "https://github.com/123ugbu1312u/Boat-Chris-Craft-Launcher", "BCCL GitHub") { }
+}
+
+public class UpdatesGitReleaseModel : IUpdateSource
+{
+    private readonly string apiUrl;
+    private readonly Uri repository;
     private static readonly HttpClient Client = new() { Timeout = TimeSpan.FromMinutes(5) };
     private VersionDataModel? selected;
-    public string SourceName { get; set; } = "BCCL GitCode";
+    public string SourceName { get; set; }
+
+    protected UpdatesGitReleaseModel(string apiUrl, string repositoryUrl, string sourceName)
+    {
+        this.apiUrl = apiUrl;
+        repository = new Uri(repositoryUrl);
+        SourceName = sourceName;
+    }
 
     public bool IsAvailable() => true;
     public bool RefreshCache() { selected = FetchRelease(); return true; }
     public VersionDataModel GetLatestVersion(UpdateChannel channel, UpdateArch arch)
     {
+        if (arch != UpdateArch.x64) throw new NotSupportedException("此更新源暂未提供 ARM64 更新包");
         return selected = FetchRelease();
     }
     public bool IsLatest(UpdateChannel channel, UpdateArch arch, SemVer currentVersion, int currentVersionCode) =>
@@ -53,27 +73,34 @@ public sealed class UpdatesGitCodeModel : IUpdateSource
 
     private VersionDataModel FetchRelease()
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, ApiUrl);
+        using var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
         request.Headers.UserAgent.ParseAdd("BCCL-Updater/1.0");
         using var response = Client.Send(request);
         response.EnsureSuccessStatusCode();
         var releases = JsonNode.Parse(response.Content.ReadAsStringAsync().GetAwaiter().GetResult()) as JsonArray
-            ?? throw new InvalidDataException("GitCode 发行版信息无效");
+            ?? throw new InvalidDataException(SourceName + " 发行版信息无效");
+        return SelectRelease(releases);
+    }
+
+    internal VersionDataModel SelectRelease(JsonArray releases)
+    {
         VersionDataModel? best = null;
         foreach (var item in releases)
         {
+            if (item?["draft"]?.GetValue<bool>() == true) continue;
             var tag = item?["tag_name"]?.GetValue<string>() ?? "";
             var name = tag.StartsWith('v') ? tag[1..] : tag;
             if (!SemVer.TryParse(name, out var version)) continue;
             if (best is not null && version <= SemVer.Parse(best.VersionName)) continue;
             var assets = item?["assets"] as JsonArray;
-            var asset = assets?.FirstOrDefault(a => a?["name"]?.GetValue<string>() == AssetName);
+            var asset = assets?.FirstOrDefault(a => a?["name"]?.GetValue<string>() is
+                "Boat Chris Craft Launcher.exe" or "Boat.Chris.Craft.Launcher.exe");
             var digest = asset?["digest"]?.GetValue<string>() ?? "";
             var address = asset?["browser_download_url"]?.GetValue<string>() ?? "";
             if (!digest.StartsWith("sha256:", StringComparison.OrdinalIgnoreCase) || digest.Length != 71 ||
                 !digest[7..].All(Uri.IsHexDigit) || !Uri.TryCreate(address, UriKind.Absolute, out var uri) ||
-                uri.Scheme != Uri.UriSchemeHttps || !string.Equals(uri.Host, "gitcode.com", StringComparison.OrdinalIgnoreCase) ||
-                !uri.AbsolutePath.StartsWith("/BoatMinecraft/BoatChrisCraftLauncher/releases/download/", StringComparison.Ordinal)) continue;
+                uri.Scheme != Uri.UriSchemeHttps || !string.Equals(uri.Host, repository.Host, StringComparison.OrdinalIgnoreCase) ||
+                !uri.AbsolutePath.StartsWith(repository.AbsolutePath + "/releases/download/", StringComparison.Ordinal)) continue;
             best = new VersionDataModel { VersionName = name, Sha256 = digest[7..].ToUpperInvariant(),
                 DownloadUrl = address, Changelog = item?["body"]?.GetValue<string>() ?? "", Source = SourceName };
         }

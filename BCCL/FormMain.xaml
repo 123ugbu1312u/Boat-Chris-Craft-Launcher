@@ -36,7 +36,7 @@
         <Border x:Name="PanBack" Margin="0">
             <Grid x:Name="PanForm" SnapsToDevicePixels="False" UseLayoutRounding="False">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="76" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -65,11 +65,12 @@
                 <Canvas x:Name="ImgBack" IsHitTestVisible="False" Grid.Row="1" Grid.Column="1" ClipToBounds="True"
                         RenderOptions.BitmapScalingMode="LowQuality">
                     <MediaElement x:Name="VideoBack" LoadedBehavior="Manual" UnloadedBehavior="Stop"
+                                  Width="{Binding ActualWidth, ElementName=PanMain}" Height="{Binding ActualHeight, ElementName=PanMain}"
                                   Stretch="UniformToFill" IsHitTestVisible="False" Visibility="Visible"
                                   MediaEnded="VideoEnded" Volume="0" />
                 </Canvas>
-                <!-- A fixed edge slot keeps page layout stable while the rail slides over content. -->
-                <Grid x:Name="NavigationDock" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="76" HorizontalAlignment="Left" Panel.ZIndex="3" ClipToBounds="True"
+                <!-- The navigation column follows the rail as it expands and collapses. -->
+                <Grid x:Name="NavigationDock" Grid.RowSpan="2" Width="76" HorizontalAlignment="Left" Panel.ZIndex="3" ClipToBounds="True"
                       Background="Transparent" MouseEnter="NavigationDock_MouseEnter" MouseLeave="NavigationDock_MouseLeave"
                       GotKeyboardFocus="NavigationDock_GotKeyboardFocus" LostKeyboardFocus="NavigationDock_LostKeyboardFocus">
                   <Canvas>
@@ -180,7 +181,8 @@
                         </Rectangle.Fill>
                     </Rectangle>
                 </Grid>
-                <Grid x:Name="PanMain" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" ClipToBounds="True">
+                <Border x:Name="WorkspaceViewport" Grid.Row="1" Grid.Column="1" ClipToBounds="True">
+                <Grid x:Name="PanMain" VerticalAlignment="Top" ClipToBounds="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="WorkspaceContextColumn" Width="Auto" />
                         <ColumnDefinition x:Name="WorkspaceContentColumn" Width="1*" />
@@ -197,6 +199,7 @@
                                 UseLayoutRounding="False" SnapsToDevicePixels="False" />
                     </Border>
                 </Grid>
+                </Border>
                 <StackPanel x:Name="PanHint" UseLayoutRounding="True"
                             SnapsToDevicePixels="True" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                             Margin="0,0,0,20"

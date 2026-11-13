@@ -12,8 +12,13 @@ public static class UpdateManager
 {
     public static bool isUpdateWaitingRestart;
 
-    public const string BcclVersion = "0.1.0-beta";
-    public static UpdatesWrapperModel remoteServer = new(new List<IUpdateSource> { new UpdatesGitCodeModel() });
+    public const string BcclVersion = "0.1.2-alpha";
+    private static readonly UpdatesWrapperModel GitCodeServer = new(new[] { new UpdatesGitCodeModel() });
+    private static readonly UpdatesWrapperModel GitHubServer = new(new[] { new UpdatesGitHubModel() });
+    public static UpdatesWrapperModel remoteServer => Config.Update.UpdateSource == 1 ? GitHubServer : GitCodeServer;
+    public static string ReleasesUrl => Config.Update.UpdateSource == 1
+        ? "https://github.com/123ugbu1312u/Boat-Chris-Craft-Launcher/releases"
+        : "https://gitcode.com/BoatMinecraft/BoatChrisCraftLauncher/releases";
 
     public static bool IsCurrentVersionBeta
     {
@@ -27,6 +32,7 @@ public static class UpdateManager
     
     public static UpdateEnums.VersionStatus GetVersionStatus()
     {
+        var remoteServer = UpdateManager.remoteServer;
         try
         {
             if (IsCurrentVersionBeta && (int)Config.Update.UpdateChannel != 1)
@@ -64,6 +70,7 @@ public static class UpdateManager
 
     public static void UpdateStart(UpdateEnums.UpdateType type, string receivedKey = null, bool forceValidated = false)
     {
+        var remoteServer = UpdateManager.remoteServer;
         var dlTargetPath = ModBase.pathData + @"Boat Chris Craft Launcher.exe";
         ModBase.RunInNewThread(() =>
         {
@@ -197,6 +204,7 @@ public static class UpdateManager
     /// </summary>
     internal static void DownloadLatestBCCL(ModLoader.LoaderBase loaderToSyncProgress = null)
     {
+        var remoteServer = UpdateManager.remoteServer;
         // 注意：如果要自行实现这个功能，请换用另一个文件路径，以免与官方版本冲突
         var latestBCCLPath = Path.Combine(ModBase.pathTemp, "CE-Latest.exe");
         var target = remoteServer.GetLatestVersion(UpdateChannel.stable,

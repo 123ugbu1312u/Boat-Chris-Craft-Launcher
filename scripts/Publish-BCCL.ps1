@@ -50,6 +50,7 @@ if ($externalLibraries.Count -gt 0) {
 New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
 $destination = Join-Path $outputPath 'Boat Chris Craft Launcher.exe'
 Copy-Item -LiteralPath $publishedExe -Destination $destination -Force
+& (Join-Path $PSScriptRoot 'MCTier/Stage-Embedded.ps1') -OutputDirectory $outputPath
 # Rename only the apphost; the bundled assembly name must match WPF pack URIs.
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'LICENSE') -Destination (Join-Path $outputPath 'LICENSE-UPSTREAM.txt') -Force
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'BCCL/LICENCE') -Destination (Join-Path $outputPath 'LICENCE-UPSTREAM.txt') -Force

@@ -1,9 +1,9 @@
 {
   "name": "Boat Chris Craft Launcher",
   "version": {
-    "base": "0.1.0",
+    "base": "0.1.2",
     "upstream": "2.12.1",
-    "suffix": "beta",
+    "suffix": "alpha",
     "code": 525
   },
   "licenses": [

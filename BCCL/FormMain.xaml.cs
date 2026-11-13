@@ -612,10 +612,7 @@ public partial class FormMain
             PanForm.Height = formHeight;
             // Reserve a real layout column for the navigation rail and all overlays.
             UpdateNavigationDockSize();
-            PanMain.Width = Math.Max(0d, formWidth - NavigationEdgeWidth);
             PanMain.Height = Math.Max(0d, formHeight - WindowTitleBar.Height);
-            VideoBack.Width = PanMain.Width;
-            VideoBack.Height = PanMain.Height;
         }
 
         if (WindowState == WindowState.Maximized)
@@ -1823,10 +1820,9 @@ public partial class FormMain
             {
                 case PageType.Multiplayer:
                     {
-                        multiplayerLeft ??= new PageMultiplayerLeft();
-                        multiplayerPage ??= new PageMultiplayer();
-                        PageChangeAnim(multiplayerLeft, multiplayerLeft.ExtrasSelected
-                            ? multiplayerExtras ??= new PageMultiplayerExtras() : multiplayerPage);
+                        multiplayerLeft ??= new MyPageLeft { Width = 0 };
+                        multiplayerPage ??= new PageMultiplayerOriginal();
+                        PageChangeAnim(multiplayerLeft, multiplayerPage);
                         break;
                     }
                 case PageType.Launch: // 启动
@@ -1982,7 +1978,7 @@ public partial class FormMain
                 try
                 {
                     ((MyPageRight)PanMainRight.Child).PageOnForceExit();
-                    ConfigureWorkspaceLayout(nextLeft is PageLaunchLeft);
+                    ConfigureWorkspaceLayout(nextLeft is PageLaunchLeft, nextRight is PageMultiplayerOriginal);
                     PanMainLeft.Child = nextLeft;
                     PanMainRight.Child = nextRight;
                     nextLeft.Opacity = nextRight.Opacity = 0d;

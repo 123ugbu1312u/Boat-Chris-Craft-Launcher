@@ -1,0 +1,107 @@
+/* Fit the original MCTier views to the launcher viewport, including short windows. */
+html[data-bccl-embedded='true'][data-bccl-host-theme] {
+  --bg-color: var(--bccl-host-background);
+}
+html[data-bccl-embedded='true'][data-bccl-host-theme] :is(
+  .main-window, .lobby-form-container, .settings-window, .settings-overlay,
+  .mini-window, .desktop-compliance-gate
+) {
+  background: linear-gradient(150deg, var(--bccl-host-top), var(--bccl-host-bottom)) !important;
+}
+html[data-bccl-embedded='true'],
+html[data-bccl-embedded='true'] body,
+html[data-bccl-embedded='true'] #root,
+html[data-bccl-embedded='true'] #root > .ant-app {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg-color);
+}
+
+html[data-bccl-embedded='true'] .app-container {
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+}
+
+html[data-bccl-embedded='true'] :is(.main-window-drag-area, .settings-drag-area, .lobby-form-container) {
+  -webkit-app-region: no-drag;
+  app-region: no-drag;
+}
+
+html[data-bccl-embedded='true'] :is(.main-window, .lobby-form-container) {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+html[data-bccl-embedded='true'] .main-window {
+  padding: 48px 16px 12px;
+  justify-content: safe center;
+  overflow-y: auto;
+}
+
+html[data-bccl-embedded='true'] .main-window-content {
+  flex-shrink: 0;
+  min-width: 0;
+  padding: 12px 24px 64px;
+}
+
+html[data-bccl-embedded='true'] .main-window-actions { margin-bottom: 0; }
+
+/* The launcher already supplies a title bar and navigation. No empty second frame. */
+html[data-bccl-embedded='true'] .settings-drag-area { display: none; }
+html[data-bccl-embedded='true'] .settings-window-scroll { min-height: 0; }
+html[data-bccl-embedded='true'] .settings-window-inner {
+  width: 100%;
+  max-width: 1140px;
+  min-width: 0;
+  margin: 0 auto;
+  padding: 20px 24px 28px;
+  gap: 16px;
+}
+html[data-bccl-embedded='true'] .settings-header {
+  margin: 0;
+  padding: 0 0 16px;
+}
+html[data-bccl-embedded='true'] .settings-toggle-label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  html[data-bccl-embedded='true'] .settings-window-inner { padding: 16px; }
+  html[data-bccl-embedded='true'] .settings-toggle-row { flex-wrap: wrap; }
+}
+html[data-bccl-embedded='true'] .main-window-title {
+  font-size: clamp(18px, 2.1vw, 24px) !important;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+html[data-bccl-embedded='true'] .lobby-form-container { padding: 16px; }
+html[data-bccl-embedded='true'] .lobby-form-card {
+  min-width: 0;
+  max-height: 100%;
+}
+
+@media (max-height: 600px) {
+  html[data-bccl-embedded='true'] .main-window-logo {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 12px;
+  }
+  html[data-bccl-embedded='true'] .main-window-title {
+    font-size: clamp(18px, 2.1vw, 24px) !important;
+    line-height: 1.2;
+    margin-bottom: 8px !important;
+  }
+  html[data-bccl-embedded='true'] .main-window-subtitle { margin-bottom: 12px !important; }
+  html[data-bccl-embedded='true'] .main-window-button { height: 44px !important; }
+}

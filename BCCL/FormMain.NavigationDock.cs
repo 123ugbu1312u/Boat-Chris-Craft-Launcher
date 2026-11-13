@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Diagnostics;
 
 namespace BCCL;
 
@@ -11,14 +12,16 @@ public partial class FormMain
 {
     private const double NavigationEdgeWidth = 76;
     private bool navigationExpanded;
-    private PageMultiplayerLeft? multiplayerLeft;
-    private PageMultiplayer? multiplayerPage;
-    private PageMultiplayerExtras? multiplayerExtras;
+    private bool navigationRendering;
+    private long navigationStartTick;
+    private double navigationFromWidth, navigationTargetWidth, navigationDurationMs;
+    private MyPageLeft? multiplayerLeft;
+    private PageMultiplayerOriginal? multiplayerPage;
 
     public void ShowMultiplayerExtras(bool extras)
     {
         if (pageCurrent.page != PageType.Multiplayer || multiplayerLeft is null) return;
-        MyPageRight target = extras ? multiplayerExtras ??= new PageMultiplayerExtras() : multiplayerPage ??= new PageMultiplayer();
+        MyPageRight target = multiplayerPage ??= new PageMultiplayerOriginal();
         if (ReferenceEquals(PanMainRight.Child, target)) return;
         PageChangeAnim(multiplayerLeft, target);
     }
@@ -30,6 +33,7 @@ public partial class FormMain
         Loaded += (_, _) => UpdateNavigationDockSize();
         BCCL.Core.App.Localization.LocalizationService.LanguageChanged += NavigationLanguageChanged;
         Closed += (_, _) => BCCL.Core.App.Localization.LocalizationService.LanguageChanged -= NavigationLanguageChanged;
+        Closed += (_, _) => StopNavigationRendering();
         AddHandler(Mouse.PreviewMouseDownEvent, new MouseButtonEventHandler(NavigationDock_PreviewMouseDown), true);
         Deactivated += (_, _) => SetNavigationExpanded(false);
     }
@@ -71,8 +75,9 @@ public partial class FormMain
     private void UpdateNavigationDockSize()
     {
         if (NavigationSlide is null || NavigationDock is null || PanTitle is null ||
-            PanTitleSelect is null || LabNavigationBrand is null) return;
+            PanTitleSelect is null || LabNavigationBrand is null || WorkspaceViewport is null) return;
         PanTitle.Width = GetNavigationExpandedWidth();
+        StopNavigationRendering();
         NavigationDock.Width = navigationExpanded ? PanTitle.Width : NavigationEdgeWidth;
         NavigationSlide.BeginAnimation(TranslateTransform.XProperty, null);
         NavigationSlide.X = 0;
@@ -102,19 +107,19 @@ public partial class FormMain
         var target = expanded ? PanTitle.Width : NavigationEdgeWidth;
         var current = NavigationDock.Width;
         var edgeOpacity = expanded ? 0d : 1d;
+        StopNavigationRendering();
         NavigationDock.BeginAnimation(WidthProperty, null);
-        NavigationDock.Width = target;
         // The icon rail stays in place while the text drawer opens. A single
         // acceleration/deceleration curve avoids the old overshoot and keeps
         // reversal continuous, even when Windows client-area animation is off.
         var distance = Math.Abs(target - current);
-        var duration = TimeSpan.FromMilliseconds(Math.Max(100, (expanded ? 280 : 220) * distance /
-            Math.Max(1, PanTitle.Width - NavigationEdgeWidth)));
-        NavigationDock.BeginAnimation(WidthProperty, new DoubleAnimation(current, target, duration)
-        {
-            EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut },
-            FillBehavior = FillBehavior.Stop
-        });
+        navigationFromWidth = current;
+        navigationTargetWidth = target;
+        navigationDurationMs = Math.Max(100, (expanded ? 280 : 220) * distance /
+            Math.Max(1, PanTitle.Width - NavigationEdgeWidth));
+        navigationStartTick = Stopwatch.GetTimestamp();
+        navigationRendering = true;
+        CompositionTarget.Rendering += NavigationRendering;
         foreach (var item in PanTitleSelect.Children.OfType<MyRadioButton>())
         {
             // Keep text hidden behind the collapsed rail despite the tighter gap.
@@ -131,5 +136,28 @@ public partial class FormMain
         NavigationEdge.Opacity = edgeOpacity;
         NavigationEdge.BeginAnimation(OpacityProperty, new DoubleAnimation(previousOpacity, edgeOpacity,
             TimeSpan.FromMilliseconds(220)) { FillBehavior = FillBehavior.Stop });
+    }
+
+    private void StopNavigationRendering()
+    {
+        if (!navigationRendering) return;
+        CompositionTarget.Rendering -= NavigationRendering;
+        navigationRendering = false;
+    }
+
+    private void NavigationRendering(object? sender, EventArgs e)
+    {
+        var progress = Stopwatch.GetElapsedTime(navigationStartTick).TotalMilliseconds / navigationDurationMs;
+        // Update the real layout on every presented frame, including the page width.
+        // Never freeze the page or defer its final reflow to a completion callback.
+        NavigationDock.Width = GetNavigationFrameWidth(navigationFromWidth, navigationTargetWidth, progress);
+        if (progress >= 1) StopNavigationRendering();
+    }
+
+    internal static double GetNavigationFrameWidth(double from, double to, double progress)
+    {
+        var t = Math.Clamp(progress, 0, 1);
+        var eased = t < 0.5 ? 4 * t * t * t : 1 - Math.Pow(-2 * t + 2, 3) / 2;
+        return from + (to - from) * eased;
     }
 }

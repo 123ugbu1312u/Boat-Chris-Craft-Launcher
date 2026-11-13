@@ -80,9 +80,60 @@ internal static class Program
         checks++;
         CheckPageTransitions();
         CheckPopupTransitions();
+        CheckNavigationLayout();
         Console.WriteLine($"PASS: {checks} animation checks; opacity/shadow/brush/custom target, transforms, properties, scale, color resource, text and sequence.");
         if (Environment.GetCommandLineArgs().Contains("--measure")) MeasureAnimations();
         app.Shutdown();
+    }
+
+    private static void CheckNavigationLayout()
+    {
+        var page = new LayoutCounter();
+        var viewport = new Border { Child = page, ClipToBounds = true, UseLayoutRounding = false };
+        void Layout(double width, double height = 520)
+        {
+            viewport.Measure(new Size(width, height));
+            viewport.Arrange(new Rect(0, 0, width, height));
+        }
+        var interpolate = typeof(FormMain).GetMethod("GetNavigationFrameWidth",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+        double Width(double from, double to, double t) => (double)interpolate.Invoke(null, new object[] { from, to, t })!;
+        foreach (var fps in new[] { 60, 120, 144 })
+        {
+            foreach (var expanding in new[] { true, false })
+            {
+                var from = expanding ? 76d : 140d;
+                var to = expanding ? 140d : 76d;
+                var frames = (int)Math.Ceiling(fps * 0.28);
+                Layout(1020 - from);
+                for (var frame = 1; frame <= frames; frame++)
+                {
+                    var width = Width(from, to, (double)frame / frames);
+                    Layout(1020 - width);
+                    Equal(1020 - width, page.RenderSize.Width);
+                    Equal(viewport.RenderSize.Width, page.RenderSize.Width);
+                }
+                Equal(to, Width(from, to, 1));
+                Equal(to, Width(from, to, 1.5));
+            }
+        }
+        if (!viewport.ClipToBounds) throw new Exception("Moving page escaped the navigation viewport");
+        var reversingWidth = Width(76, 140, 0.45);
+        Equal(reversingWidth, Width(reversingWidth, 76, 0));
+        Equal(76, Width(reversingWidth, 76, 1));
+        Layout(760, 600);
+        Equal(760, page.RenderSize.Width);
+        Equal(600, page.RenderSize.Height);
+        checks += 6;
+        Console.WriteLine("PASS: continuous page layout at 60/120/144 Hz samples, reversal continuity, exact endpoints, clipping and resize.");
+    }
+
+    private sealed class LayoutCounter : FrameworkElement
+    {
+        public int Measures;
+        public int Arranges;
+        protected override Size MeasureOverride(Size availableSize) { Measures++; return availableSize; }
+        protected override Size ArrangeOverride(Size finalSize) { Arranges++; return finalSize; }
     }
 
     private static void CheckPopupTransitions()

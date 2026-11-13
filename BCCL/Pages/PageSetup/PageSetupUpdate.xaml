@@ -17,14 +17,19 @@
                             <ColumnDefinition Width="75" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0" />
-                            <RowDefinition Height="0" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="12" />
                             <RowDefinition Height="28" />
                             <RowDefinition Height="0" />
                             <RowDefinition Height="0" />
                         </Grid.RowDefinitions>
-                        <TextBlock Visibility="Collapsed" Text="{DynamicResource Setup.Update.Channel.Title}" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+                        <TextBlock Text="更新来源" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Left"
                                    Margin="0,0,25,0" />
+                        <local:MyComboBox x:Name="ComboSystemUpdateSource" Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0"
+                                          SelectionChanged="ComboSystemUpdateSource_SelectionChanged">
+                            <local:MyComboBoxItem Content="GitCode 更新" ToolTip="https://gitcode.com/BoatMinecraft/BoatChrisCraftLauncher" />
+                            <local:MyComboBoxItem Content="GitHub 更新" ToolTip="https://github.com/123ugbu1312u/Boat-Chris-Craft-Launcher" />
+                        </local:MyComboBox>
                         <local:MyComboBox Visibility="Collapsed" x:Name="ComboSystemUpdateChannel" Tag="SystemUpdateChannel" Grid.Column="1"
                                           Grid.ColumnSpan="3" Grid.Row="0"
                                           SelectionChanged="ComboSystemUpdateBranch_SelectionChanged">
@@ -116,7 +121,7 @@
                                Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left"
                                VerticalAlignment="Center" />
                         <!-- <local:MyImage x:Name="ImgUpdateIcon" FallbackSource="pack://application:,,,/images/icon.ico" Source="/BCCL;component/Images/icon.png" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"/> -->
-                        <TextBlock x:Name="TextCurrentVersion" Text="BCCL Beta 0.1.0" FontWeight="Bold" FontSize="20"
+                        <TextBlock x:Name="TextCurrentVersion" Text="BCCL Alpha 0.1.2" FontWeight="Bold" FontSize="20"
                                    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
                         <TextBlock x:Name="TextCurrentDesc" Text="{DynamicResource Setup.Update.Latest}" FontSize="14" Grid.Row="2" Grid.Column="2"
                                    HorizontalAlignment="Left" VerticalAlignment="Top" />
