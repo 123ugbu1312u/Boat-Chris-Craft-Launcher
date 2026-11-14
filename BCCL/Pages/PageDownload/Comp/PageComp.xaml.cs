@@ -130,23 +130,6 @@ public partial class PageComp
         ModModpack.ModpackInstall();
     }
 
-    /// <summary>
-    ///     刷新所有已显示项目的收藏状态
-    /// </summary>
-    public void RefreshAllFavoriteStatus()
-    {
-        try
-        {
-            foreach (var item in PanProjects.Children)
-                if (item is MyCompItem)
-                    ((MyCompItem)item).RefreshFavoriteStatus();
-        }
-        catch (Exception ex)
-        {
-            ModBase.Log(ex, "刷新收藏状态时出错");
-        }
-    }
-
     #region 属性
 
     /// <summary>
@@ -220,7 +203,6 @@ public partial class PageComp
         loader = new ModLoader.LoaderTask<ModComp.CompProjectRequest, int>(Lang.Text("Download.Comp.List.Source.ResourceFetch", "XXX"), ModComp.CompProjectsGet,
             LoaderInput) { reloadTimeout = 60 * 1000 };
         Loaded += PageCompControls_Inited;
-        IsVisibleChanged += PageComp_IsVisibleChanged;
         InitializeComponent();
         Load.StateChanged += Load_State;
         BtnPageFirst.Click += BtnPageFirst_Click;
@@ -299,12 +281,6 @@ public partial class PageComp
             ComboSearchLoader.Visibility = Visibility.Collapsed;
             ComboSearchShaderLoader.Visibility = Visibility.Collapsed;
         }
-    }
-
-    private void PageComp_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-        // 当页面变为可见时刷新收藏按钮状态
-        if (IsVisible) RefreshAllFavoriteStatus();
     }
 
     private ModComp.CompProjectRequest LoaderInput()

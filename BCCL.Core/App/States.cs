@@ -165,9 +165,9 @@ public static partial class States
         [ConfigItem<string>("LaunchArgumentJavaUser", "[]")] public partial string JavaList { get; set; }
         
         /// <summary>
-        /// 收藏的社区资源
+        /// Retained only so existing configuration can round-trip without data loss.
         /// </summary>
-        [ConfigItem<string>("CompFavorites", "[]")] public partial string CompFavorites { get; set; }
+        [ConfigItem<string>("CompFavorites", "[]")] public partial string RetiredResourceData { get; set; }
     }
 
     /// <summary>
@@ -330,7 +330,7 @@ public static partial class States
     [ConfigGroup("Instance", ConfigSource.GameInstance)] partial class InstanceStatesGroup
     {
         [ConfigItem<int>("VersionLaunchCount", 0)] public partial ArgConfig<int> LaunchCount { get; }
-        [ConfigItem<bool>("IsStar", false)] public partial ArgConfig<bool> Starred { get; }
+        [ConfigItem<bool>("IsStar", false)] public partial ArgConfig<bool> RetiredInstanceData { get; }
         [ConfigItem<int>("DisplayType", 0)] public partial ArgConfig<int> CardType { get; }
         [ConfigItem<string>("Logo", "")] public partial ArgConfig<string> LogoPath { get; }
         [ConfigItem<bool>("LogoCustom", false)] public partial ArgConfig<bool> IsLogoCustom { get; }

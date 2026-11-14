@@ -317,7 +317,7 @@ pub async fn restart_as_admin(app_handle: tauri::AppHandle) -> Result<(), String
     #[cfg(windows)]
     {
         let _ = app_handle;
-        Err("MCTier 主程序以普通权限运行，特权操作会单独请求 UAC".to_string())
+        Err("BCCL虚拟局域网联机 主程序以普通权限运行，特权操作会单独请求 UAC".to_string())
     }
     // Linux 没有"以管理员重启整个应用"这一步 —— 应用本体本来就不需要 root。
     // 前端这条"一键修复"在 Linux 上真正要做的是给 EasyTier 补 TUN 文件能力，

@@ -121,9 +121,6 @@
                 <local:MyIconTextButton x:Name="BtnSelectDisable" Text="{DynamicResource Instance.Resource.Disable}"
                                         LogoScale="1"
                                         SvgIcon="lucide/circle-minus" />
-                <local:MyIconTextButton x:Name="BtnSelectFavorites" Text="{DynamicResource Instance.Resource.Favorite}"
-                                        LogoScale="1"
-                                        SvgIcon="lucide/heart" />
                 <local:MyIconTextButton x:Name="BtnSelectShare" Text="{DynamicResource Instance.Resource.ShareSelected}"
                                         LogoScale="1"
                                         SvgIcon="lucide/share-2" />

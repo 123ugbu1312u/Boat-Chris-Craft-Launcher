@@ -135,7 +135,7 @@ export const NetworkDiagnostic: React.FC<NetworkDiagnosticProps> = ({
           name: tl('安全软件检测', 'Security Software Detection'),
           status: 'warning',
           message: `${tl('⚠ 检测到安全软件：', '⚠ Security software detected: ')}${avList.join(tl('、', ', '))}`,
-          solution: tl(`若大厅创建或加入失败，请检查安全软件是否隔离或删除 easytier-core.exe，并将 MCTier 加入${avList.join('、')}的信任/白名单。`, `If creating or joining a lobby fails, check whether easytier-core.exe was quarantined or deleted. Add MCTier to the trust/whitelist of ${avList.join(', ')}.`),
+          solution: tl(`若大厅创建或加入失败，请检查安全软件是否隔离或删除 easytier-core.exe，并将 BCCL虚拟局域网联机 加入${avList.join('、')}的信任/白名单。`, `If creating or joining a lobby fails, check whether easytier-core.exe was quarantined or deleted. Add BCCL虚拟局域网联机 to the trust/whitelist of ${avList.join(', ')}.`),
         };
       } else {
         checks[avIndex] = {
@@ -149,7 +149,7 @@ export const NetworkDiagnostic: React.FC<NetworkDiagnosticProps> = ({
         name: tl('安全软件检测', 'Security Software Detection'),
         status: 'warning',
         message: tl('⚠ 无法检测安全软件', '⚠ Unable to detect security software'),
-        solution: tl('若组网失败，请尝试将 MCTier 加入杀毒软件白名单', 'If networking fails, try adding MCTier to your antivirus whitelist'),
+        solution: tl('若组网失败，请尝试将 BCCL虚拟局域网联机 加入杀毒软件白名单', 'If networking fails, try adding BCCL虚拟局域网联机 to your antivirus whitelist'),
       };
     }
     setResults([...checks]);

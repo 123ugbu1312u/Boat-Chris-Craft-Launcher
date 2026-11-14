@@ -5,6 +5,13 @@ import { readThemePreference, THEME_CHANGED_EVENT } from './themePreference';
 import { isHostAppearance, resolveWorkspaceTheme, type HostAppearance } from './hostAppearancePolicy';
 
 let palette: HostAppearance | null = null;
+export async function initializeHostAppearance(): Promise<void> {
+  if (!BCCL_EMBEDDED) return;
+  try {
+    const initial: unknown = await invoke('bccl_host_appearance');
+    if (isHostAppearance(initial)) { palette = initial; applyPalette(); }
+  } catch { /* Periodic synchronization can recover a temporarily unavailable palette. */ }
+}
 const listeners = new Set<() => void>();
 export function useHostAppearance() {
   return useSyncExternalStore(callback => { listeners.add(callback); return () => { listeners.delete(callback); }; }, () => palette);

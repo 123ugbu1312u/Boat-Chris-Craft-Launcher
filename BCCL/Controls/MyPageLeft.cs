@@ -143,8 +143,10 @@ public class MyPageLeft : Grid
             allControls.Add(element);
         else if (element is MyListItem)
             allControls.Add(element);
-        else if (element is ContentControl)
-            GetAllAnimControls((FrameworkElement)((ContentControl)element).Content, ref allControls,
+        else if (element is Expander)
+            allControls.Add(element); // The header remains visible even without expanded content.
+        else if (element is ContentControl { Content: FrameworkElement content })
+            GetAllAnimControls(content, ref allControls,
                 ignoreInvisibility);
         else if (element is Panel)
             foreach (FrameworkElement Element2 in ((Panel)element).Children)

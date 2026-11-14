@@ -1185,8 +1185,8 @@ export const LobbyForm: React.FC<LobbyFormProps> = ({ mode, onClose }) => {
             <div>
               <p style={{ marginBottom: '12px' }}>
                 {tl(
-                  '请在系统授权提示中允许 EasyTier 创建虚拟网卡。MCTier 主程序无需以管理员身份重启；若仍失败，请检查安全软件的拦截记录。',
-                  'Allow EasyTier to create the virtual adapter when the system requests permission. MCTier itself does not need to restart as administrator. If it still fails, check your security software blocking history.'
+                  '请在系统授权提示中允许 EasyTier 创建虚拟网卡。BCCL虚拟局域网联机 主程序无需以管理员身份重启；若仍失败，请检查安全软件的拦截记录。',
+                  'Allow EasyTier to create the virtual adapter when the system requests permission. BCCL虚拟局域网联机 itself does not need to restart as administrator. If it still fails, check your security software blocking history.'
                 )}
               </p>
             </div>
@@ -1203,8 +1203,8 @@ export const LobbyForm: React.FC<LobbyFormProps> = ({ mode, onClose }) => {
               <p style={{ marginBottom: '12px', color: 'rgba(255,255,255,0.9)' }}>{errorMessage}</p>
               <p style={{ marginBottom: '8px', color: 'rgba(255,255,255,0.7)' }}>
                 {tl(
-                  '请访问 MCTier 官网下载最新版本',
-                  'Please visit the MCTier website to download the latest version'
+                  '请访问 BCCL虚拟局域网联机 官网下载最新版本',
+                  'Please visit the BCCL虚拟局域网联机 website to download the latest version'
                 )}
               </p>
             </div>
@@ -1246,8 +1246,8 @@ export const LobbyForm: React.FC<LobbyFormProps> = ({ mode, onClose }) => {
               {tl('1. 检查 EasyTier 内核是否被安全软件隔离或删除', '1. Check whether security software quarantined or deleted the EasyTier core')}
               <br />
               {tl(
-                '2. 恢复官方安装包中的内核，并将 MCTier 加入安全软件信任列表',
-                '2. Restore the core from the official package and trust MCTier in your security software'
+                '2. 恢复官方安装包中的内核，并将 BCCL虚拟局域网联机 加入安全软件信任列表',
+                '2. Restore the core from the official package and trust BCCL虚拟局域网联机 in your security software'
               )}
               <br />
               {tl(
@@ -1328,8 +1328,8 @@ export const LobbyForm: React.FC<LobbyFormProps> = ({ mode, onClose }) => {
                   )}
                   <br />
                   {tl(
-                    '2. 恢复官方安装包中的内核，并将 MCTier 加入安全软件信任列表后重试',
-                    '2. Restore the core from the official package and trust MCTier in your security software before retrying'
+                    '2. 恢复官方安装包中的内核，并将 BCCL虚拟局域网联机 加入安全软件信任列表后重试',
+                    '2. Restore the core from the official package and trust BCCL虚拟局域网联机 in your security software before retrying'
                   )}
                   <br />
                   {tl(

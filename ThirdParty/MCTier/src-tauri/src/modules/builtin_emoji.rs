@@ -145,7 +145,7 @@ fn unpack_embedded_to_cache(cache_dir: &Path, progress: impl Fn(usize, usize)) -
     unsafe {
         let module = GetModuleHandleW(None).map_err(|error| error.to_string())?;
         let resource = FindResourceW(module, w!("MCTIER_BUILTIN_EMOJI_PACK"), PCWSTR(11usize as *const u16));
-        if resource.0.is_null() { return Err("安装包缺少内置表情资源，请重新安装 MCTier".into()); }
+        if resource.0.is_null() { return Err("安装包缺少内置表情资源，请重新安装 BCCL虚拟局域网联机".into()); }
         let size = SizeofResource(module, resource) as usize;
         let loaded = LoadResource(module, resource).map_err(|error| error.to_string())?;
         let pointer = LockResource(loaded) as *const u8;

@@ -48,6 +48,21 @@ test('automatic mode respects selected AMD input and avoids double noise suppres
   assert.equal(constraints.deviceId.exact, 'amd');
   assert.equal(constraints.noiseSuppression, false);
 });
+
+test('automatic mode keeps an explicit physical/remote/default input instead of silently substituting a virtual AI device', async () => {
+  for (const selected of ['physical-mic', 'wasapi:remote-mic', 'communications']) {
+    const { api } = fixture('auto', selected);
+    const constraints = await api.microphoneConstraints();
+    assert.equal(constraints.deviceId.ideal, selected);
+    assert.equal(constraints.noiseSuppression, true);
+  }
+});
+
+test('automatic mode honors the actual Windows default physical input when idle virtual AI devices are installed', async () => {
+  const physical = { kind: 'audioinput', deviceId: 'physical-default', label: 'USB microphone', isDefault: true };
+  assert.equal(await fixture('auto', '', [nvidia, amd, physical]).api.aiNoiseDevice(), undefined);
+  assert.equal((await fixture('nvidia', '', [nvidia, physical]).api.aiNoiseDevice()).deviceId, 'nvidia');
+});
 test('explicit provider overrides device order; unavailable provider and old off setting retain ordinary mic', async () => {
   assert.equal((await fixture('amd').api.aiNoiseDevice()).deviceId, 'amd');
   assert.equal((await fixture('nvidia', 'amd').api.aiNoiseDevice()).deviceId, 'nvidia');

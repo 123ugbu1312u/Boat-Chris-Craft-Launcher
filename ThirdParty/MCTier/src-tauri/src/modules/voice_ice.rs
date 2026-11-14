@@ -100,7 +100,7 @@ where F: FnMut() -> Fut, Fut: Future<Output = io::Result<T>> {
 #[tauri::command]
 pub async fn voice_ice_server(window: tauri::WebviewWindow, state: tauri::State<'_, crate::modules::tauri_commands::AppState>) -> Result<Option<String>, String> {
     if window.label() != "main" || !crate::modules::media_permission::trusted(window.url().map_err(|e| e.to_string())?.as_str()) {
-        return Err("仅 MCTier 主窗口可配置语音连接".into());
+        return Err("仅 BCCL虚拟局域网联机 主窗口可配置语音连接".into());
     }
     if !cfg!(windows) { return Ok(None); }
     // Never accept a caller-supplied listen address: use the active lobby's endpoint.

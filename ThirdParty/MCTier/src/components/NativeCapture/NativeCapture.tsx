@@ -79,8 +79,8 @@ export function NativeCapturePicker() {
               'Choose the primary display to let the peer see and control it. You can stop at any time.'
             )
           : tl(
-              '仅共享你选择的显示器或窗口。共享开始后，可在 MCTier 窗口中点击“停止共享”；离开大厅时会自动停止。',
-              'Only the selected display or window is shared. Click Stop sharing in MCTier to end it, or leave the lobby to stop automatically.'
+              '仅共享你选择的显示器或窗口。共享开始后，可在 BCCL虚拟局域网联机 窗口中点击“停止共享”；离开大厅时会自动停止。',
+              'Only the selected display or window is shared. Click Stop sharing in BCCL虚拟局域网联机 to end it, or leave the lobby to stop automatically.'
             )}
       </p>
       <Tabs

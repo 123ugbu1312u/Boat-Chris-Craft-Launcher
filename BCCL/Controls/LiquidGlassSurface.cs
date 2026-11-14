@@ -77,8 +77,9 @@ public sealed class LiquidGlassSurface : FrameworkElement
     {
         DetachHost();
         host = InteractionHost ?? Parent as FrameworkElement;
-        // Existing card decorations still find their interactive parent as before.
-        while (host is not null && !host.IsHitTestVisible) host = VisualTreeHelper.GetParent(host) as FrameworkElement;
+        // Page transitions temporarily disable hit testing, including on explicit hosts.
+        // Keep the same owner: climbing to a shared ancestor makes sibling surfaces
+        // react to every click on the page, even after hit testing is restored.
         if (host is null) return;
         host.MouseMove += Move;
         host.MouseLeave += Leave;
@@ -93,10 +94,9 @@ public sealed class LiquidGlassSurface : FrameworkElement
     }
     private void Move(object sender, MouseEventArgs e)
     {
-        if (!IsVisible || !IsEnabled || Strength <= 0 || Environment.TickCount64 - lastMove < 33) return;
+        if (!IsVisible || !IsEnabled || Strength <= 0 || host is not { IsHitTestVisible: true, IsEnabled: true } ||
+            Environment.TickCount64 - lastMove < 33 || !TryGetPointer(e, out var next)) return;
         lastMove = Environment.TickCount64;
-        var p = e.GetPosition(this);
-        var next = new Point(Math.Clamp(p.X / Math.Max(1, ActualWidth), 0, 1), Math.Clamp(p.Y / Math.Max(1, ActualHeight), 0, 1));
         if (next == pointer) return;
         pointer = next;
         InvalidateVisual();
@@ -104,10 +104,21 @@ public sealed class LiquidGlassSurface : FrameworkElement
     private void Leave(object sender, MouseEventArgs e) { if (!IsVisible) return; pointer = new Point(0.25, 0.1); InvalidateVisual(); }
     private void Press(object sender, MouseButtonEventArgs e)
     {
-        if (!IsVisible || !IsEnabled || Strength <= 0 || e.ChangedButton != MouseButton.Left) return;
-        var p = e.GetPosition(this);
-        pointer = new Point(Math.Clamp(p.X / Math.Max(1, ActualWidth), 0, 1), Math.Clamp(p.Y / Math.Max(1, ActualHeight), 0, 1));
+        if (!IsVisible || !IsEnabled || Strength <= 0 || e.ChangedButton != MouseButton.Left ||
+            host is not { IsHitTestVisible: true, IsEnabled: true } || !TryGetPointer(e, out var next)) return;
+        pointer = next;
         BeginAnimation(PulseProperty, new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(450)) { FillBehavior = FillBehavior.Stop });
+    }
+    private bool TryGetPointer(MouseEventArgs e, out Point position)
+    {
+        position = default;
+        var p = e.GetPosition(this);
+        // A host can be larger than its decoration, or continue receiving captured input.
+        // Ignore outside coordinates instead of clamping them into an edge pulse.
+        if (ActualWidth <= 0 || ActualHeight <= 0 || !double.IsFinite(p.X) || !double.IsFinite(p.Y) ||
+            !new Rect(RenderSize).Contains(p)) return false;
+        position = new Point(p.X / ActualWidth, p.Y / ActualHeight);
+        return true;
     }
     protected override void OnRender(DrawingContext dc)
     {

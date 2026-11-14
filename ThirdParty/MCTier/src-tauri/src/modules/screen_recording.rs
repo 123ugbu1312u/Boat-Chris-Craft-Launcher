@@ -20,7 +20,7 @@ pub struct RecordingOutput { id: String, path: String }
 
 fn default_directory() -> Result<PathBuf, String> {
     dirs::video_dir().or_else(|| dirs::home_dir().map(|home| home.join("Videos")))
-        .map(|videos| videos.join("MCTier")).ok_or_else(|| "无法定位用户视频目录".into())
+        .map(|videos| videos.join("BCCL虚拟局域网联机")).ok_or_else(|| "无法定位用户视频目录".into())
 }
 
 async fn configured_directory(state: &State<'_, AppState>) -> Result<PathBuf, String> {
@@ -68,9 +68,9 @@ pub async fn recording_create(window: WebviewWindow, state: State<'_, AppState>,
     authorize(&window)?;
     if !["webm", "mp4"].contains(&extension.as_str()) { return Err("无效录屏格式".into()); }
     let directory = configured_directory(&state).await?;
-    let filename = format!("MCTier-{}.{}", chrono::Local::now().format("%Y%m%d-%H%M%S"), extension);
+    let filename = format!("BCCL虚拟局域网联机-{}.{}", chrono::Local::now().format("%Y%m%d-%H%M%S"), extension);
     let mut path = directory.join(filename);
-    if path.exists() { path = directory.join(format!("MCTier-{}-{}.{}", chrono::Local::now().format("%Y%m%d-%H%M%S"), uuid::Uuid::new_v4().simple(), extension)); }
+    if path.exists() { path = directory.join(format!("BCCL虚拟局域网联机-{}-{}.{}", chrono::Local::now().format("%Y%m%d-%H%M%S"), uuid::Uuid::new_v4().simple(), extension)); }
     create_at(path).map(Some)
 }
 fn create_at(path: PathBuf) -> Result<RecordingOutput, String> {

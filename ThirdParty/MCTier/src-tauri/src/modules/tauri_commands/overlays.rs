@@ -92,7 +92,7 @@ pub async fn open_danmaku_window(app: tauri::AppHandle) -> Result<(), String> {
         window_label,
         tauri::WebviewUrl::App("index.html?danmaku=true".into()),
     )
-    .title("MCTier Danmaku")
+    .title("BCCL虚拟局域网联机 Danmaku")
     .decorations(false)
     .transparent(true)
     .always_on_top(true)
@@ -164,7 +164,7 @@ pub async fn open_game_hud_window(app: tauri::AppHandle) -> Result<(), String> {
         label,
         tauri::WebviewUrl::App("index.html?gamehud=true".into()),
     )
-    .title("MCTier HUD")
+    .title("BCCL虚拟局域网联机 HUD")
     .decorations(false)
     .transparent(true)
     .always_on_top(true)
@@ -295,7 +295,7 @@ pub async fn save_danmaku_image(data_url: String) -> Result<String, String> {
         .or_else(dirs::home_dir)
         .ok_or_else(|| "找不到下载目录".to_string())?;
     let ts = chrono::Local::now().format("%Y%m%d_%H%M%S");
-    let filename = format!("MCTier_弹幕图片_{}.{}", ts, ext);
+    let filename = format!("BCCL虚拟局域网联机_弹幕图片_{}.{}", ts, ext);
     let path = dir.join(&filename);
     std::fs::write(&path, &bytes).map_err(|e| format!("保存失败: {}", e))?;
     Ok(path.to_string_lossy().to_string())

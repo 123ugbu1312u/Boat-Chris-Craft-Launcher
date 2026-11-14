@@ -14,8 +14,13 @@
         <!-- A RID alone no longer implies self-contained publishing. -->
         <SelfContained>true</SelfContained>
         <PublishTrimmed>false</PublishTrimmed>
-        <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+        <!-- Lossless bundle compression; all assemblies, resources and runtime features remain included. -->
+        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <!-- WPF popup accessibility/COM and late-bound libraries need stable on-disk
+             assembly paths. Keep the distribution single-file, but extract all runtime
+             dependencies to the bundle cache before executing the managed entry point. -->
+        <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
         <RuntimeIdentifier Condition="'$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
         <RuntimeIdentifier Condition="'$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
         <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">win-x64</RuntimeIdentifier>
@@ -35,9 +40,9 @@
         <Description>Minecraft 启动器 (作者: 龙腾猫跃; 经社区二次开发版本)</Description>
         <Product>Boat Chris Craft Launcher</Product>
         <Copyright>Copyright © 龙腾猫跃 2016. All Rights Reserved.</Copyright>
-        <AssemblyVersion>0.1.2.0</AssemblyVersion>
-        <FileVersion>0.1.2.0</FileVersion>
-        <InformationalVersion>0.1.2-alpha</InformationalVersion>
+        <AssemblyVersion>0.2.2.0</AssemblyVersion>
+        <FileVersion>0.2.2.0</FileVersion>
+        <InformationalVersion>0.2.2-alpha</InformationalVersion>
         <NoWarn>
             41999;42016;42017;42018;42019;42020;42021;42022;42032;42036;42314;
             VSTHRD002;VSTHRD003;VSTHRD110;VSTHRD200
@@ -128,6 +133,8 @@
         <Resource Include="Images\**" />
         <Resource Include="Resources\**" />
         <EmbeddedResource Include="metadata.json" />
+        <EmbeddedResource Include="$(MCTierBundleArchive)" LogicalName="BCCL.Multiplayer.Original.bundle.zip" Condition="'$(MCTierBundleArchive)' != ''" />
+        <EmbeddedResource Include="$(MCTierBundleManifest)" LogicalName="BCCL.Multiplayer.Original.bundle.json" Condition="'$(MCTierBundleManifest)' != ''" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="LICENCE" />

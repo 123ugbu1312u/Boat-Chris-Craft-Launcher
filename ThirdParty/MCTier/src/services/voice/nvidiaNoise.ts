@@ -27,8 +27,13 @@ export async function aiNoiseDevices(): Promise<MicrophoneDevice[]> {
 export async function aiNoiseDevice(): Promise<MicrophoneDevice | undefined> {
   const mode = nvidiaNoiseMode();
   if (mode === 'off') return undefined;
-  const devices = (await aiNoiseDevices()).filter(device => mode === 'auto' || noiseProvider(device) === mode);
-  return devices.find(device => device.deviceId === audioDevices.getInputDeviceId()) ?? devices[0];
+  const microphones = await microphoneDevices();
+  const preferred = audioDevices.getInputDeviceId() || (mode === 'auto' ? microphones.find(device => device.isDefault)?.deviceId ?? '' : '');
+  const devices = microphones.filter(device => noiseProvider(device) && (mode === 'auto' || noiseProvider(device) === mode));
+  // Automatic processing must not redirect an explicitly selected physical or
+  // remote microphone into an unrelated, possibly silent virtual noise device.
+  if (mode === 'auto' && preferred) return devices.find(device => device.deviceId === preferred);
+  return devices.find(device => device.deviceId === preferred) ?? devices[0];
 }
 export async function nvidiaNoiseDevice(): Promise<MicrophoneDevice | undefined> {
   return (await aiNoiseDevices()).find(device => noiseProvider(device) === 'nvidia');

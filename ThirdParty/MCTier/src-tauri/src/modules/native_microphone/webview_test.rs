@@ -34,7 +34,7 @@ fn audio_check_outputs() -> Result<serde_json::Value, String> {
 #[tauri::command]
 async fn native_microphone_start(window: tauri::WebviewWindow, device_id: String, system_processing: bool) -> Result<serde_json::Value, String> {
     if std::env::var_os("MCTIER_AUDIO_CHECK_REAL_MIC").is_some() {
-        return crate::modules::native_microphone::native_microphone_start(window, device_id, system_processing).await.and_then(|info| serde_json::to_value(info).map_err(|e| e.to_string()));
+        return crate::modules::native_microphone::native_microphone_start(window, device_id, system_processing, None).await.and_then(|info| serde_json::to_value(info).map_err(|e| e.to_string()));
     }
     Ok(serde_json::json!({ "id": "test-tone", "deviceId": "test-tone", "sampleRate": 48000 }))
 }
@@ -71,7 +71,9 @@ fn webview_native_bridge_and_bidirectional_audio() {
     let profile_path = std::env::var_os("MCTIER_AUDIO_CHECK_PROFILE")
         .map(std::path::PathBuf::from).unwrap_or_else(|| profile.path().to_path_buf());
     let app = tauri::Builder::default().any_thread().manage(stored)
-        .invoke_handler(tauri::generate_handler![audio_check_report, audio_check_outputs, audio_check_ice_server, native_microphone_supported, native_microphone_start, native_microphone_read, native_microphone_stop, crate::modules::native_microphone::report_audio_diagnostic])
+        .invoke_handler(tauri::generate_handler![audio_check_report, audio_check_outputs, audio_check_ice_server,
+            self::native_microphone_supported, self::native_microphone_start, self::native_microphone_read, self::native_microphone_stop,
+            crate::modules::native_microphone::report_audio_diagnostic])
         .setup(move |app| {
             let mut window = tauri::WebviewWindowBuilder::new(app, "main", tauri::WebviewUrl::App("index.html".into()))
                 .title("MCTier audio integration check").inner_size(360.0, 160.0)

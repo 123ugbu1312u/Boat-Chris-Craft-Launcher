@@ -289,7 +289,7 @@ pub(crate) fn default_file_share_download_dir() -> std::path::PathBuf {
         .or_else(dirs::home_dir)
         .or_else(dirs::data_local_dir)
         .unwrap_or_else(std::env::temp_dir)
-        .join("MCTier")
+        .join("BCCL虚拟局域网联机")
 }
 
 pub(crate) fn effective_file_share_download_dir(config: &UserConfig) -> std::path::PathBuf {

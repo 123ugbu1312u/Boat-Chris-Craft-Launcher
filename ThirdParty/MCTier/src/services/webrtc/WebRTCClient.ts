@@ -3981,7 +3981,8 @@ export class WebRTCClient {
     // 最多收敛若干轮，避免极端情况下的无限循环
     for (let i = 0; i < 5; i++) {
       const target = this.desiredMicEnabled;
-      if (target === this.micActuallyEnabled) {
+      const hasLiveAudio = this.localStream?.getAudioTracks().some(track => track.readyState === 'live') ?? false;
+      if (target === this.micActuallyEnabled && (!target || hasLiveAudio)) {
         return; // 已是目标状态，无需重复操作
       }
       await this.applyMicState(target);

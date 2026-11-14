@@ -60,7 +60,6 @@ public partial class PageInstanceCompResource : IRefreshable
         BtnSelectUpdate.Click += BtnSelectUpdate_Click;
         BtnSelectDelete.Click += BtnSelectDelete_Click;
         BtnSelectCancel.Click += BtnSelectCancel_Click;
-        BtnSelectFavorites.Click += BtnSelectFavorites_Click;
         BtnSelectShare.Click += BtnSelectShare_Click;
         SearchBox.TextChanged += SearchRun;
         PanBack.ScrollChanged += (_, _) => RefreshVisibleItems();
@@ -163,7 +162,6 @@ public partial class PageInstanceCompResource : IRefreshable
         BtnSelectUpdate.Click += BtnSelectUpdate_Click;
         BtnSelectDelete.Click += BtnSelectDelete_Click;
         BtnSelectCancel.Click += BtnSelectCancel_Click;
-        BtnSelectFavorites.Click += BtnSelectFavorites_Click;
         BtnSelectShare.Click += BtnSelectShare_Click;
         SearchBox.TextChanged += SearchRun;
         PanBack.ScrollChanged += (_, _) => RefreshVisibleItems();
@@ -847,7 +845,7 @@ public partial class PageInstanceCompResource : IRefreshable
                 var hasUpdate = false;
                 var hasEnabled = false;
                 var hasDisabled = false;
-                var canFavoriteAndShare = true; // 是否可以收藏和分享
+                var canShare = true; // 是否可以分享
 
 
                 // 检查是否所有选中的资源都有有效的项目信息（即已完成联网更新）
@@ -862,7 +860,7 @@ public partial class PageInstanceCompResource : IRefreshable
                             else if (ModEntity.State == ModLocalComp.LocalCompFile.LocalFileStatus.Disabled)
                                 hasDisabled = true;
                             if (ModEntity.Comp is null || string.IsNullOrEmpty(ModEntity.Comp.Id))
-                                canFavoriteAndShare = false;
+                                canShare = false;
                         }
                 });
 
@@ -870,22 +868,19 @@ public partial class PageInstanceCompResource : IRefreshable
                 BtnSelectEnable.IsEnabled = hasDisabled;
                 BtnSelectUpdate.IsEnabled = hasUpdate;
 
-                // 针对投影原理图隐藏分享 更新 收藏按钮
+                // 针对投影原理图隐藏分享和更新按钮
                 if (currentCompType == ModComp.CompType.Schematic)
                 {
                     BtnSelectUpdate.Visibility = Visibility.Collapsed;
-                    BtnSelectFavorites.Visibility = Visibility.Collapsed;
                     BtnSelectShare.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
                     BtnSelectUpdate.Visibility = Visibility.Visible;
-                    BtnSelectFavorites.Visibility = Visibility.Visible;
                     BtnSelectShare.Visibility = Visibility.Visible;
 
-                    // 根据是否已加载项目信息来启用/禁用收藏和分享按钮
-                    BtnSelectFavorites.IsEnabled = canFavoriteAndShare;
-                    BtnSelectShare.IsEnabled = canFavoriteAndShare;
+                    // 根据是否已加载项目信息来启用或禁用分享按钮
+                    BtnSelectShare.IsEnabled = canShare;
                 }
             }
 
@@ -2541,20 +2536,12 @@ public partial class PageInstanceCompResource : IRefreshable
         ChangeAllSelected(false);
     }
 
-    // 收藏
-    private void BtnSelectFavorites_Click(object sender, ModBase.RouteEventArgs e)
-    {
-        var selected = ModLocalComp.compResourceListLoader.output
-            .Where(m => selectedMods.Contains(m.RawPath) && m.Comp is not null).Select(i => i.Comp).ToList();
-        ModComp.CompFavorites.ShowMenu(selected, (UIElement)sender);
-    }
-
     // 分享
     private void BtnSelectShare_Click(object sender, ModBase.RouteEventArgs e)
     {
         var shareList = ModLocalComp.compResourceListLoader.output
             .Where(m => selectedMods.Contains(m.RawPath) && m.Comp is not null).Select(i => i.Comp.Id).ToHashSet();
-        ModBase.ClipboardSet(ModComp.CompFavorites.GetShareCode(shareList));
+        ModBase.ClipboardSet(CompShare.GetShareCode(shareList));
         ChangeAllSelected(false);
     }
 

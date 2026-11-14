@@ -94,8 +94,8 @@ export function QuarkSupport() {
         <span className="quark-hero-icon">
           <SupportHeart />
         </span>
-        <div className="quark-eyebrow">MCTier × {tl('夸克网盘', 'Quark Drive')}</div>
-        <h2>{tl('夸克替您，持续赞助', 'Keep supporting MCTier through Quark')}</h2>
+        <div className="quark-eyebrow">BCCL虚拟局域网联机 × {tl('夸克网盘', 'Quark Drive')}</div>
+        <h2>{tl('夸克替您，持续赞助', 'Keep supporting BCCL虚拟局域网联机 through Quark')}</h2>
         <p>
           {tl(
             '登录一次，之后每天自动转存支持开发。',
@@ -160,8 +160,8 @@ export function QuarkSupport() {
                 </div>
                 <p className="quark-caption">
                   {tl(
-                    '夸克提供推广收入，用于支持 MCTier 的维护与开发，您无需付款。',
-                    'Quark referral income helps maintain and develop MCTier. No payment is needed.'
+                    '夸克提供推广收入，用于支持 BCCL虚拟局域网联机 的维护与开发，您无需付款。',
+                    'Quark referral income helps maintain and develop BCCL虚拟局域网联机. No payment is needed.'
                   )}
                 </p>
               </>
@@ -398,7 +398,7 @@ export function QuarkSupportEntry({ onClick }: { onClick: () => void }) {
       className={`quark-entry ${!state.loggedIn ? 'quark-entry-inviting' : ''}`}
       onClick={onClick}
       aria-label={tl('夸克赞助', 'Quark support')}
-      title={tl('夸克赞助 · 支持 MCTier 开发', 'Quark support · Help MCTier grow')}
+      title={tl('夸克赞助 · 支持 BCCL虚拟局域网联机 开发', 'Quark support · Help BCCL虚拟局域网联机 grow')}
     >
       <SupportHeart />
     </button>
@@ -411,7 +411,7 @@ export function QuarkSupportWindow({ open, onClose }: { open: boolean; onClose: 
       open={open}
       onCancel={onClose}
       footer={null}
-      title={tl('支持 MCTier', 'Support MCTier')}
+      title={tl('支持 BCCL虚拟局域网联机', 'Support BCCL虚拟局域网联机')}
       centered
       width={720}
       className="quark-modal"

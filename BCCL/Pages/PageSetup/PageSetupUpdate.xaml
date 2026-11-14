@@ -80,13 +80,12 @@
                             <RowDefinition Height="10" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <!-- <Image Source="/Images/Icons/Tahoe.png" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center" /> -->
-                        <local:MyImage x:Name="ImgUpdateIcon" Source="/BCCL;component/Images/icon.png" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        <Image x:Name="ImgUpdateIcon" Source="/BCCL;component/Images/icon.ico" RenderOptions.BitmapScalingMode="NearestNeighbor"
                                        Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Height="50" Width="50"
                                        HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <TextBlock x:Name="TextUpdateName" Text="BCCL 2.14.0" FontWeight="Bold" FontSize="20"
                                    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                        <TextBlock x:Name="TextUpdateDesc" Text="by BCCL-Community" FontSize="14" Grid.Row="2"
+                        <TextBlock x:Name="TextUpdateDesc" Text="Boat &amp; Chris" FontSize="14" Grid.Row="2"
                                    Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" />
                         <local:MyButton x:Name="BtnUpdate" Text="{DynamicResource Setup.Update.Install}" ColorType="Highlight" Grid.Row="0"
                                         Grid.RowSpan="2" Grid.Column="3" HorizontalAlignment="Center"
@@ -117,11 +116,10 @@
                             <RowDefinition Height="1" />
                             <RowDefinition Height="20" />
                         </Grid.RowDefinitions>
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="pack://application:,,,/Images/icon.png" Grid.Column="0" Grid.Row="0"
+                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="/BCCL;component/Images/icon.ico" Grid.Column="0" Grid.Row="0"
                                Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left"
                                VerticalAlignment="Center" />
-                        <!-- <local:MyImage x:Name="ImgUpdateIcon" FallbackSource="pack://application:,,,/images/icon.ico" Source="/BCCL;component/Images/icon.png" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left" VerticalAlignment="Center"/> -->
-                        <TextBlock x:Name="TextCurrentVersion" Text="BCCL Alpha 0.1.2" FontWeight="Bold" FontSize="20"
+                        <TextBlock x:Name="TextCurrentVersion" Text="BCCL Alpha 0.2.2" FontWeight="Bold" FontSize="20"
                                    Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
                         <TextBlock x:Name="TextCurrentDesc" Text="{DynamicResource Setup.Update.Latest}" FontSize="14" Grid.Row="2" Grid.Column="2"
                                    HorizontalAlignment="Left" VerticalAlignment="Top" />

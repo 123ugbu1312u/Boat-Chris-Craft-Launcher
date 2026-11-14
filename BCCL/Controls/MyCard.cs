@@ -40,7 +40,7 @@ public class MyCard : AnimatedBackgroundGrid
         mainBorder.SetResourceReference(BlurBorder.BlurRadiusProperty, "GlassCardBlurRadius");
         glassChrome = new Border { CornerRadius = new CornerRadius(20d), BorderThickness = new Thickness(1) };
         glassChrome.SetResourceReference(Border.BorderBrushProperty, "GlassEdgeBrush");
-        glassChrome.Child = new LiquidGlassSurface { Radius = 20 };
+        glassChrome.Child = new LiquidGlassSurface { Radius = 20, InteractionHost = this };
         glassChrome.SetResourceReference(VisibilityProperty, "LiquidGlassVisibility");
         mainBorder.Child = glassChrome;
         Children.Insert(1, mainBorder);
@@ -96,6 +96,7 @@ public class MyCard : AnimatedBackgroundGrid
             MainChrome.CornerRadius = value;
             mainBorder.CornerRadius = value;
             glassChrome.CornerRadius = value;
+            if (glassChrome.Child is LiquidGlassSurface surface) surface.Radius = value.TopLeft;
         }
     }
 

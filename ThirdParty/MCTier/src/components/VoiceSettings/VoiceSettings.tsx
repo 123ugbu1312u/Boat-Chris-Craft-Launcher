@@ -3,7 +3,7 @@
  * - 选择麦克风(输入)与扬声器(输出)设备
  * - 麦克风试音：实时电平条
  * - 扬声器试音：在选定输出设备上播放测试音
- * 说明：输入设备会在下次开启/重开麦克风时生效；输出设备对已连接对端实时生效。
+ * 说明：输入与输出设备切换均对当前通话实时生效。
  *
  * 该模块导出两部分：
  * - VoiceDevicePanel：可内嵌的设置面板（用于「大厅动态设置」中集成）
@@ -49,6 +49,7 @@ export const VoiceDevicePanel: React.FC<VoiceDevicePanelProps> = ({ active = tru
   const ctxRef = useRef<AudioContext | null>(null);
   const rafRef = useRef<number | null>(null);
   const testGeneration = useRef(0);
+  const inputChangeGeneration = useRef(0);
 
   // 下拉框渲染到自身父节点，避免在透明窗口/弹窗中出现层级错误（显示在弹窗背后无法点击）
   const popupContainer = (triggerNode: HTMLElement) =>
@@ -119,11 +120,13 @@ export const VoiceDevicePanel: React.FC<VoiceDevicePanelProps> = ({ active = tru
     } else {
       stopMicTest();
     }
-    return () => stopMicTest();
+    return () => { inputChangeGeneration.current++; stopMicTest(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
-  const handleInputChange = (id: string) => {
+  const handleInputChange = async (id: string) => {
+    const generation = ++inputChangeGeneration.current;
+    const previous = audioDevices.getInputDeviceId();
     setInputId(id);
     audioDevices.setInputDeviceId(id);
     // 若正在试音，使用新设备重启
@@ -131,7 +134,20 @@ export const VoiceDevicePanel: React.FC<VoiceDevicePanelProps> = ({ active = tru
       stopMicTest();
       void startMicTest(id);
     }
-    message.success(tl('麦克风已切换，将在下次开启麦克风时生效', 'Microphone switched, effective next time you enable it'));
+    try {
+      // Rebind the current call too; selecting a working input must not leave
+      // peers listening to the old silent device until the mic is toggled again.
+      await webrtcClient.refreshMicrophoneProcessing();
+      if (generation !== inputChangeGeneration.current) return;
+      message.success(tl('麦克风已切换并对当前通话生效', 'Microphone switched and applied to the current call'));
+    } catch (error) {
+      if (generation !== inputChangeGeneration.current) return;
+      audioDevices.setInputDeviceId(previous);
+      setInputId(previous);
+      if (testing) { stopMicTest(); void startMicTest(previous); }
+      await webrtcClient.refreshMicrophoneProcessing().catch(() => {});
+      message.error(`${tl('麦克风切换失败，请重新选择可用设备', 'Could not switch microphone; select an available device')}：${error}`);
+    }
   };
 
   const handleOutputChange = async (id: string) => {

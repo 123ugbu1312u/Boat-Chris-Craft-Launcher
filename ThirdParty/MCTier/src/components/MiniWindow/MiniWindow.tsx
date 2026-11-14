@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BCCL_EMBEDDED, BCCL_MULTIPLAYER_TITLE } from '../../bcclEmbedding';
+import { resizeMiniWindow } from '../../utils/miniWindowSize';
 import { motion, AnimatePresence } from 'framer-motion';
 import { invoke } from '@tauri-apps/api/core';
 import { Modal, Spin, Tooltip, App as AntdApp } from 'antd';
@@ -101,7 +102,7 @@ async function drawQrWithLogo(
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
   try {
-    const logo = await loadImg('/MCTierIcon.png');
+    const logo = await loadImg('/BCCLIcon.png');
     const ls = Math.round(size * 0.2);
     const cx = size / 2,
       cy = size / 2;
@@ -152,14 +153,14 @@ async function buildInvitePoster(invite: LobbyInvite): Promise<HTMLCanvasElement
   // 顶部品牌
   ctx.fillStyle = '#52C41A';
   ctx.font = 'bold 44px "Microsoft YaHei", sans-serif';
-  ctx.fillText('MCTier', W / 2, 132);
+  ctx.fillText('BCCL虚拟局域网联机', W / 2, 132);
   ctx.fillStyle = 'rgba(255,255,255,0.92)';
   ctx.font = 'bold 26px "Microsoft YaHei", sans-serif';
   ctx.fillText(tl('组网邀请', 'Network Invite'), W / 2, 174);
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
   ctx.font = '17px "Microsoft YaHei", sans-serif';
   ctx.fillText(
-    tl('用手机 MCTier 扫一扫，立即加入大厅', 'Scan with MCTier on your phone to join the lobby'),
+    tl('用手机 BCCL虚拟局域网联机 扫一扫，立即加入大厅', 'Scan with BCCL虚拟局域网联机 on your phone to join the lobby'),
     W / 2,
     210
   );
@@ -511,7 +512,7 @@ export const MiniWindow: React.FC = () => {
       const dataUrl = cv.toDataURL('image/png');
       const bytes = Uint8Array.from(atob(dataUrl.split(',')[1]), (c) => c.charCodeAt(0));
       const path = await invoke<string | null>('select_save_location', {
-        defaultName: tl(`MCTier-邀请-${lobby.name}.png`, `MCTier-Invite-${lobby.name}.png`),
+        defaultName: tl(`BCCL虚拟局域网联机-邀请-${lobby.name}.png`, `BCCL虚拟局域网联机-Invite-${lobby.name}.png`),
       });
       if (!path) return;
       await invoke('save_file', { path, data: Array.from(bytes) });
@@ -974,10 +975,7 @@ export const MiniWindow: React.FC = () => {
 
       // 先恢复窗口大小（如果是收起状态）
       if (collapsed) {
-        const { getCurrentWindow } = await import('@tauri-apps/api/window');
-        const { LogicalSize } = await import('@tauri-apps/api/dpi');
-        const appWindow = getCurrentWindow();
-        await appWindow.setSize(new LogicalSize(320, 520));
+        await resizeMiniWindow(false);
         console.log('窗口大小已恢复');
       }
 
@@ -1068,19 +1066,15 @@ export const MiniWindow: React.FC = () => {
   const handleToggleCollapse = async () => {
     try {
       console.log('收起按钮被点击，当前状态:', collapsed);
-      const { getCurrentWindow } = await import('@tauri-apps/api/window');
-      const { LogicalSize } = await import('@tauri-apps/api/dpi');
-      const appWindow = getCurrentWindow();
-
       if (!collapsed) {
         // 收起：缩小窗口到只显示标题栏
         console.log('正在收起窗口...');
-        await appWindow.setSize(new LogicalSize(320, 50));
+        await resizeMiniWindow(true);
         console.log('窗口已收起');
       } else {
         // 展开：恢复窗口大小
         console.log('正在展开窗口...');
-        await appWindow.setSize(new LogicalSize(320, 520));
+        await resizeMiniWindow(false);
         console.log('窗口已展开');
       }
 
@@ -1095,10 +1089,7 @@ export const MiniWindow: React.FC = () => {
     if (!collapsed) return;
 
     try {
-      const { getCurrentWindow } = await import('@tauri-apps/api/window');
-      const { LogicalSize } = await import('@tauri-apps/api/dpi');
-      const appWindow = getCurrentWindow();
-      await appWindow.setSize(new LogicalSize(320, 520));
+      await resizeMiniWindow(false);
       setCollapsed(false);
       await new Promise((resolve) => window.setTimeout(resolve, 320));
     } catch (error) {
@@ -1290,10 +1281,7 @@ export const MiniWindow: React.FC = () => {
     // 如果打开聊天室时窗口是收起状态，关闭时自动收起
     if (chatOpenedWhenCollapsed) {
       try {
-        const { getCurrentWindow } = await import('@tauri-apps/api/window');
-        const { LogicalSize } = await import('@tauri-apps/api/dpi');
-        const appWindow = getCurrentWindow();
-        await appWindow.setSize(new LogicalSize(320, 50));
+        await resizeMiniWindow(true);
         setCollapsed(true);
         console.log('✅ 聊天室关闭，窗口已自动收起');
       } catch (error) {
@@ -1313,10 +1301,7 @@ export const MiniWindow: React.FC = () => {
 
       // 如果窗口是收起状态，先展开窗口
       if (collapsed) {
-        const { getCurrentWindow } = await import('@tauri-apps/api/window');
-        const { LogicalSize } = await import('@tauri-apps/api/dpi');
-        const appWindow = getCurrentWindow();
-        await appWindow.setSize(new LogicalSize(320, 520));
+        await resizeMiniWindow(false);
         setCollapsed(false);
         console.log('窗口已展开');
       }
@@ -1503,8 +1488,8 @@ export const MiniWindow: React.FC = () => {
               </p>
               <p>
                 {tl(
-                  '请下载最新版本以继续使用 MCTier',
-                  'Please download the latest version to keep using MCTier'
+                  '请下载最新版本以继续使用 BCCL虚拟局域网联机',
+                  'Please download the latest version to keep using BCCL虚拟局域网联机'
                 )}
               </p>
             </div>
@@ -1846,7 +1831,7 @@ export const MiniWindow: React.FC = () => {
                     {maxPlayers && maxPlayers > 0 ? `/${maxPlayers}` : ''})
                   </>
                 ) : (
-                  BCCL_EMBEDDED ? BCCL_MULTIPLAYER_TITLE : 'MCTier'
+                  BCCL_EMBEDDED ? BCCL_MULTIPLAYER_TITLE : 'BCCL虚拟局域网联机'
                 )}
               </h3>
               <div className="mini-window-controls">
@@ -2022,8 +2007,8 @@ export const MiniWindow: React.FC = () => {
                             onClick={() => setShowQrModal(true)}
                             disabled={signalingStatus !== 'connected'}
                             title={tl(
-                              '大厅二维码（手机 MCTier 扫码加入）',
-                              'Lobby QR (scan with MCTier)'
+                              '大厅二维码（手机 BCCL虚拟局域网联机 扫码加入）',
+                              'Lobby QR (scan with BCCL虚拟局域网联机)'
                             )}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
@@ -2822,7 +2807,7 @@ export const MiniWindow: React.FC = () => {
           }}
         >
           <div style={{ color: 'rgba(255,255,255,0.65)', fontSize: 12 }}>
-            {tl('手机用 MCTier 扫码即可加入本大厅', 'Scan with MCTier on your phone to join')}
+            {tl('手机用 BCCL虚拟局域网联机 扫码即可加入本大厅', 'Scan with BCCL虚拟局域网联机 on your phone to join')}
           </div>
           <div className="mini-qr-card">
             <canvas

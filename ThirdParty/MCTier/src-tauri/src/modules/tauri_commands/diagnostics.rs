@@ -164,7 +164,7 @@ pub async fn export_logs(_app_handle: tauri::AppHandle) -> Result<String, String
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or(0);
-    let zip_path = out_dir.join(format!("MCTier_logs_{}.zip", ts));
+    let zip_path = out_dir.join(format!("BCCL虚拟局域网联机_logs_{}.zip", ts));
 
     // 在阻塞线程里打包，避免阻塞异步运行时
     let log_dir_clone = log_dir.clone();

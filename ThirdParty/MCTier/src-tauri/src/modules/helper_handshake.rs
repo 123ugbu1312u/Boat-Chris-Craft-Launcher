@@ -193,7 +193,7 @@ pub fn verify_parent(stream: &TcpStream, parent_pid: u32) -> Result<(), String> 
         != std::fs::canonicalize(std::env::current_exe().map_err(|e| e.to_string())?)
             .map_err(|e| e.to_string())?
     {
-        return Err("helper 父进程不是当前 MCTier 可执行文件".into());
+        return Err("helper 父进程不是当前 BCCL虚拟局域网联机 可执行文件".into());
     }
     let deadline = Instant::now() + Duration::from_secs(1);
     while Instant::now() < deadline {

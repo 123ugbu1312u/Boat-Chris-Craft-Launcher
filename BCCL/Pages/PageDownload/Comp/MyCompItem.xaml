@@ -136,8 +136,5 @@
                             Margin="0,0,4,0" Visibility="Collapsed"
                             ToolTip="{DynamicResource Download.Comp.QuickDownload.Btn.ToolTip}" />
 
-        <!-- 删除收藏按钮 -->
-        <local:MyIconButton x:Name="BtnDelete" Height="25" Width="25" SvgIcon="lucide/heart" />
-
     </StackPanel>
 </Grid>

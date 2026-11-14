@@ -53,7 +53,6 @@ public partial class PageLaunchLeft
         WeakLanguageChanged.Add(this, OnLanguageChanged);
         // Handles
         BtnInstance.Click += BtnInstance_Click;
-        BtnNewPlayer.Click += BtnNewPlayer_Click;
         BtnLaunch.Click += BtnLaunch_Click;
         BtnLaunch.Loaded += (_, _) => RefreshButtonsUI();
         BtnCancel.Click += BtnCancel_Click;
@@ -557,11 +556,6 @@ public partial class PageLaunchLeft
         LaunchButtonClick();
     }
 
-    private void BtnNewPlayer_Click(object sender, MouseButtonEventArgs e)
-    {
-        ModBase.RunInNewThread(ProfileUi.CreateProfile);
-    }
-
     #region 切换大页面
 
     /// <summary>
@@ -782,7 +776,6 @@ public partial class PageLaunchLeft
 
             pageCurrent = type;
             var isLoginForm = type is PageType.Auth or PageType.Ms or PageType.Offline;
-            BtnNewPlayer.IsEnabled = !isLoginForm;
             PanLaunchAction.Visibility = isLoginForm ? Visibility.Collapsed : Visibility.Visible;
             PanInstanceActions.Visibility = isLoginForm ? Visibility.Collapsed : Visibility.Visible;
             return pageNew;

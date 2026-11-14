@@ -159,7 +159,6 @@ public partial class MyCompItem
         MouseLeftButtonUp += RefreshColor;
         // Handles
         LabInfo.MouseEnter += LabInfo_MouseEnter;
-        BtnDelete.Click += BtnDelete_Click;
         BtnDownload.Click += _BtnDownload_Click;
     }
 
@@ -217,17 +216,6 @@ public partial class MyCompItem
         }
     }
 
-    // ‘收藏按钮
-    public bool ShowFavoriteBtn
-    {
-        get => BtnDelete.Visibility == Visibility.Visible;
-        set
-        {
-            BtnDelete.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
-            _UpdatePanButtons();
-        }
-    }
-
     // 快速下载按钮
     public bool ShowDownloadBtn
     {
@@ -239,24 +227,13 @@ public partial class MyCompItem
         }
     }
 
-    /// <summary>右侧是否存在任意可见的操作按钮（收藏 / 下载），用于决定悬停时是否淡入按钮区。</summary>
-    private bool _HasActionButtons => ShowFavoriteBtn || ShowDownloadBtn;
+    /// <summary>快速下载可用时显示悬停操作区。</summary>
+    private bool _HasActionButtons => ShowDownloadBtn;
 
     private void _UpdatePanButtons()
     {
         if (PanButtons is null) return;
         PanButtons.Visibility = _HasActionButtons ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    /// <summary>
-    ///     刷新收藏状态（仅更新图标，不影响 hover 展示逻辑）
-    /// </summary>
-    public void RefreshFavoriteStatus()
-    {
-        if (Tag is not ModComp.CompProject project) return;
-
-        var isFavourite = ModComp.CompFavorites.IsFavourite(project.Id);
-        BtnDelete.SvgIcon = isFavourite ? "lucide/heart-filled" : "lucide/heart";
     }
 
     #endregion
@@ -267,15 +244,6 @@ public partial class MyCompItem
     public event ClickEventHandler? Click;
 
     public delegate void ClickEventHandler(object sender, MouseButtonEventArgs e);
-
-    private void BtnDelete_Click(object sender, EventArgs e)
-    {
-        if (PanButtons.Opacity > 0d && Tag is ModComp.CompProject)
-        {
-            var project = (ModComp.CompProject)Tag;
-            ModComp.CompFavorites.ShowMenu(project, (UIElement)sender, () => RefreshFavoriteStatus());
-        }
-    }
 
     private void _BtnDownload_Click(object sender, EventArgs e)
     {
@@ -303,13 +271,6 @@ public partial class MyCompItem
         var targetLoader = ModComp.CompLoaderType.Any;
         if (ModMain.frmMain.pageCurrent.page == FormMain.PageType.Download)
         {
-            if (ModMain.frmMain.PageCurrentSub == FormMain.PageSubType.DownloadCompFavorites)
-            {
-                targetVersion = "";
-                targetLoader = ModComp.CompLoaderType.Any;
-            }
-            else
-            {
                 // 从下载页进入
                 switch (ModMain.frmMain.PageCurrentSub)
                 {
@@ -351,7 +312,6 @@ public partial class MyCompItem
                         break;
                     }
                 }
-            }
         }
         else if (ModMain.frmMain.pageCurrent.page == FormMain.PageType.InstanceSetup)
         {
@@ -394,8 +354,7 @@ public partial class MyCompItem
         var isClickOnButton = false;
 
         if (PanButtons.Visibility == Visibility.Visible)
-            isClickOnButton = _IsClickOnActionButton(BtnDelete, clickPosition) ||
-                              _IsClickOnActionButton(BtnDownload, clickPosition);
+            isClickOnButton = _IsClickOnActionButton(BtnDownload, clickPosition);
 
         // 如果点击在按钮上，不处理主项目点击事件
         if (isClickOnButton) return;
@@ -417,7 +376,7 @@ public partial class MyCompItem
         isMouseDown = false;
     }
 
-    // 判断点击是否落在某个操作按钮（收藏 / 下载）上
+    // 判断点击是否落在下载按钮上
     private bool _IsClickOnActionButton(FrameworkElement button, Point clickPosition)
     {
         if (button is null || button.Visibility != Visibility.Visible) return false;

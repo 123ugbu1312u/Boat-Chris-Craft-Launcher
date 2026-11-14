@@ -701,7 +701,7 @@ pub async fn save_chat_image(image_data: String) -> Result<String, String> {
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
         .as_millis();
-    let filename = format!("MCTier_聊天图片_{}.{}", timestamp, extension);
+    let filename = format!("BCCL虚拟局域网联机_聊天图片_{}.{}", timestamp, extension);
 
     // 构建完整路径
     let file_path = download_dir.join(filename);

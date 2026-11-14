@@ -29,6 +29,9 @@ $startInfo.Environment['DOTNET_ROOT'] = $missingRuntime
 $startInfo.Environment['DOTNET_ROOT_X64'] = $missingRuntime
 $startInfo.Environment['DOTNET_MULTILEVEL_LOOKUP'] = '0'
 $startInfo.Environment['DOTNET_DISABLE_GUI_ERRORS'] = '1'
+# Force fresh native-runtime extraction so a previous single-file build's
+# cached DLLs cannot mask an incomplete or broken compressed package.
+$startInfo.Environment['DOTNET_BUNDLE_EXTRACT_BASE_DIR'] = Join-Path $testPath 'bundle-cache'
 
 $process = [System.Diagnostics.Process]::Start($startInfo)
 try {

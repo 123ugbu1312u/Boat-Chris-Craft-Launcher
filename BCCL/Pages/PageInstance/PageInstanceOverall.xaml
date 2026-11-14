@@ -79,9 +79,6 @@
                         <local:MyButton x:Name="BtnDisplayDesc" Text="{DynamicResource Instance.Overall.EditDescription}"
                                         MinWidth="140" Padding="13,0"
                                         Margin="0,0,20,0" Grid.Column="1" />
-                        <local:MyButton x:Name="BtnDisplayStar" Text="{DynamicResource Instance.Overall.Favorite}"
-                                        MinWidth="140" Padding="13,0"
-                                        Margin="0,0,20,0" Grid.Column="2" />
                     </Grid>
                 </StackPanel>
             </local:MyCard>

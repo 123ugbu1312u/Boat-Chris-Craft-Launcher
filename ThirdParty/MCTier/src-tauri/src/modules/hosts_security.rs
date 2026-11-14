@@ -7,7 +7,7 @@ pub fn validate_hosts_update(old: &str, new: &str) -> Result<(), String> {
         return Err("hosts content exceeds limit".into());
     }
     if outside_section(old, false)? != outside_section(new, true)? {
-        return Err("only the MCTier hosts section may be modified".into());
+        return Err("only the BCCL虚拟局域网联机 hosts section may be modified".into());
     }
     Ok(())
 }

@@ -7,6 +7,8 @@ import { readThemePreference } from '../../theme/themePreference';
 import compliance from '../../../shared/compliance.json';
 import { useHostAppearance } from '../../theme/hostAppearance';
 import { resolveWorkspaceTheme } from '../../theme/hostAppearancePolicy';
+import { BCCL_EMBEDDED } from '../../bcclEmbedding';
+import { useWorkspaceReady } from '../../bcclWorkspace';
 
 export function ComplianceDocuments() {
   const [selected, setSelected] = useState<(typeof compliance.documents)[number] | null>(null);
@@ -37,7 +39,8 @@ export function DesktopComplianceGate({ children }: { children: ReactNode }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const load = () => { setError(''); void invoke<boolean>('get_compliance_consent').then(setAccepted).catch(e => setError(String(e))); };
-  useEffect(() => { load(); void getCurrentWindow().show(); }, []);
+  useWorkspaceReady(accepted === false || error.length > 0);
+  useEffect(() => { load(); if (!BCCL_EMBEDDED) void getCurrentWindow().show(); }, []);
   const agree = async () => {
     setBusy(true); setError('');
     try { await invoke('accept_compliance'); setAccepted(true); } catch (e) { setError(String(e)); } finally { setBusy(false); }
@@ -48,7 +51,7 @@ export function DesktopComplianceGate({ children }: { children: ReactNode }) {
   return <ConfigProvider theme={{ algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm, token: { colorPrimary: '#27823b' } }}>
     <div className="desktop-compliance-gate" style={{ background: dark ? '#11131c' : '#f3f5f7' }}>
       <Card bordered={false} className="desktop-compliance-card">
-        <Typography.Title level={3}>{tl('欢迎使用 MCTier', 'Welcome to MCTier')}</Typography.Title>
+        <Typography.Title level={3}>{tl('欢迎使用 BCCL虚拟局域网联机', 'Welcome to BCCL虚拟局域网联机')}</Typography.Title>
         {accepted === null ? <><Spin />{error && <Button onClick={load}>{tl('重新读取', 'Retry')}</Button>}</> : <>
           <Typography.Paragraph>{tl('首次使用前，请阅读以下隐私与协议。点击“同意并继续”表示您已阅读并同意。', 'Before first use, please read the documents below. By selecting Agree & Continue, you confirm that you have read and accepted them.')}</Typography.Paragraph>
           <ComplianceDocuments />

@@ -37,16 +37,27 @@ internal static class Program
         var tools = new StackPanel { Orientation = Orientation.Horizontal };
         DockPanel.SetDock(tools, Dock.Top);
         root.Children.Add(tools);
+        var layers = new Grid();
+        root.Children.Add(layers);
         var workspace = new ContentControl();
-        root.Children.Add(workspace);
-        var page = new PageMultiplayerOriginal();
+        var surface = new Border();
+        layers.Children.Add(workspace);
+        layers.Children.Add(surface);
+        var page = new PageMultiplayerOriginal(surface);
         workspace.Content = page;
         var away = new Button { Content = "切到其他页面", Padding = new Thickness(12, 6, 12, 6) };
         var back = new Button { Content = "返回联机", Padding = new Thickness(12, 6, 12, 6) };
-        away.Click += (_, _) => workspace.Content = new TextBlock { Text = "房间应在后台继续运行。", Margin = new Thickness(30) };
-        back.Click += (_, _) => workspace.Content = page;
+        var activate = typeof(PageMultiplayerOriginal).GetMethod("SetWorkspaceActive", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        away.Click += (_, _) => { activate.Invoke(page, [false]); workspace.Content = new TextBlock { Text = "房间应在后台继续运行。", Margin = new Thickness(30) }; };
+        back.Click += (_, _) => { workspace.Content = page; activate.Invoke(page, [true]); };
         tools.Children.Add(away); tools.Children.Add(back);
         var window = new Window { Title = "BCCL 原版 MCTier 内嵌验证", Width = 1050, Height = 730, MinWidth = 700, MinHeight = 520, Content = root };
+        window.Loaded += async (_, _) =>
+        {
+            var prepare = (Task)typeof(PageMultiplayerOriginal).GetMethod("PrepareAsync", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(page, [false])!;
+            await prepare;
+            activate.Invoke(page, [true]);
+        };
         window.Closed += (_, _) => app.Shutdown();
         app.Run(window);
     }

@@ -10,7 +10,8 @@
     </Border.RenderTransform>
     <Grid>
         <Grid x:Name="GlassSurface" IsHitTestVisible="False" Visibility="Collapsed">
-            <local:LiquidGlassSurface xmlns:local="clr-namespace:BCCL" Radius="20" />
+            <local:LiquidGlassSurface xmlns:local="clr-namespace:BCCL" Radius="20"
+                                     InteractionHost="{Binding ElementName=PanBack}" />
             <Border x:Name="GlassSheen" CornerRadius="20">
                 <Border.Background>
                     <RadialGradientBrush Center="0.28,0.15" GradientOrigin="0.28,0.15" RadiusX="0.95" RadiusY="0.9">

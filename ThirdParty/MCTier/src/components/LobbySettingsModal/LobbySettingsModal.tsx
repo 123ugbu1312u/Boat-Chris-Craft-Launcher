@@ -294,7 +294,7 @@ export const LobbySettingsModal: React.FC<LobbySettingsModalProps> = ({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="rgba(126,211,33,0.8)">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
               </svg>
-              <span>{tl('当前使用全局配置，您可以在 MCTier 设置中修改全局配置', 'Using global config; edit it in MCTier Settings')}</span>
+              <span>{tl('当前使用全局配置，您可以在 BCCL虚拟局域网联机 设置中修改全局配置', 'Using global config; edit it in BCCL虚拟局域网联机 Settings')}</span>
             </div>
           )}
 
@@ -541,7 +541,7 @@ export const LobbySettingsModal: React.FC<LobbySettingsModalProps> = ({
                 <Switch />
               </Form.Item>
               <Form.Item name="dev_name" label={tl('TUN 设备名称', 'TUN device name')}>
-                <Input placeholder="MCTier_Net" />
+                <Input placeholder="BCCL虚拟局域网联机_Net" />
               </Form.Item>
               <Form.Item name="mtu" label={tl('MTU 大小', 'MTU size')}>
                 <InputNumber min={1280} max={1500} placeholder="1380" style={{ width: '100%' }} />

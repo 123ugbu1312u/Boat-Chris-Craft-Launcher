@@ -1,4 +1,4 @@
-﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
+<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -431,14 +431,6 @@
     <sys:String x:Key="Download.Comp.Detail.DownloadModpackFile">Download modpack file</sys:String>
     <sys:String x:Key="Download.Comp.Detail.DownloadResource">{0} download: {1}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.DownloadWorldFile">Download world file</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorite">Favorite</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.Add">Added {0} to {1}</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.BulkAdd">Added {0} resources to {1}!</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.BulkAddWithFailures">Added {0} resources to {1}; {2} resources had already been added!</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.DefaultName">Default</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.FavoriteContextMenu">Add to {0}</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.Remove">Removed {0} from {1}</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.UnfavoriteContextMenu">Unfavorite {0}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FindingApplicableInstance">Looking for an applicable instance...</sys:String>
     <sys:String x:Key="Download.Comp.Detail.InputInstanceName">Enter instance name</sys:String>
     <sys:String x:Key="Download.Comp.Detail.InstallWorld">Install world</sys:String>
@@ -457,7 +449,6 @@
     <sys:String x:Key="Download.Comp.Detail.Task.Cancelled">Modpack installation canceled: {0}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.Task.Failed">Modpack installation failed.&#xA;&#xA;Task: {0}&#xA;&#xA;Details:&#xA;{1}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.TranslateDescription">Translate description</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Unfavorite">Unfavorite</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Old">Older</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Other">Other</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Snapshot">Snapshot</sys:String>
@@ -487,72 +478,6 @@
     <sys:String x:Key="Download.Comp.Detail.FileList.RequiredDependencies">Required dependencies</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FileList.Updated">Updated {0}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FileList.VersionList">Version list</sys:String>
-
-    <!-- Download.Comp.Favorites -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Action.Manage">Manage</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Action.Unfavorite">Unfavorite</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Cancel">Unfavorite</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.CardTitle">{0} ({1})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Category.Mod">Mod ({0})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Deselect">Deselect</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Download">Download selected</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.EditNote">Edit note</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Empty.Description">You can click the favorite button on the resource detail page to add a resource to favorites.</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Empty.Title">No favorites yet</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Error.OperationFailed">A favorites operation failed. See the details below.</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.GetInfoFailed">Online information for some resources failed to load. Click to view details.</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.BatchDownload">Batch download resources ({0})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.BatchDownloadSuitable">Batch download applicable resources</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.QueryInfo">Query resource information</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Loading">Loading favorites list...</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Manage">Manage</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Delete">Delete current favorites folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Import">Import favorites</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.New">Create favorites folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Rename">Rename favorites folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Share">Share current favorites</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Search.Hint">Search favorites</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.SearchResults.Title">Search results ({0})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Selection.Placeholder">8 files selected</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Share">Share selected</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.UnknownType">Unknown type</sys:String>
-
-    <!-- Download.Comp.Favorites.Dialog -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.BulkDownload.Content">Bulk download is still in testing.&#xA;Using this feature to download mods will not automatically download dependencies.&#xA;Please think through your needs and carefully check your selections before downloading to avoid wasting time and bandwidth.</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.BulkDownload.Title">Use this feature?</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Delete.Confirm">Are you sure you want to delete the {0} favorites folder?&#xA;This favorites folder has {1} favorite items&#xA;Favorites folder ID: {2}&#xA;This action cannot be undone!</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Delete.Title">Deletion confirmation</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.EditNote.Title">Edit note</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Content">The following resources failed to load due to deleted online resources, network issues, or other reasons (shown by resource ID).</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.CopyIds">Copy these IDs</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Remove">Remove these favorites</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Title">Some favorites failed to load</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.CurrentFolder">Current folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Hint">e.g. ["23333"]</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Input">Enter shared favorites</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.New">New folder name</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.NewFolder">New folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.NewHint">Enter new folder name</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Type">Do you want to add the shared favorites to the current favorites folder or to a new favorites folder?</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.New.Title">Create favorites folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.NewPrompt">Enter new folder name</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Rename.Title">Enter new name</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.SelectLoader.Title">Select desired loader</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.SelectVersion.Title">Select desired game version</sys:String>
-
-    <!-- Download.Comp.Favorites.Hint -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Hint.Deleted">Favorites folder deleted</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.LastCollection">You cannot delete the last favorites folder</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.LoadingVersions">Please wait while detailed version support is being queried. This may take a while...</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.NoResource">No resource exists for the specified loader and same game version</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.NothingShared">Nothing to share!</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.Removed">Related favorites removed</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectLoader">The selected mods do not support the same loader</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectSaveLocation">Selected {0}; now select a save location below</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectedCount">{0} favorite items selected</sys:String>
 
     <!-- Download.Comp.Filter -->
 
@@ -682,7 +607,6 @@
     <sys:String x:Key="Download.Left.DataPack">Data packs</sys:String>
     <sys:String x:Key="Download.Left.Error.UnknownSubPageType">Unknown download subpage type: {0}</sys:String>
     <sys:String x:Key="Download.Left.Fabric">Fabric</sys:String>
-    <sys:String x:Key="Download.Left.Favorites">Favorites</sys:String>
     <sys:String x:Key="Download.Left.Forge">Forge</sys:String>
     <sys:String x:Key="Download.Left.Hint.Refreshing">Refreshing...</sys:String>
     <sys:String x:Key="Download.Left.Installation">Installation</sys:String>
@@ -958,7 +882,6 @@
     <sys:String x:Key="Instance.Overall.Description.EditTitle">Edit description</sys:String>
     <sys:String x:Key="Instance.Overall.EditDescription">Edit description</sys:String>
     <sys:String x:Key="Instance.Overall.Error.OperationFailed">An instance overview operation failed. See the details below.</sys:String>
-    <sys:String x:Key="Instance.Overall.Favorite">Favorite</sys:String>
     <sys:String x:Key="Instance.Overall.Hide.ConfirmMessage">Are you sure you want to hide this instance from the instance list? After hiding it will no longer appear in the displayed instance list.&#xA;Press F11 in the instance list page to view hidden instances.</sys:String>
     <sys:String x:Key="Instance.Overall.Hide.ConfirmTitle">Hide instance</sys:String>
     <sys:String x:Key="Instance.Overall.Name.EditTitle">Rename instance</sys:String>
@@ -985,7 +908,6 @@
     <sys:String x:Key="Instance.Overall.Shortcuts.ModsFolder">Mods folder</sys:String>
     <sys:String x:Key="Instance.Overall.Shortcuts.SavesFolder">Saves folder</sys:String>
     <sys:String x:Key="Instance.Overall.Shortcuts.Title">Shortcuts</sys:String>
-    <sys:String x:Key="Instance.Overall.Unfavorite">Unfavorite</sys:String>
 
     <!-- Instance.Overall.Icon -->
 
@@ -1077,7 +999,6 @@
     <sys:String x:Key="Instance.Resource.Export.SelectSaveLocation">Select save location</sys:String>
     <sys:String x:Key="Instance.Resource.ExportInfo">Export info</sys:String>
     <sys:String x:Key="Instance.Resource.ExportInfo.ToolTip">Export detailed version info for resources</sys:String>
-    <sys:String x:Key="Instance.Resource.Favorite">Favorite</sys:String>
     <sys:String x:Key="Instance.Resource.InstallFromFiles">Install from files</sys:String>
     <sys:String x:Key="Instance.Resource.List.Loading">Loading resource list</sys:String>
     <sys:String x:Key="Instance.Resource.Loading">Loading resource list</sys:String>
@@ -2448,7 +2369,6 @@
     <sys:String x:Key="Select.Instance.Error.ListLoad">Failed to load .minecraft instance list.</sys:String>
     <sys:String x:Key="Select.Instance.Error.Load">Failed to load instance. ({0})</sys:String>
     <sys:String x:Key="Select.Instance.Error.UiUpdate">Failed to render instance list UI.</sys:String>
-    <sys:String x:Key="Select.Instance.Favorite">Favorite</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptyMessage">No instances are hidden. You can select "Hidden from list" in "Properties → Personalization → Category" to hide the instance.&#xA;Press "F11" again to exit the hidden instance viewing mode.</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptySearchTitle">No matching hidden instances</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptyTitle">No hidden instances</sys:String>
@@ -2460,7 +2380,6 @@
     <sys:String x:Key="Select.Instance.Search.NoResult">No instances matching "{0}" were found.</sys:String>
     <sys:String x:Key="Select.Instance.Search.ToolTip">Enter instance name or [game version] [mod loader] to search.</sys:String>
     <sys:String x:Key="Select.Instance.Settings">Properties</sys:String>
-    <sys:String x:Key="Select.Instance.Unfavorite">Unfavorite</sys:String>
 
     <!-- Select.Instance.Card -->
 
@@ -2468,7 +2387,6 @@
     <sys:String x:Key="Select.Instance.Card.Cleanroom">Cleanroom</sys:String>
     <sys:String x:Key="Select.Instance.Card.Error">Error</sys:String>
     <sys:String x:Key="Select.Instance.Card.Fabric">Fabric</sys:String>
-    <sys:String x:Key="Select.Instance.Card.Favorites">Favorites</sys:String>
     <sys:String x:Key="Select.Instance.Card.Forge">Forge</sys:String>
     <sys:String x:Key="Select.Instance.Card.Hidden">Hidden</sys:String>
     <sys:String x:Key="Select.Instance.Card.LabyMod">LabyMod</sys:String>
@@ -3214,7 +3132,7 @@
 
     <!-- Setup.Ui.Theme -->
 
-    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">LTCat Blue</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">PCL Blue</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.CrashBlue">Crash Blue</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Hmcl">HMCL</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.SkyBlue">Sky Blue</sys:String>
@@ -3682,4 +3600,14 @@
     <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">Signing in to the official launcher does not sign you in to BCCL. Official session import is not available yet.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">Enter your Client ID in Microsoft sign-in settings, then sign in and authorize on the Microsoft website.</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Mint">Mint</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Emerald">Emerald</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Forest">Forest Green</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Amber">Amber</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Tangerine">Tangerine</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Coral">Coral</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Rose">Rose</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violet</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavender</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Slate</sys:String>
 </ResourceDictionary>

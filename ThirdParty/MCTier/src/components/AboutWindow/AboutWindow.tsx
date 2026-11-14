@@ -85,7 +85,7 @@ export const AboutWindow: React.FC<AboutWindowProps> = ({ onClose }) => {
           transition={{ delay: 0.1, duration: 0.4 }}
         >
           <Title level={2} className="about-title">
-            {tl('关于 MCTier', 'About MCTier')}
+            {tl('关于 BCCL虚拟局域网联机', 'About BCCL虚拟局域网联机')}
           </Title>
         </motion.div>
 
@@ -101,8 +101,8 @@ export const AboutWindow: React.FC<AboutWindowProps> = ({ onClose }) => {
             </Title>
             <Paragraph className="section-text">
               {tl(
-                'MCTier 是一款通用的虚拟局域网联机工具，适用于支持局域网联机的游戏。基于 EasyTier 和 WebRTC 技术，让您可以轻松与好友跨越网络限制，享受联机游戏的乐趣。支持语音通话、文字与语音消息、本地语音转文字、文件共享、屏幕共享、授权远程控制与本地录屏。',
-                'MCTier is a universal virtual LAN gaming tool for games that support LAN multiplayer. Built on EasyTier and WebRTC, it lets you easily play with friends across network barriers and enjoy multiplayer gaming. It supports voice calls, text and voice messages, local transcription, file and screen sharing, authorized remote control and local screen recording.'
+                'BCCL虚拟局域网联机 是一款通用的虚拟局域网联机工具，适用于支持局域网联机的游戏。基于 EasyTier 和 WebRTC 技术，让您可以轻松与好友跨越网络限制，享受联机游戏的乐趣。支持语音通话、文字与语音消息、本地语音转文字、文件共享、屏幕共享、授权远程控制与本地录屏。',
+                'BCCL虚拟局域网联机 is a universal virtual LAN gaming tool for games that support LAN multiplayer. Built on EasyTier and WebRTC, it lets you easily play with friends across network barriers and enjoy multiplayer gaming. It supports voice calls, text and voice messages, local transcription, file and screen sharing, authorized remote control and local screen recording.'
               )}
             </Paragraph>
             <div className="game-scope-tip">
@@ -313,8 +313,8 @@ export const AboutWindow: React.FC<AboutWindowProps> = ({ onClose }) => {
                   rel="noopener noreferrer"
                   className="repo-link"
                 >
-                  <img src="/MCTierIcon.png" alt="MCTier" className="mctier-icon" />
-                  <span>{tl('MCTier 官网', 'MCTier Website')}</span>
+                  <img src="/BCCLIcon.png" alt="BCCL虚拟局域网联机" className="mctier-icon" />
+                  <span>{tl('BCCL虚拟局域网联机 官网', 'BCCL虚拟局域网联机 Website')}</span>
                 </a>
                 <a
                   href="https://github.com/pmh1314520/MCTier"

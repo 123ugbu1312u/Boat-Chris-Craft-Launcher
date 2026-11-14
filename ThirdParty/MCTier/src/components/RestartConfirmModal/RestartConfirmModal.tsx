@@ -65,8 +65,8 @@ export const RestartConfirmModal: React.FC<RestartConfirmModalProps> = ({
               {/* 描述 */}
               <p className="restart-modal-description">
                 {tl(
-                  `GPU 渲染设置已${enableGpu ? '启用' : '禁用'}，需要重启 MCTier 才能生效`,
-                  `GPU rendering has been ${enableGpu ? 'enabled' : 'disabled'}. Restart MCTier for it to take effect`
+                  `GPU 渲染设置已${enableGpu ? '启用' : '禁用'}，需要重启 BCCL虚拟局域网联机 才能生效`,
+                  `GPU rendering has been ${enableGpu ? 'enabled' : 'disabled'}. Restart BCCL虚拟局域网联机 for it to take effect`
                 )}
               </p>
 

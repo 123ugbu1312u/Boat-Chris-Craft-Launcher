@@ -302,4 +302,15 @@ Ce que vous pouvez essayer
     <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">La connexion au lanceur officiel ne connecte pas BCCL. L’importation de session officielle n’est pas encore disponible.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">Enregistrez le Client ID dans les paramètres de connexion, puis connectez-vous et autorisez sur le site Microsoft.</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">PCL Blue</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Mint">Menthe</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Emerald">Émeraude</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Forest">Vert forêt</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Amber">Ambre</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Tangerine">Mandarine</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Coral">Corail</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Rose">Rose</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violet</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavande</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Ardoise</sys:String>
 </ResourceDictionary>

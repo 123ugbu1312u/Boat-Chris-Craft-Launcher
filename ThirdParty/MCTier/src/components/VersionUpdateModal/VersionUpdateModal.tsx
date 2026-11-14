@@ -31,10 +31,10 @@ export const VersionUpdateModal: React.FC<VersionUpdateModalProps> = ({
   const handleDownload = async () => {
     try {
       await open(DOWNLOAD_WEBSITE);
-      message.success(tl('已在浏览器中打开 MCTier 官网', 'Opened the MCTier website in your browser'));
+      message.success(tl('已在浏览器中打开 BCCL虚拟局域网联机 官网', 'Opened the BCCL虚拟局域网联机 website in your browser'));
       onClose();
     } catch (error) {
-      console.error('打开 MCTier 官网失败:', error);
+      console.error('打开 BCCL虚拟局域网联机 官网失败:', error);
       message.error(tl('无法打开官网，请手动访问 mctier.pmhs.top', 'Unable to open the website. Visit mctier.pmhs.top manually.'));
     }
   };

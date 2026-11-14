@@ -786,7 +786,7 @@ mod linux_uinput {
             unsafe { libc::close(fd) };
             return Err("创建虚拟鼠标设备失败（能力位设置）".to_string());
         }
-        finalize_device(fd, &UinputUserDev::new("MCTier Virtual Mouse"), "鼠标")?;
+        finalize_device(fd, &UinputUserDev::new("BCCL虚拟局域网联机 Virtual Mouse"), "鼠标")?;
         Ok(fd)
     }
 
@@ -802,7 +802,7 @@ mod linux_uinput {
             unsafe { libc::close(fd) };
             return Err("创建虚拟触摸设备失败（能力位设置）".to_string());
         }
-        let mut device = UinputUserDev::new("MCTier Virtual Touch");
+        let mut device = UinputUserDev::new("BCCL虚拟局域网联机 Virtual Touch");
         for axis in [ABS_X, ABS_Y] {
             device.absmin[axis as usize] = 0;
             device.absmax[axis as usize] = ABS_MAX;
@@ -822,7 +822,7 @@ mod linux_uinput {
         for key in 1..=KEY_BIT_MAX {
             let _ = set_bit(fd, UI_SET_KEYBIT, key);
         }
-        finalize_device(fd, &UinputUserDev::new("MCTier Virtual Keyboard"), "键盘")?;
+        finalize_device(fd, &UinputUserDev::new("BCCL虚拟局域网联机 Virtual Keyboard"), "键盘")?;
         Ok(fd)
     }
 
@@ -1371,7 +1371,7 @@ mod linux_uinput {
                 80 + 8 + 4 + 4 * 4 * ABS_CNT
             );
 
-            let device = UinputUserDev::new("MCTier Virtual Touch");
+            let device = UinputUserDev::new("BCCL虚拟局域网联机 Virtual Touch");
             assert_eq!(device.id.bustype, BUS_USB);
             // 名字必须以 NUL 结尾，否则内核读越界
             assert_eq!(*device.name.last().unwrap(), 0);

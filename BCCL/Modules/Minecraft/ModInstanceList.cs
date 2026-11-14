@@ -232,7 +232,6 @@ public static class ModInstanceList
                         if (!instanceCfg.StateConfig.IsDefault(instance.PathInstance))
                             instance.state =
                                 (McInstanceState)(int)instanceCfg.State[instance.PathInstance];
-                        instance.IsStar = instanceCfg.Starred[instance.PathInstance];
                         instance.displayType =
                             (McInstanceCardType)(int)instanceCfg.CardType[instance.PathInstance];
                         if (instance.state != McInstanceState.Error &&
@@ -373,21 +372,6 @@ public static class ModInstanceList
             // 未经过自定义的实例列表
             var instanceListOriginal = new Dictionary<McInstanceCardType, List<BCCL.McInstance>>();
 
-            // 单独列出收藏的实例
-            var staredInstances = new List<BCCL.McInstance>();
-            foreach (var instance in instanceList.ToList())
-            {
-                if (!instance.IsStar)
-                    continue;
-                if (instance.displayType == McInstanceCardType.Hidden)
-                    continue;
-                staredInstances.Add(instance);
-                instanceList.Remove(instance);
-            }
-
-            if (staredInstances.Any())
-                instanceListOriginal.Add(McInstanceCardType.Star, staredInstances);
-
             // 预先筛选出愚人节和错误的实例
             McInstanceFilter(ref instanceList, ref instanceListOriginal, new[] { McInstanceState.Error },
                 McInstanceCardType.Error);
@@ -490,7 +474,7 @@ public static class ModInstanceList
             foreach (var instancePair in instanceListOriginal)
             foreach (var instance in instancePair.Value)
             {
-                var realType = instance.displayType == 0 || instancePair.Key == McInstanceCardType.Star
+                var realType = instance.displayType is McInstanceCardType.Auto or McInstanceCardType.Retired
                     ? instancePair.Key
                     : instance.displayType;
                 if (!results.ContainsKey(realType))
@@ -517,7 +501,7 @@ public static class ModInstanceList
         var sortedInstanceList = new Dictionary<McInstanceCardType, List<BCCL.McInstance>>();
         foreach (var sortRule in new[]
                  {
-                     McInstanceCardType.Star, McInstanceCardType.API, McInstanceCardType.OriginalLike,
+                     McInstanceCardType.API, McInstanceCardType.OriginalLike,
                      McInstanceCardType.Rubbish, McInstanceCardType.Fool, McInstanceCardType.Error,
                      McInstanceCardType.Hidden
                  })
@@ -529,7 +513,7 @@ public static class ModInstanceList
         // 版本排序
         foreach (var cardType in new[]
                  {
-                     McInstanceCardType.Star, McInstanceCardType.API, McInstanceCardType.OriginalLike,
+                     McInstanceCardType.API, McInstanceCardType.OriginalLike,
                      McInstanceCardType.Rubbish, McInstanceCardType.Fool
                  })
         {

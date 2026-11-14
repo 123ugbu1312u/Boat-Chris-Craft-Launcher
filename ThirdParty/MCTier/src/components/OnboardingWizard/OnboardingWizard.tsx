@@ -116,9 +116,9 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ visible, onC
   // 步骤 0：欢迎
   const welcomeStep = (
     <div className="onboarding-step">
-      <Title level={5} style={{ marginTop: 0, marginBottom: 8 }}>{tl('欢迎使用 MCTier', 'Welcome to MCTier')}</Title>
+      <Title level={5} style={{ marginTop: 0, marginBottom: 8 }}>{tl('欢迎使用 BCCL虚拟局域网联机', 'Welcome to BCCL虚拟局域网联机')}</Title>
       <Paragraph className="onboarding-text">
-        {tl('MCTier 帮助你和好友快速建立虚拟局域网，畅玩 Minecraft 等局域网联机游戏，并自带语音、聊天与文件共享。', 'MCTier helps you and your friends quickly build a virtual LAN to play Minecraft and other LAN games, with built-in voice, chat and file sharing.')}
+        {tl('BCCL虚拟局域网联机 帮助你和好友快速建立虚拟局域网，畅玩 Minecraft 等局域网联机游戏，并自带语音、聊天与文件共享。', 'BCCL虚拟局域网联机 helps you and your friends quickly build a virtual LAN to play Minecraft and other LAN games, with built-in voice, chat and file sharing.')}
       </Paragraph>
       <Paragraph className="onboarding-text">
         {tl('接下来检查常见安全软件。若创建或加入大厅失败，请优先查看安全软件的隔离区，确认 EasyTier 内核没有被误删。', 'Next, check for common security software. If creating or joining a lobby fails, first check its quarantine for the EasyTier core.')}
@@ -136,7 +136,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ visible, onC
         type="warning"
         showIcon
         message={tl('大厅创建或加入失败？先检查 EasyTier 是否被误删', 'Cannot create or join a lobby? Check whether EasyTier was removed')}
-        description={tl('安全软件可能将 easytier-core.exe 误判并隔离或删除。请先查看隔离区或拦截记录，确认来自官方 MCTier 安装包后恢复该文件，并将 MCTier 安装目录加入信任列表，再重试。下方检测到安全软件不代表软件已被拦截，可以直接继续使用。', 'Security software may quarantine or delete easytier-core.exe. Check its quarantine or blocking history, restore the file after confirming it came from the official MCTier package, and trust the MCTier installation folder before retrying. Detecting security software below does not mean it has blocked MCTier; you can continue.')}
+        description={tl('安全软件可能将 easytier-core.exe 误判并隔离或删除。请先查看隔离区或拦截记录，确认来自官方 BCCL虚拟局域网联机 安装包后恢复该文件，并将 BCCL虚拟局域网联机 安装目录加入信任列表，再重试。下方检测到安全软件不代表软件已被拦截，可以直接继续使用。', 'Security software may quarantine or delete easytier-core.exe. Check its quarantine or blocking history, restore the file after confirming it came from the official BCCL虚拟局域网联机 package, and trust the BCCL虚拟局域网联机 installation folder before retrying. Detecting security software below does not mean it has blocked BCCL虚拟局域网联机; you can continue.')}
       />
       {checkRow(
         <SafetyCertificateOutlined />,
@@ -145,8 +145,8 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({ visible, onC
         checks.security === 'ok'
           ? tl('未检测到常见安全软件；若无法组网，仍可检查系统安全软件的隔离记录。', 'No common security software detected. If networking fails, also check your system security quarantine.')
           : tl(
-              `检测到：${checks.securityList.join('、') || '检测暂不可用'}。仅表示检测结果，不代表 MCTier 已被拦截。`,
-              `Detected: ${checks.securityList.join(', ') || 'check unavailable'}. This does not mean MCTier has been blocked.`,
+              `检测到：${checks.securityList.join('、') || '检测暂不可用'}。仅表示检测结果，不代表 BCCL虚拟局域网联机 已被拦截。`,
+              `Detected: ${checks.securityList.join(', ') || 'check unavailable'}. This does not mean BCCL虚拟局域网联机 has been blocked.`,
             )
       )}
 

@@ -28,11 +28,6 @@ public class McInstance
         private bool _jsonVersionInited;
 
         /// <summary>
-        ///     是否为收藏的实例。
-        /// </summary>
-        public bool IsStar;
-
-        /// <summary>
         ///     显示的实例图标。
         /// </summary>
         public string Logo;
@@ -910,8 +905,6 @@ public class McInstance
                         Desc = "";
                 }
 
-                // 确定实例收藏状态
-                IsStar = States.Instance.Starred[PathInstance];
                 // 确定实例显示种类
                 displayType = (McInstanceCardType)States.Instance.CardType[PathInstance];
                 // 写入缓存

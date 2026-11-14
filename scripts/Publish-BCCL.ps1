@@ -2,7 +2,8 @@ param(
     [string]$OutputDirectory = (Join-Path $PSScriptRoot '../../Temp/release'),
     [string]$MicrosoftClientId = $env:BCCL_MS_CLIENT_ID,
     [string]$MicrosoftOAuthConfig = (Join-Path $PSScriptRoot 'MicrosoftOAuth.local.json'),
-    [switch]$AllowUnconfiguredMicrosoftLogin
+    [switch]$AllowUnconfiguredMicrosoftLogin,
+    [long]$MaximumExecutableBytes = 250000000
 )
 
 $ErrorActionPreference = 'Stop'
@@ -32,8 +33,15 @@ $outputPath = [System.IO.Path]::GetFullPath($OutputDirectory)
 $temporaryRoot = [System.IO.Path]::GetFullPath((Join-Path $repositoryRoot '../Temp'))
 $publishPath = Join-Path $temporaryRoot ('publish-' + [Guid]::NewGuid().ToString('N'))
 
+# Bundle the complete verified multiplayer runtime before compiling the launcher.
+# Only the final launcher EXE needs to be copied to the user's computer.
+$multiplayerBundle = & (Join-Path $PSScriptRoot 'MCTier/Pack-SingleFile.ps1')
+if (!$multiplayerBundle.Archive -or !$multiplayerBundle.Manifest) { throw 'Multiplayer bundle preparation failed.' }
+
 & dotnet publish $project -c Release -r win-x64 --self-contained true `
     "-p:MicrosoftOAuthClientId=$MicrosoftClientId" `
+    "-p:MCTierBundleArchive=$($multiplayerBundle.Archive)" `
+    "-p:MCTierBundleManifest=$($multiplayerBundle.Manifest)" `
     -p:PublishProfile=BCCL -o $publishPath --nologo -v minimal `
     '-clp:ErrorsOnly;Summary'
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed: $LASTEXITCODE" }
@@ -41,6 +49,9 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed: $LASTEXITCODE" }
 $publishedExe = Join-Path $publishPath 'BCCL.exe'
 if (!(Test-Path -LiteralPath $publishedExe -PathType Leaf)) {
     throw 'The single-file executable was not generated.'
+}
+if ($MaximumExecutableBytes -gt 0 -and (Get-Item -LiteralPath $publishedExe).Length -ge $MaximumExecutableBytes) {
+    throw "The complete single-file EXE exceeds the size budget ($MaximumExecutableBytes bytes)."
 }
 $externalLibraries = @(Get-ChildItem -LiteralPath $publishPath -Filter '*.dll' -Recurse -File)
 if ($externalLibraries.Count -gt 0) {
@@ -50,9 +61,9 @@ if ($externalLibraries.Count -gt 0) {
 New-Item -ItemType Directory -Path $outputPath -Force | Out-Null
 $destination = Join-Path $outputPath 'Boat Chris Craft Launcher.exe'
 Copy-Item -LiteralPath $publishedExe -Destination $destination -Force
-& (Join-Path $PSScriptRoot 'MCTier/Stage-Embedded.ps1') -OutputDirectory $outputPath
 # Rename only the apphost; the bundled assembly name must match WPF pack URIs.
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'LICENSE') -Destination (Join-Path $outputPath 'LICENSE-UPSTREAM.txt') -Force
 Copy-Item -LiteralPath (Join-Path $repositoryRoot 'BCCL/LICENCE') -Destination (Join-Path $outputPath 'LICENCE-UPSTREAM.txt') -Force
 Get-FileHash -LiteralPath $destination -Algorithm SHA256
 Get-Item -LiteralPath $destination | Select-Object FullName, Length
+Write-Output "Multiplayer payload embedded: $($multiplayerBundle.FileCount) files, SHA256 $($multiplayerBundle.Sha256)"

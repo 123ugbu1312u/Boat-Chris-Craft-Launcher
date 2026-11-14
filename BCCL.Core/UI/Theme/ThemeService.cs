@@ -150,19 +150,7 @@ public sealed partial class ThemeService
     /// </summary>
     public static (int Hue, double LightAdjust, double ChromaAdjust) GetCurrentThemeArgs()
     {
-        var theme = CurrentTheme;
-        return theme switch
-        {
-            ColorTheme.SkyBlue => (235, 0.36, 0.2),
-            ColorTheme.CatBlue => (255, 0, -0.2),
-            ColorTheme.DeathBlue => (268, -0.05, -0.1),
-            ColorTheme.HmclBlue => (275, -0.03, -0.35),
-#if DEBUG
-            _ => ((int)theme, 0, 0)
-#else
-            _ => throw new IndexOutOfRangeException($"Invalid theme index: {(int)theme}")
-#endif
-        };
+        return ThemePalette.GetArgs(CurrentTheme);
     }
 
     private static double _AdjustLinear(double value, double adjustment)

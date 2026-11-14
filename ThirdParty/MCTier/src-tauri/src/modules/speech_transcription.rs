@@ -39,7 +39,7 @@ fn bundled_model_bytes() -> Result<&'static [u8], String> {
     unsafe {
         let module = GetModuleHandleW(None).map_err(|e| e.to_string())?;
         let resource = FindResourceW(module, w!("MCTIER_SPEECH_MODEL"), PCWSTR(10usize as *const u16));
-        if resource.0.is_null() { return Err("安装包缺少内置语音模型，请重新安装 MCTier".into()); }
+        if resource.0.is_null() { return Err("安装包缺少内置语音模型，请重新安装 BCCL虚拟局域网联机".into()); }
         let size = SizeofResource(module, resource) as usize;
         let loaded = LoadResource(module, resource).map_err(|e| e.to_string())?;
         let pointer = LockResource(loaded) as *const u8;
@@ -89,7 +89,7 @@ fn prepare_model(
             let bytes: &[u8] = match item.name.as_str() {
                 "model.int8.onnx" => bundled_model_bytes()?,
                 "tokens.txt" => include_bytes!("../../../shared/generated/speech-model/tokens.txt"),
-                _ => return Err("安装包缺少内置语音模型，请重新安装 MCTier".into()),
+                _ => return Err("安装包缺少内置语音模型，请重新安装 BCCL虚拟局域网联机".into()),
             };
             let pending = directory.join(format!("{}.partial", item.name));
             let result = (|| -> Result<(), String> {
@@ -100,7 +100,7 @@ fn prepare_model(
                 file.sync_all().map_err(|e| e.to_string())?;
                 drop(file);
                 if !verified(&pending, item) {
-                    return Err("内置语音模型校验失败，请重新安装 MCTier".into());
+                    return Err("内置语音模型校验失败，请重新安装 BCCL虚拟局域网联机".into());
                 }
                 if path.exists() { fs::remove_file(&path).map_err(|e| e.to_string())?; }
                 fs::rename(&pending, &path).map_err(|e| e.to_string())?;

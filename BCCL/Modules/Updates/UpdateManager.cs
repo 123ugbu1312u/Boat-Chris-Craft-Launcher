@@ -12,7 +12,7 @@ public static class UpdateManager
 {
     public static bool isUpdateWaitingRestart;
 
-    public const string BcclVersion = "0.1.2-alpha";
+    public const string BcclVersion = "0.2.2-alpha";
     private static readonly UpdatesWrapperModel GitCodeServer = new(new[] { new UpdatesGitCodeModel() });
     private static readonly UpdatesWrapperModel GitHubServer = new(new[] { new UpdatesGitHubModel() });
     public static UpdatesWrapperModel remoteServer => Config.Update.UpdateSource == 1 ? GitHubServer : GitCodeServer;

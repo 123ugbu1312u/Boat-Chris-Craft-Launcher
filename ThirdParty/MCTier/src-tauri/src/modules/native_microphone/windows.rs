@@ -69,6 +69,30 @@ fn push_packet(queue: &mut VecDeque<u8>, bytes: &[u8]) {
     }
 }
 struct MonoResampler { samples: Vec<f32>, position: f64, step: f64 }
+#[derive(Default)]
+struct MicrophoneChannels { selected: usize }
+impl MicrophoneChannels {
+    fn mono(&mut self, samples: &[f32], channels: usize) -> Vec<f32> {
+        let mut energy = vec![0f64; channels];
+        let mut mixed_energy = 0f64;
+        let mut mixed = Vec::with_capacity(samples.len() / channels);
+        for frame in samples.chunks_exact(channels) {
+            let mean = frame.iter().sum::<f32>() / channels as f32;
+            mixed_energy += (mean as f64).powi(2);
+            mixed.push(mean);
+            for (channel, sample) in frame.iter().enumerate() { energy[channel] += (*sample as f64).powi(2); }
+        }
+        let strongest = (0..channels).max_by(|a, b| energy[*a].total_cmp(&energy[*b])).unwrap_or(0);
+        // USB/array microphones may expose a silent or phase-inverted channel.
+        // Do not cancel real speech by blindly averaging it into mono. Keep a
+        // stable active channel when its energy is close to the strongest one.
+        if channels > 1 && mixed_energy < energy[strongest] * 0.5 {
+            if self.selected >= channels || energy[self.selected] < energy[strongest] * 0.5 { self.selected = strongest; }
+            return samples.chunks_exact(channels).map(|frame| frame[self.selected]).collect();
+        }
+        mixed
+    }
+}
 impl MonoResampler {
     fn new(rate: u32) -> Self { Self { samples: Vec::new(), position: 0.0, step: rate as f64 / 48000.0 } }
     fn convert(&mut self, samples: impl Iterator<Item = f32>) -> Vec<u8> {
@@ -163,19 +187,11 @@ fn run_source(
                     log::warn!("设备不支持通信音效: {e}");
                 }
             } }
-            let format = WAVEFORMATEX {
-                wFormatTag: 3,
-                nChannels: 1,
-                nSamplesPerSec: 48000,
-                nAvgBytesPerSec: 192000,
-                nBlockAlign: 4,
-                wBitsPerSample: 32,
-                cbSize: 0,
-            };
-            // Render loopback must use the device mix format. Some drivers reject
-            // AUTOCONVERTPCM or a mono format for loopback with E_INVALIDARG.
-            let mix = if loopback { Some(client.GetMixFormat().map_err(|e| e.to_string())?) } else { None };
-            let chosen = mix.unwrap_or(&format as *const WAVEFORMATEX as *mut WAVEFORMATEX);
+            // Shared capture uses the endpoint's supported mix format. Some USB,
+            // Bluetooth and array drivers cannot reliably auto-convert a forced
+            // 48 kHz mono request. Convert to the bridge format ourselves below.
+            let mix = client.GetMixFormat().map_err(|e| e.to_string())?;
+            let chosen = mix;
             let channels = (*chosen).nChannels as usize;
             let block = (*chosen).nBlockAlign as usize;
             let bits = (*chosen).wBitsPerSample as usize;
@@ -185,19 +201,21 @@ fn run_source(
             } else { (*chosen).wFormatTag };
             let supported = (8000..=192000).contains(&sample_rate) && channels > 0 && channels <= 16 && block == channels * (bits / 8)
                 && (tag == 3 && bits == 32 || tag == 1 && [16, 24, 32].contains(&bits));
-            if !supported { if let Some(ptr) = mix { CoTaskMemFree(Some(ptr.cast())); } return Err("系统声音格式不受支持".into()); }
+            if !supported { CoTaskMemFree(Some(mix.cast())); return Err("音频设备格式不受支持".into()); }
             let initialized = client
                 .Initialize(
                     AUDCLNT_SHAREMODE_SHARED,
-                    if loopback { AUDCLNT_STREAMFLAGS_LOOPBACK } else { AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM | AUDCLNT_STREAMFLAGS_SRC_DEFAULT_QUALITY },
+                    if loopback { AUDCLNT_STREAMFLAGS_LOOPBACK } else { 0 },
                     200_000,
                     0,
                     chosen,
                     None,
                 );
-            if let Some(ptr) = mix { CoTaskMemFree(Some(ptr.cast())); }
+            CoTaskMemFree(Some(mix.cast()));
             initialized.map_err(|e| if loopback { format!("系统声音录制启动失败，请检查默认播放设备: {e}") } else { format!("麦克风启动失败，请检查 Windows 麦克风隐私设置及设备占用: {e}") })?;
             let mut resampler = MonoResampler::new(sample_rate);
+            let mut microphone_channels = MicrophoneChannels::default();
+            log::info!("[AudioPipeline] native capture format: rate={sample_rate}, channels={channels}, bits={bits}, loopback={loopback}");
             let capture: IAudioCaptureClient = client.GetService().map_err(|e| e.to_string())?;
             client.Start().map_err(|e| e.to_string())?;
             let _running = Running(client);
@@ -236,15 +254,19 @@ fn run_source(
                         if recording { queue.extend(converted); } else { push_packet(&mut queue, &converted); }
                     } else if !ptr.is_null() && size <= 4 * 1024 * 1024 {
                         let bytes = std::slice::from_raw_parts(ptr, size);
-                        let converted = resampler.convert(bytes.chunks_exact(block).map(|frame| {
-                            frame.chunks_exact(bits / 8).map(|s| match (tag, bits) {
+                        let samples: Vec<f32> = bytes.chunks_exact(bits / 8).map(|s| {
+                            let sample = match (tag, bits) {
                                 (3, 32) => f32::from_le_bytes(s.try_into().unwrap()),
                                 (1, 16) => i16::from_le_bytes(s.try_into().unwrap()) as f32 / 32768.0,
                                 (1, 24) => (i32::from_le_bytes([0, s[0], s[1], s[2]]) >> 8) as f32 / 8388608.0,
                                 (1, 32) => i32::from_le_bytes(s.try_into().unwrap()) as f32 / 2147483648.0,
                                 _ => 0.0,
-                            }).sum::<f32>() / channels as f32
-                        }));
+                            };
+                            if sample.is_finite() { sample } else { 0.0 }
+                        }).collect();
+                        let mono = if loopback { samples.chunks_exact(channels).map(|frame| frame.iter().sum::<f32>() / channels as f32).collect() }
+                            else { microphone_channels.mono(&samples, channels) };
+                        let converted = resampler.convert(mono.into_iter());
                         if recording { queue.extend(converted); } else { push_packet(&mut queue, &converted); }
                     } else {
                         let _ = capture.ReleaseBuffer(frames);
@@ -288,6 +310,17 @@ fn run_source(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn microphone_mono_preserves_quiet_speech_in_silent_or_phase_inverted_channels() {
+        let mut mix = MicrophoneChannels::default();
+        let opposite: Vec<f32> = (0..960).flat_map(|i| { let value = (i as f32 * 0.1).sin() * 0.01; [value, -value] }).collect();
+        let result = mix.mono(&opposite, 2);
+        assert!(result.iter().any(|sample| sample.abs() > 0.009));
+        let silent: Vec<f32> = (0..960).flat_map(|_| [0.0, 0.02]).collect();
+        assert!(mix.mono(&silent, 2).iter().all(|sample| (*sample - 0.02).abs() < 1e-6));
+        assert!(mix.mono(&vec![0.03; 1920], 2).iter().all(|sample| (*sample - 0.03).abs() < 1e-6));
+        assert!(mix.mono(&vec![0.0; 1920], 2).iter().all(|sample| *sample == 0.0));
+    }
     #[test]
     fn voice_reads_catch_up_after_screen_ipc_delay_without_unbounded_latency() {
         let mut queue = VecDeque::new();

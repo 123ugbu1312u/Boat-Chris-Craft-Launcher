@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ConfigProvider, theme, App as AntdApp, Button, Modal } from 'antd';
+import { ConfigProvider, theme, App as AntdApp, Button, Modal, message } from 'antd';
+import { synchronizeMicrophoneState } from './services/voice/microphoneState';
 import { FeedbackHost } from './components/FeedbackHost/FeedbackHost';
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
@@ -44,6 +45,7 @@ import { NativeCapturePicker } from './components/NativeCapture/NativeCapture';
 import { ScreenRecordingExitHandler } from './components/RoomTools/ScreenRecording';
 import { DesktopComplianceGate } from './components/ComplianceGate/ComplianceGate';
 import { BCCL_EMBEDDED } from './bcclEmbedding';
+import { startWorkspaceActivitySync, useWorkspaceReady } from './bcclWorkspace';
 import './components/ComplianceGate/ComplianceGate.css';
 import './bcclEmbedding.css';
 import { startHostAppearanceSync, useHostAppearance } from './theme/hostAppearance';
@@ -55,6 +57,7 @@ if (BCCL_EMBEDDED && getCurrentWindow().label === 'main') {
 
 function App() {
   useEffect(() => startHostAppearanceSync(), []);
+  useEffect(() => startWorkspaceActivitySync(), []);
   const search = window.location.search;
   if (search.includes('danmaku=true')) return <DanmakuOverlay />;
   if (search.includes('gamehud=true')) return <GameHudOverlay />;
@@ -149,6 +152,7 @@ function ScreenViewerWindow() {
 }
 
 function MainWindowApp() {
+  useWorkspaceReady();
   useEffect(() => {
     void syncBuiltinEmojiItems().catch(error => console.warn('启动时准备内置表情失败，可在表情面板重试:', error));
   }, []);
@@ -181,12 +185,12 @@ function MainWindowApp() {
     const syncTray = async () => {
       try {
         await invoke('set_tray_menu_texts', {
-          showText: tl('显示 MCTier', 'Show MCTier'),
-          exitText: tl('退出 MCTier', 'Exit MCTier'),
-          notificationTitle: tl('MCTier 正在后台运行', 'MCTier is running in the background'),
+          showText: tl('显示 BCCL虚拟局域网联机', 'Show BCCL虚拟局域网联机'),
+          exitText: tl('退出 BCCL虚拟局域网联机', 'Exit BCCL虚拟局域网联机'),
+          notificationTitle: tl('BCCL虚拟局域网联机 正在后台运行', 'BCCL虚拟局域网联机 is running in the background'),
           notificationBody: tl(
-            'MCTier 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。',
-            'MCTier has been minimized to the system tray. Click the tray icon or press {shortcut} to restore it.'
+            'BCCL虚拟局域网联机 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。',
+            'BCCL虚拟局域网联机 has been minimized to the system tray. Click the tray icon or press {shortcut} to restore it.'
           ),
         });
       } catch (error) {
@@ -406,12 +410,14 @@ function MainWindowApp() {
         // 后端的全局快捷键可以在任何情况下工作，即使窗口没有焦点
 
         // 监听后端全局快捷键触发的麦克风状态变化事件
-        const unlistenMicToggled = await listen<boolean>('mic-toggled', (event) => {
-          const newState = event.payload;
-          setMicEnabled(newState);
-          // 同步更新 WebRTC 客户端的麦克风状态
-          webrtcClient.setMicEnabled(newState);
-          console.log('麦克风状态已更新:', newState);
+        const applyMicrophoneState = synchronizeMicrophoneState({
+          apply: enabled => webrtcClient.setMicEnabled(enabled),
+          display: setMicEnabled,
+          disableBackend: () => invoke('set_mic_enabled', { enabled: false }),
+          failed: error => message.error(`${tl('麦克风未能开启，请检查所选输入设备', 'Microphone could not start; check the selected input')}：${String(error)}`),
+        });
+        const unlistenMicToggled = await listen<boolean>('mic-toggled', event => {
+          void applyMicrophoneState(event.payload);
         });
 
         // 监听后端全局快捷键触发的全局静音状态变化事件

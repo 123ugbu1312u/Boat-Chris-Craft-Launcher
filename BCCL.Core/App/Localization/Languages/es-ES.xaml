@@ -25,4 +25,15 @@
     <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">Iniciar sesión en el lanzador oficial no inicia sesión en BCCL. La importación de sesiones oficiales aún no está disponible.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">Guarda el Client ID en la configuración de inicio de sesión y autoriza en el sitio web de Microsoft.</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">PCL Blue</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Mint">Menta</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Emerald">Esmeralda</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Forest">Verde bosque</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Amber">Ámbar</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Tangerine">Mandarina</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Coral">Coral</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Rose">Rosa</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violeta</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavanda</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Pizarra</sys:String>
 </ResourceDictionary>

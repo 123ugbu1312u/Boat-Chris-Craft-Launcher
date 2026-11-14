@@ -543,7 +543,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
               {!BCCL_EMBEDDED && <><div className="settings-toggle-row">
                 <div className="settings-toggle-info">
                   <span className="settings-toggle-label">{tl('开机自启动', 'Launch on Startup')}</span>
-                  <span className="settings-toggle-desc">{tl('MCTier 将在系统启动时自动运行', 'MCTier will run automatically when the system starts')}</span>
+                  <span className="settings-toggle-desc">{tl('BCCL虚拟局域网联机 将在系统启动时自动运行', 'BCCL虚拟局域网联机 will run automatically when the system starts')}</span>
                 </div>
                 <Switch checked={autoStartup} onChange={handleAutoStartupChange} className="settings-switch" />
               </div>
@@ -583,7 +583,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="settings-toggle-row">
                 <div className="settings-toggle-info">
                   <span className="settings-toggle-label">{tl('启动后自动隐藏到托盘', 'Start Minimized to Tray')}</span>
-                  <span className="settings-toggle-desc">{tl('MCTier 启动后自动隐藏到系统托盘，在后台静默运行', 'MCTier automatically hides to the system tray after launch and runs silently in the background')}</span>
+                  <span className="settings-toggle-desc">{tl('BCCL虚拟局域网联机 启动后自动隐藏到系统托盘，在后台静默运行', 'BCCL虚拟局域网联机 automatically hides to the system tray after launch and runs silently in the background')}</span>
                 </div>
                 <Switch checked={startMinimized} onChange={async (v) => {
                   setStartMinimized(v);
@@ -620,7 +620,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
               <div className="settings-toggle-row">
                 <div className="settings-toggle-info">
                   <span className="settings-toggle-label">{BCCL_EMBEDDED ? tl('进入联机页时自动加入大厅', 'Automatically join when opening Multiplayer') : tl('启动时自动创建/加入大厅', 'Auto create/join lobby on startup')}</span>
-                  <span className="settings-toggle-desc">{BCCL_EMBEDDED ? tl('打开联机页后自动进入指定大厅', 'Join the specified lobby when Multiplayer opens') : tl('MCTier 启动后自动进入指定大厅', 'MCTier automatically enters the specified lobby after launch')}</span>
+                  <span className="settings-toggle-desc">{BCCL_EMBEDDED ? tl('打开联机页后自动进入指定大厅', 'Join the specified lobby when Multiplayer opens') : tl('BCCL虚拟局域网联机 启动后自动进入指定大厅', 'BCCL虚拟局域网联机 automatically enters the specified lobby after launch')}</span>
                 </div>
                 <Switch checked={autoLobbyEnabled} onChange={handleAutoLobbyChange} className="settings-switch" />
               </div>
@@ -684,7 +684,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
                   <span className="settings-card-title">{tl('私有服务器', 'Private Server')}</span>
                   <Tooltip 
-                    title={tl('MCTier 官网提供后端源码与私有化部署教学，您可以自行搭建私有服务器', 'The MCTier website provides backend source code and self-hosting tutorials so you can run your own server')}
+                    title={tl('BCCL虚拟局域网联机 官网提供后端源码与私有化部署教学，您可以自行搭建私有服务器', 'The BCCL虚拟局域网联机 website provides backend source code and self-hosting tutorials so you can run your own server')}
                     placement="right"
                   >
                     <div className="settings-info-icon">
@@ -728,7 +728,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
                         <Input placeholder="wss://mctier.pmhs.top/signaling" onBlur={handleFieldBlur} />
                       </Form.Item>
                       <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.55)', marginTop: '-4px', marginBottom: '10px', lineHeight: 1.6 }}>
-                        {tl('提示：MCTier 官网仅提供信令服务器源码', 'Note: The MCTier website only provides the signaling server source code')}
+                        {tl('提示：BCCL虚拟局域网联机 官网仅提供信令服务器源码', 'Note: The BCCL虚拟局域网联机 website only provides the signaling server source code')}
                       </div>
                       <div style={{ display: 'flex', gap: '8px' }}>
                         <button
@@ -744,7 +744,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
                             }
                           }}
                         >
-                          {tl('前往 MCTier 官网', 'Go to MCTier Website')}
+                          {tl('前往 BCCL虚拟局域网联机 官网', 'Go to BCCL虚拟局域网联机 Website')}
                         </button>
                         <button
                           type="button"
@@ -910,7 +910,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 <span className="settings-card-title">{tl('重置软件', 'Reset Application')}</span>
               </div>
               <div className="settings-card-desc">
-                {tl('界面或本地缓存异常时，可清理界面数据并自动重启 MCTier。', 'If the interface or local cache is malfunctioning, clear interface data and restart MCTier.')}
+                {tl('界面或本地缓存异常时，可清理界面数据并自动重启 BCCL虚拟局域网联机。', 'If the interface or local cache is malfunctioning, clear interface data and restart BCCL虚拟局域网联机.')}
               </div>
               <div className="settings-centered-control app-reset-control">
                 <Button className="app-reset-button" type="primary" onClick={() => void invoke('reset_microphone_permission').catch(error => message.error(String(error)))}>

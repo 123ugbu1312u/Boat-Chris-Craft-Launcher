@@ -1235,13 +1235,13 @@ impl NetworkService {
             || lower.contains("error code: 5")
         {
             return Some(
-                "EasyTier 创建虚拟网卡时访问被拒绝（Windows 错误 5）：请以管理员身份运行 MCTier，并确认 WinTun 驱动和安全软件权限",
+                "EasyTier 创建虚拟网卡时访问被拒绝（Windows 错误 5）：请以管理员身份运行 BCCL虚拟局域网联机，并确认 WinTun 驱动和安全软件权限",
             );
         }
 
         if lower.contains("tun device error") || lower.contains("failed to create adapter") {
             return Some(
-                "虚拟网卡创建失败：请右键以管理员身份运行 MCTier，并将本软件加入杀毒软件/防火墙白名单；若仍失败，请确认 WinTun 驱动可用",
+                "虚拟网卡创建失败：请右键以管理员身份运行 BCCL虚拟局域网联机，并将本软件加入杀毒软件/防火墙白名单；若仍失败，请确认 WinTun 驱动可用",
             );
         }
 

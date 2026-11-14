@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { nativeMicrophoneLevel, openMicrophone } from '../../src/services/voice/nativeMicrophone';
 import { microphoneLevelPercent } from '../../src/services/voice/microphoneLevel';
 import { WebRTCClient } from '../../src/services/webrtc/WebRTCClient';
+import { prepareAudioAnswer, sendingAudioTransceiver } from '../../src/services/webrtc/audioTransceiver';
 
 // Real WebView2 + production native bridge; the Rust fixture supplies a quiet sine
 // over binary IPC. No physical microphone, network service, or saved user profile.
@@ -92,6 +93,58 @@ async function main() {
   report.selectedRemote = pair ? stats.get(pair.remoteCandidateId) : null;
   if (discovery && !candidates.some(candidate => candidate.includes(' typ srflx ') && candidate.includes(discovery.split(':')[1]))) throw new Error('Missing native-interface ICE candidate');
   if (leftPeak < 0.005 || rightPeak < 0.005 || audio.paused || audio.muted || audio.volume === 0) throw new Error('Bidirectional audio or playback is silent');
+
+  // Match the room workflow: negotiate with both microphones off, then enable
+  // capture through the production state machine on each already connected PC.
+  const caller = new RTCPeerConnection(rtcConfig), callee = new RTCPeerConnection(rtcConfig);
+  peers.push(caller, callee);
+  const callerIce: RTCIceCandidateInit[] = [], calleeIce: RTCIceCandidateInit[] = [];
+  caller.onicecandidate = e => { if (e.candidate) { if (callee.remoteDescription) void callee.addIceCandidate(e.candidate); else calleeIce.push(e.candidate.toJSON()); } };
+  callee.onicecandidate = e => { if (e.candidate) { if (caller.remoteDescription) void caller.addIceCandidate(e.candidate); else callerIce.push(e.candidate.toJSON()); } };
+  caller.addTransceiver('audio', { direction: 'sendrecv', streams: [new MediaStream()] });
+  callee.addTransceiver('audio', { direction: 'sendrecv', streams: [new MediaStream()] });
+  await caller.setLocalDescription(await caller.createOffer());
+  await callee.setRemoteDescription(caller.localDescription!);
+  await prepareAudioAnswer(callee, null);
+  await Promise.all(calleeIce.map(candidate => callee.addIceCandidate(candidate)));
+  await callee.setLocalDescription(await callee.createAnswer());
+  await caller.setRemoteDescription(callee.localDescription!);
+  await Promise.all(callerIce.map(candidate => caller.addIceCandidate(candidate)));
+  const callerIncoming = new MediaStream([sendingAudioTransceiver(caller)!.receiver.track]);
+  const calleeIncoming = new MediaStream([sendingAudioTransceiver(callee)!.receiver.track]);
+  const callerMeter = meter(callerIncoming, context), calleeMeter = meter(calleeIncoming, context);
+  const roomClients = [caller, callee].map(connection => {
+    const room = new WebRTCClient() as any;
+    room.requestMicrophonePermission = () => openMicrophone();
+    room.sendWebSocketMessage = () => true;
+    room.peerConnections.set('test-peer', { id: 'test-peer', connection, iceCandidateQueue: [], createdAt: Date.now() });
+    return room;
+  });
+  await Promise.all(roomClients.map(room => room.setMicEnabled(true)));
+  streams.push(...roomClients.map(room => room.localStream));
+  let callerPeak = 0, calleePeak = 0;
+  for (let i = 0; i < 40; i++) { await wait(50); callerPeak = Math.max(callerPeak, callerMeter()); calleePeak = Math.max(calleePeak, calleeMeter()); }
+  report.roomCallerRms = callerPeak; report.roomCalleeRms = calleePeak;
+  report.roomDirections = [caller, callee].map(pc => pc.getTransceivers().map(t => ({ mid: t.mid, direction: t.currentDirection, track: t.sender.track?.readyState, enabled: t.sender.track?.enabled })));
+  if (callerPeak < 0.005 || calleePeak < 0.005) throw new Error('Production room microphones are silent after muted negotiation');
+  // A stale enabled flag must not suppress reacquisition after a stream is lost.
+  roomClients[0].localStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+  roomClients[0].localStream = null;
+  await roomClients[0].setMicEnabled(true);
+  const restored = roomClients[0].localStream as MediaStream | null;
+  if (!restored?.getAudioTracks().some(track => track.readyState === 'live')) throw new Error('Enabled microphone did not reacquire its missing live stream');
+  streams.push(restored);
+  // A device change while already on must replace the sender with the new input.
+  const previousTrack = restored.getAudioTracks()[0];
+  await roomClients[0].refreshMicrophoneProcessing();
+  const replacement = roomClients[0].localStream as MediaStream;
+  streams.push(replacement);
+  if (previousTrack.readyState !== 'ended' || sendingAudioTransceiver(caller)?.sender.track !== replacement.getAudioTracks()[0]) throw new Error('Input switch left the old microphone bound to the room');
+  let recoveredPeak = 0;
+  for (let i = 0; i < 25; i++) { await wait(40); recoveredPeak = Math.max(recoveredPeak, calleeMeter()); }
+  report.roomInputSwitchRms = recoveredPeak;
+  if (recoveredPeak < 0.005) throw new Error('Room input switch recovered a silent track');
+  await Promise.all(roomClients.map(room => room.setMicEnabled(false)));
   report.ok = true;
 }
 void main().catch(error => { report.error = String(error); report.ok = false; }).finally(async () => {

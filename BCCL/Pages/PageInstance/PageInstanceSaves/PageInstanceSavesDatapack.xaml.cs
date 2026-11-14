@@ -86,7 +86,6 @@ public partial class PageInstanceSavesDatapack : IRefreshable
         BtnSelectUpdate.Click += BtnSelectUpdate_Click;
         BtnSelectDelete.Click += BtnSelectDelete_Click;
         BtnSelectCancel.Click += BtnSelectCancel_Click;
-        BtnSelectFavorites.Click += BtnSelectFavorites_Click;
         BtnSelectShare.Click += BtnSelectShare_Click;
         SearchBox.TextChanged += SearchRun;
     }
@@ -445,7 +444,7 @@ public partial class PageInstanceSavesDatapack : IRefreshable
                 var hasUpdate = false;
                 var hasEnabled = false;
                 var hasDisabled = false;
-                var canFavoriteAndShare = true;
+                var canShare = true;
 
 
                 // 检查是否所有选中的数据包都有有效的项目信息
@@ -460,15 +459,14 @@ public partial class PageInstanceSavesDatapack : IRefreshable
                             else if (DatapackEntity.State == ModLocalComp.LocalCompFile.LocalFileStatus.Disabled)
                                 hasDisabled = true;
                             if (DatapackEntity.Comp is null || string.IsNullOrEmpty(DatapackEntity.Comp.Id))
-                                canFavoriteAndShare = false;
+                                canShare = false;
                         }
                 });
 
                 BtnSelectDisable.IsEnabled = hasEnabled;
                 BtnSelectEnable.IsEnabled = hasDisabled;
                 BtnSelectUpdate.IsEnabled = hasUpdate;
-                BtnSelectFavorites.IsEnabled = canFavoriteAndShare;
-                BtnSelectShare.IsEnabled = canFavoriteAndShare;
+                BtnSelectShare.IsEnabled = canShare;
             }
 
             // 更新显示状态
@@ -1516,20 +1514,12 @@ public partial class PageInstanceSavesDatapack : IRefreshable
         ChangeAllSelected(false);
     }
 
-    // 收藏
-    private void BtnSelectFavorites_Click(object sender, ModBase.RouteEventArgs e)
-    {
-        var selected = ModLocalComp.compResourceListLoader.output
-            .Where(m => selectedDatapacks.Contains(m.RawPath) && m.Comp is not null).Select(i => i.Comp).ToList();
-        ModComp.CompFavorites.ShowMenu(selected, (UIElement)sender);
-    }
-
     // 分享
     private void BtnSelectShare_Click(object sender, ModBase.RouteEventArgs e)
     {
         var shareList = ModLocalComp.compResourceListLoader.output
             .Where(m => selectedDatapacks.Contains(m.RawPath) && m.Comp is not null).Select(i => i.Comp.Id).ToHashSet();
-        ModBase.ClipboardSet(ModComp.CompFavorites.GetShareCode(shareList));
+        ModBase.ClipboardSet(CompShare.GetShareCode(shareList));
         ChangeAllSelected(false);
     }
 

@@ -21,7 +21,7 @@ public partial class FormMain
     public void ShowMultiplayerExtras(bool extras)
     {
         if (pageCurrent.page != PageType.Multiplayer || multiplayerLeft is null) return;
-        MyPageRight target = multiplayerPage ??= new PageMultiplayerOriginal();
+        MyPageRight target = InitializeMultiplayerWorkspace();
         if (ReferenceEquals(PanMainRight.Child, target)) return;
         PageChangeAnim(multiplayerLeft, target);
     }

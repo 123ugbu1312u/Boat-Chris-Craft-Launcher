@@ -7,14 +7,14 @@ using BCCL.Core.App.Configuration;
 using BCCL.Core.UI;
 using BCCL.Core.Utils;
 using BCCL.Core.App.Localization;
+using BCCL.Core.UI.Theme;
 
 namespace BCCL;
 
 public partial class PageSetupUI
 {
-    public string[] ThemeColors => Basics.IsAprilFool 
-        ? [Lang.Text("Setup.Ui.Theme.Color.SkyBlue"), Lang.Text("Setup.Ui.Theme.Color.CatBlue"), Lang.Text("Setup.Ui.Theme.Color.CrashBlue"), Lang.Text("Setup.Ui.Theme.Color.Hmcl")]
-        : [Lang.Text("Setup.Ui.Theme.Color.SkyBlue"), Lang.Text("Setup.Ui.Theme.Color.CatBlue"), Lang.Text("Setup.Ui.Theme.Color.CrashBlue")];
+    private readonly ThemePalette[] themePalettes = ThemePalette.Available(Basics.IsAprilFool);
+    public string[] ThemeColors => themePalettes.Select(palette => Lang.Text(palette.LocalizationKey)).ToArray();
     
     public new bool isLoaded;
 
@@ -43,7 +43,6 @@ public partial class PageSetupUI
 
         SliderLoad();
 
-        PanLauncherHide.Visibility = Visibility.Visible;
     }
 
     public void Reload()
@@ -59,8 +58,8 @@ public partial class PageSetupUI
             CheckNavigationClickAway.Checked = Config.Preference.NavigationClickAway;
             RefreshGlassSettings();
             ComboDarkMode.SelectedIndex = (int)Config.Preference.Theme.ColorMode;
-            ComboDarkColor.SelectedIndex = (int)Config.Preference.Theme.DarkColor;
-            ComboLightColor.SelectedIndex = (int)Config.Preference.Theme.LightColor;
+            ComboDarkColor.SelectedIndex = Array.FindIndex(themePalettes, palette => palette.Theme == Config.Preference.Theme.DarkColor);
+            ComboLightColor.SelectedIndex = Array.FindIndex(themePalettes, palette => palette.Theme == Config.Preference.Theme.LightColor);
             CheckShowLaunchingHint.Checked = Config.Preference.ShowLaunchingHint;
 
             // 字体设置
@@ -694,7 +693,8 @@ public partial class PageSetupUI
     private void ThemeColor_Change(object senderRaw, SelectionChangedEventArgs e)
     {
         var sender = (MyComboBox)senderRaw;
-        SetByTag(sender.Tag?.ToString(), sender.SelectedIndex);
+        if (ModAnimation.AniControlEnabled != 0 || sender.SelectedIndex < 0 || sender.SelectedIndex >= themePalettes.Length) return;
+        SetByTag(sender.Tag?.ToString(), (int)themePalettes[sender.SelectedIndex].Theme);
         ThemeManager.ThemeRefresh();
     }
 

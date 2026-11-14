@@ -181,7 +181,7 @@
                         </Rectangle.Fill>
                     </Rectangle>
                 </Grid>
-                <Border x:Name="WorkspaceViewport" Grid.Row="1" Grid.Column="1" ClipToBounds="True">
+                <Grid x:Name="WorkspaceViewport" Grid.Row="1" Grid.Column="1" ClipToBounds="True">
                 <Grid x:Name="PanMain" VerticalAlignment="Top" ClipToBounds="True">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition x:Name="WorkspaceContextColumn" Width="Auto" />
@@ -199,7 +199,14 @@
                                 UseLayoutRounding="False" SnapsToDevicePixels="False" />
                     </Border>
                 </Grid>
+                <!-- Keep the native surface outside animated/replaced page hosts. -->
+                <Border x:Name="MultiplayerSurface" ClipToBounds="True" IsHitTestVisible="False" />
+                <Border x:Name="MultiplayerPreparation" Visibility="Collapsed" HorizontalAlignment="Right"
+                        VerticalAlignment="Top" Margin="20" Padding="16,10" CornerRadius="12"
+                        Background="{DynamicResource WorkbenchContextFill}">
+                    <TextBlock Text="正在准备联机界面…" />
                 </Border>
+                </Grid>
                 <StackPanel x:Name="PanHint" UseLayoutRounding="True"
                             SnapsToDevicePixels="True" HorizontalAlignment="Right" VerticalAlignment="Bottom"
                             Margin="0,0,0,20"
@@ -238,7 +245,7 @@
                         BorderBrush="{DynamicResource GlassEdgeBrush}" IsHitTestVisible="False" Panel.ZIndex="1"
                         Visibility="{DynamicResource LiquidGlassVisibility}" />
                 <controls:BlurBorder x:Name="PanMsgBackground" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Background="#00000000"
-                                     Panel.ZIndex="2" Visibility="Collapsed">
+                                     Panel.ZIndex="5" Visibility="Collapsed">
                     <Grid x:Name="PanMsg" Background="#00000000" MouseLeftButtonDown="FormDragMove" />
                 </controls:BlurBorder>
             </Grid>

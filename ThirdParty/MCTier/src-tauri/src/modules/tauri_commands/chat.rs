@@ -700,7 +700,7 @@ pub async fn download_danmaku_attachment(
     state: State<'_, AppState>,
 ) -> Result<String, String> {
     let cached = ensure_chat_attachment_cached(&owner_player_id, &attachment, &app, &state).await?;
-    let directory = dirs::download_dir().ok_or("无法定位下载文件夹")?.join("MCTier");
+    let directory = dirs::download_dir().ok_or("无法定位下载文件夹")?.join("BCCL虚拟局域网联机");
     tokio::fs::create_dir_all(&directory).await.map_err(|e| e.to_string())?;
     // Prefix a unique ID: never overwrite another download, even for repeated clicks.
     let destination = directory.join(format!("{}_{}", uuid::Uuid::new_v4(), attachment.name));

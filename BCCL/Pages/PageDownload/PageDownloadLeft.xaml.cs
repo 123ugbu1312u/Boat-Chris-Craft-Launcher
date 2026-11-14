@@ -7,6 +7,7 @@ namespace BCCL;
 
 public partial class PageDownloadLeft : IRefreshable
 {
+    private PageDownloadJava? javaPage;
     public void Refresh()
     {
         Refresh(ModMain.frmMain.PageCurrentSub);
@@ -26,6 +27,10 @@ public partial class PageDownloadLeft : IRefreshable
             ResourceListRequest.ClearCache();
         switch (subType)
         {
+            case FormMain.PageSubType.DownloadJava:
+                javaPage?.RefreshCatalog();
+                ItemJava.Checked = true;
+                break;
             case FormMain.PageSubType.DownloadInstall:
             {
                 ModDownload.dlClientListLoader.Start(isForceRestart: true);
@@ -181,11 +186,9 @@ public partial class PageDownloadLeft : IRefreshable
                 ItemLegacyFabric.Checked = true;
                 break;
             }
-            case FormMain.PageSubType.DownloadCompFavorites:
+            case FormMain.PageSubType.RetiredDownloadPage8:
             {
-                if (ModMain.frmDownloadCompFavorites is not null)
-                    ModMain.frmDownloadCompFavorites.PageLoaderRestart();
-                ItemFavorites.Checked = true;
+                Refresh(FormMain.PageSubType.DownloadMod);
                 break;
             }
         }
@@ -211,6 +214,13 @@ public partial class PageDownloadLeft : IRefreshable
     public PageDownloadLeft()
     {
         InitializeComponent();
+        // Keep all radio items under the same panel so selection stays exclusive
+        // across collapsed sections and external navigation keeps working.
+        foreach (var item in PanItem.Children.OfType<MyListItem>())
+        {
+            item.ClipToBounds = true;
+        }
+        InitializeSectionAnimations();
         ItemInstall.Check += PageCheck;
         ItemMod.Check += PageCheck;
         ItemPack.Check += PageCheck;
@@ -218,7 +228,6 @@ public partial class PageDownloadLeft : IRefreshable
         ItemResourcePack.Check += PageCheck;
         ItemShader.Check += PageCheck;
         ItemWorld.Check += PageCheck;
-        ItemFavorites.Check += PageCheck;
         ItemClient.Check += PageCheck;
         ItemOptiFine.Check += PageCheck;
         ItemForge.Check += PageCheck;
@@ -237,15 +246,24 @@ public partial class PageDownloadLeft : IRefreshable
     private void PageCheck(object sender, ModBase.RouteEventArgs e)
     {
         if (sender is MyListItem { Tag: { } tag })
+        {
+            var id = (int)ModBase.Val(tag);
+            (id == 1 ? GroupAutomatic : id <= 8 ? GroupCommunity : id == 19 ? GroupJava : GroupManual).IsExpanded = true;
             PageChange((FormMain.PageSubType)ModBase.Val(tag));
+        }
     }
 
     public object PageGet(FormMain.PageSubType id)
     {
         if (id == default)
             id = pageID;
+        // Retired bookmarks in an existing navigation stack go to the resource list.
+        if (id == FormMain.PageSubType.RetiredDownloadPage8)
+            id = FormMain.PageSubType.DownloadMod;
         switch (id)
         {
+            case FormMain.PageSubType.DownloadJava:
+                return javaPage ??= new PageDownloadJava();
             case FormMain.PageSubType.DownloadInstall:
             {
                 if (ModMain.frmDownloadInstall is null)
@@ -287,12 +305,6 @@ public partial class PageDownloadLeft : IRefreshable
                 if (ModMain.frmDownloadWorld is null)
                     ModMain.frmDownloadWorld = new PageDownloadWorld();
                 return ModMain.frmDownloadWorld;
-            }
-            case FormMain.PageSubType.DownloadCompFavorites:
-            {
-                if (ModMain.frmDownloadCompFavorites is null)
-                    ModMain.frmDownloadCompFavorites = new PageDownloadCompFavorites();
-                return ModMain.frmDownloadCompFavorites;
             }
             case FormMain.PageSubType.DownloadClient:
             {
@@ -361,6 +373,8 @@ public partial class PageDownloadLeft : IRefreshable
     /// </summary>
     public void PageChange(FormMain.PageSubType id)
     {
+        if (id == FormMain.PageSubType.RetiredDownloadPage8)
+            id = FormMain.PageSubType.DownloadMod;
         if (pageID == id)
             return;
         ModAnimation.AniControlEnabled += 1;

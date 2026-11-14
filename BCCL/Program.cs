@@ -18,6 +18,11 @@ internal static class Program
     {
         // A silent elevated helper must run before WPF/lifecycle and the main launcher's single-instance lock.
         var commandArgs = Environment.GetCommandLineArgs();
+        if (commandArgs.Length is 2 or 3 && commandArgs[1] == "--verify-popup")
+        {
+            Environment.ExitCode = Diagnostics.PopupVerification.Run(commandArgs.Length == 3 ? commandArgs[2] : null);
+            return;
+        }
         if (commandArgs.Length == 5 && commandArgs[1] == "--mctier-helper" &&
             int.TryParse(commandArgs[3], out var parentId) && long.TryParse(commandArgs[4], out var parentStart))
         {

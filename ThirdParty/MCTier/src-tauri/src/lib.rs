@@ -311,8 +311,8 @@ fn show_tray_background_notification(app: &tauri::AppHandle, generation: u64) {
     let (title, body_template) = TRAY_NOTIFICATION_TEXT
         .get_or_init(|| {
             std::sync::RwLock::new((
-                "MCTier 正在后台运行".to_string(),
-                "MCTier 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。"
+                "BCCL虚拟局域网联机 正在后台运行".to_string(),
+                "BCCL虚拟局域网联机 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。"
                     .to_string(),
             ))
         })
@@ -320,8 +320,8 @@ fn show_tray_background_notification(app: &tauri::AppHandle, generation: u64) {
         .map(|text| text.clone())
         .unwrap_or_else(|_| {
             (
-                "MCTier 正在后台运行".to_string(),
-                "MCTier 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。"
+                "BCCL虚拟局域网联机 正在后台运行".to_string(),
+                "BCCL虚拟局域网联机 已最小化到系统托盘。点击右下角托盘图标或按 {shortcut} 可恢复窗口。"
                     .to_string(),
             )
         });
@@ -1109,14 +1109,14 @@ pub fn run() {
     }
 
     if let Err(error) = modules::app_paths::migrate_legacy_data() {
-        let message = format!("迁移 MCTier 用户数据失败，旧文件已保留: {error}");
+        let message = format!("迁移 BCCL虚拟局域网联机 用户数据失败，旧文件已保留: {error}");
         if let Ok(root) = modules::app_paths::data_root() {
             let _ = std::fs::write(root.join("migration-error.log"), &message);
         }
         eprintln!("{message}");
         rfd::MessageDialog::new()
-            .set_title("MCTier 数据迁移失败")
-            .set_description(format!("{message}\n请关闭其他 MCTier 实例后重试。详细信息见 Local/com.mctier.app/migration-error.log。"))
+            .set_title("BCCL虚拟局域网联机 数据迁移失败")
+            .set_description(format!("{message}\n请关闭其他 BCCL虚拟局域网联机 实例后重试。详细信息见 Local/com.mctier.app/migration-error.log。"))
             .set_level(rfd::MessageLevel::Error)
             .show();
         return;
@@ -1136,7 +1136,7 @@ pub fn run() {
         .format_timestamp_millis()
         .target(env_logger::Target::Pipe(Box::new(log_file)))
         .init();
-    info!("MCTier 应用程序启动中...");
+    info!("BCCL虚拟局域网联机 应用程序启动中...");
     info!("日志文件位置: {:?}", log_path);
 
     let runtime = tokio::runtime::Runtime::new().expect("无法创建 Tokio 运行时");
@@ -1176,6 +1176,8 @@ pub fn run() {
         .manage(app_state)
         .invoke_handler(tauri::generate_handler![
             crate::modules::bccl_embedding::bccl_host_appearance,
+            crate::modules::bccl_embedding::bccl_workspace_ready,
+            crate::modules::bccl_embedding::bccl_workspace_active,
             sync_builtin_emoji,
             modules::secret_store::protect_lobby_password,
             modules::secret_store::export_lobby_password,
@@ -1341,6 +1343,9 @@ pub fn run() {
         ])
         .on_page_load(|webview, payload| {
             if webview.label() == "main" && matches!(payload.event(), tauri::webview::PageLoadEvent::Started) {
+                if let Some(window) = webview.app_handle().get_webview_window("main") {
+                    crate::modules::bccl_embedding::reset_ready(&window);
+                }
                 crate::modules::screen_recording::close_output(); crate::modules::native_capture::stop_all();
                 crate::modules::native_microphone::stop_all();
                 crate::modules::voice_ice::stop();
@@ -1366,6 +1371,7 @@ pub fn run() {
 
             #[cfg(target_os = "windows")]
             if let Some(main_window) = app.get_webview_window("main") {
+                crate::modules::bccl_embedding::apply_background(&main_window);
                 install_minimize_to_hide(&main_window);
                 if let Err(error) = crate::modules::media_permission::install(&main_window) {
                     log::warn!("安装浏览器媒体权限拦截失败: {error}");
@@ -1376,16 +1382,16 @@ pub fn run() {
                 use tauri::menu::{MenuBuilder, MenuItem};
                 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
                 let show_item =
-                    MenuItem::with_id(app, "show_main", "显示 MCTier", true, None::<&str>)?;
+                    MenuItem::with_id(app, "show_main", "显示 BCCL虚拟局域网联机", true, None::<&str>)?;
                 let exit_item =
-                    MenuItem::with_id(app, "exit_app", "退出 MCTier", true, None::<&str>)?;
+                    MenuItem::with_id(app, "exit_app", "退出 BCCL虚拟局域网联机", true, None::<&str>)?;
                 let tray_menu = MenuBuilder::new(app)
                     .item(&show_item)
                     .separator()
                     .item(&exit_item)
                     .build()?;
                 TrayIconBuilder::with_id("main-tray")
-                    .tooltip("MCTier")
+                    .tooltip("BCCL虚拟局域网联机")
                     .icon(app.default_window_icon().cloned().unwrap())
                     .menu(&tray_menu)
                     .show_menu_on_left_click(false)
@@ -1586,5 +1592,5 @@ pub fn run() {
         error!("运行错误: {}", e);
         panic!("error: {}", e);
     }
-    info!("MCTier 应用程序已关闭");
+    info!("BCCL虚拟局域网联机 应用程序已关闭");
 }

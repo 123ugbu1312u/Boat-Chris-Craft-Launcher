@@ -37,4 +37,15 @@
     <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">公式ランチャーにログインしても BCCL には同期されません。公式セッションのインポートは未対応です。</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">ログイン設定に Client ID を保存してからログインし、Microsoft のウェブサイトで認証してください。</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">PCL Blue</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Mint">ミント</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Emerald">エメラルド</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Forest">フォレストグリーン</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Amber">アンバー</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Tangerine">オレンジ</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Coral">コーラル</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Rose">ローズ</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Violet">バイオレット</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">ラベンダー</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Slate">スレート</sys:String>
 </ResourceDictionary>

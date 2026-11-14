@@ -29,6 +29,55 @@ pub fn bccl_host_appearance() -> Option<HostAppearance> {
     Some(palette)
 }
 
+pub fn apply_background(window: &tauri::WebviewWindow) {
+    if !enabled() || window.label() != "main" { return; }
+    if let Some(palette) = bccl_host_appearance() {
+        let channel = |start| u8::from_str_radix(&palette.background[start..start + 2], 16).unwrap_or(0);
+        let _ = window.set_background_color(Some(tauri::window::Color(channel(1), channel(3), channel(5), 255)));
+    }
+}
+
+#[cfg(windows)]
+fn window_property(window: &tauri::WebviewWindow, name: &str, value: Option<isize>) -> isize {
+    #[link(name = "user32")]
+    extern "system" {
+        fn GetPropW(hwnd: isize, name: *const u16) -> isize;
+        fn SetPropW(hwnd: isize, name: *const u16, data: isize) -> i32;
+        fn RemovePropW(hwnd: isize, name: *const u16) -> isize;
+    }
+    let Ok(hwnd) = window.hwnd() else { return 0; };
+    let name: Vec<u16> = name.encode_utf16().chain(Some(0)).collect();
+    unsafe {
+        match value {
+            Some(0) => { RemovePropW(hwnd.0 as isize, name.as_ptr()); 0 }
+            Some(value) => { SetPropW(hwnd.0 as isize, name.as_ptr(), value); value }
+            None => GetPropW(hwnd.0 as isize, name.as_ptr()),
+        }
+    }
+}
+
+pub fn reset_ready(window: &tauri::WebviewWindow) {
+    #[cfg(windows)]
+    if enabled() && window.label() == "main" { window_property(window, "BCCL_WORKSPACE_READY", Some(0)); }
+}
+
+#[tauri::command]
+pub fn bccl_workspace_ready(window: tauri::WebviewWindow) {
+    if !enabled() || window.label() != "main" { return; }
+    apply_background(&window);
+    #[cfg(windows)]
+    window_property(&window, "BCCL_WORKSPACE_READY", Some(1));
+}
+
+#[tauri::command]
+pub fn bccl_workspace_active(window: tauri::WebviewWindow) -> bool {
+    if !enabled() { return true; }
+    #[cfg(windows)]
+    { window_property(&window, "BCCL_WORKSPACE_ACTIVE", None) != 0 }
+    #[cfg(not(windows))]
+    { window.is_visible().unwrap_or(false) }
+}
+
 #[cfg(windows)]
 pub fn watch_parent(app: &tauri::AppHandle) {
     use std::ffi::c_void;

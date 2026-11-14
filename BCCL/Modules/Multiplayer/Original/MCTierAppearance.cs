@@ -10,13 +10,15 @@ internal static class MCTierAppearance
 {
     private static string? published;
     public static string FilePath => Path.Combine(Paths.Data, "Multiplayer", "Original", "appearance.json");
+    public static Color BackgroundColor => ThemeManager.AppResources["WorkbenchSceneFill"] is SolidColorBrush fill
+        ? fill.Color : ThemeManager.IsDarkMode ? Color.FromRgb(24, 32, 43) : Colors.White;
 
     public static void Publish()
     {
         try
         {
             var resources = ThemeManager.AppResources;
-            var background = resources["WorkbenchSceneFill"] is SolidColorBrush fill ? fill.Color : Colors.White;
+            var background = BackgroundColor;
             var top = background;
             var bottom = background;
             if (ModMain.frmMain?.PanForm.Background is LinearGradientBrush scene && scene.GradientStops.Count > 0)

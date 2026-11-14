@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { tl } from '../../i18n';
 import { DOWNLOAD_WEBSITE } from '../../services/version/versionPolicy';
 import './MainWindow.css';
+import { useWorkspaceActive } from '../../bcclWorkspace';
 
 const { Title, Paragraph } = Typography;
 
@@ -25,6 +26,7 @@ const { Title, Paragraph } = Typography;
  */
 export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady = true }) => {
   const { t } = useTranslation();
+  const workspaceActive = useWorkspaceActive();
   const [showForm, setShowForm] = useState(false);
   const [formMode, setFormMode] = useState<'create' | 'join'>('create');
   const [showSettings, setShowSettings] = useState(false);
@@ -102,7 +104,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
   // 组件加载时主动拉取自动大厅配置，仅应用启动后首次触发一次
   useEffect(() => {
     // 用全局标志确保整个应用生命周期内只触发一次，避免从大厅返回主界面时重复触发
-    if (!startupReady || (window as any).__autoLobbyTriggered) return;
+    if (!startupReady || !workspaceActive || (window as any).__autoLobbyTriggered) return;
     let disposed = false;
     const checkAutoLobby = async () => {
       try {
@@ -136,7 +138,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
     // 延迟500ms等待窗口完全渲染
     const timer = setTimeout(checkAutoLobby, 500);
     return () => { disposed = true; clearTimeout(timer); };
-  }, [startupReady]);
+  }, [startupReady, workspaceActive]);
 
   // 监听版本错误并显示弹窗
   useEffect(() => {
@@ -148,7 +150,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
         content: (
           <div style={{ lineHeight: '1.8' }}>
             <p style={{ marginBottom: '12px' }}>
-              {tl('您的 MCTier 版本过低，无法连接到大厅。', 'Your MCTier version is too low to connect to the lobby.')}
+              {tl('您的 BCCL虚拟局域网联机 版本过低，无法连接到大厅。', 'Your BCCL虚拟局域网联机 version is too low to connect to the lobby.')}
             </p>
             <p style={{ marginBottom: '8px', color: 'rgba(255,255,255,0.8)' }}>
               {tl('当前版本', 'Current version')}: {versionError.currentVersion}
@@ -228,7 +230,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
               <path d="M5 12h14" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
             </svg>
           </button>
-          <button className="main-window-control-btn main-window-close-btn" onClick={handleCloseMainWindow} title={tl('关闭 MCTier', 'Close MCTier')}>
+          <button className="main-window-control-btn main-window-close-btn" onClick={handleCloseMainWindow} title={tl('关闭 BCCL虚拟局域网联机', 'Close BCCL虚拟局域网联机')}>
             <CloseIcon size={16} />
           </button>
         </div>
@@ -246,7 +248,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
           animate={{ scale: 1, opacity: 1, rotate: 0 }}
           transition={{ delay: 0.1, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
         >
-          <img src={BCCL_EMBEDDED ? '/BCCLIcon.png' : '/MCTierIcon.png'} alt={BCCL_EMBEDDED ? 'BCCL' : 'MCTier Logo'} />
+          <img src={BCCL_EMBEDDED ? '/BCCLIcon.png' : '/MCTierIcon.png'} alt={BCCL_EMBEDDED ? 'BCCL' : 'BCCL虚拟局域网联机 Logo'} />
         </motion.div>
 
         <motion.div
@@ -255,7 +257,7 @@ export const MainWindow: React.FC<{ startupReady?: boolean }> = ({ startupReady 
           transition={{ delay: 0.2, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
         >
           <Title level={1} className="main-window-title">
-            {BCCL_EMBEDDED ? BCCL_MULTIPLAYER_TITLE : 'MCTier'}
+            {BCCL_EMBEDDED ? BCCL_MULTIPLAYER_TITLE : 'BCCL虚拟局域网联机'}
           </Title>
         </motion.div>
 

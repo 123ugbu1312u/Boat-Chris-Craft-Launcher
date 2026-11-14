@@ -56,6 +56,12 @@ html[data-bccl-embedded='true'] .main-window-content {
 html[data-bccl-embedded='true'] .main-window-actions { margin-bottom: 0; }
 
 /* The launcher already supplies a title bar and navigation. No empty second frame. */
+/* A preloaded page must not begin another fade from an empty frame when shown. */
+html[data-bccl-embedded='true'] .main-window-content,
+html[data-bccl-embedded='true'] .main-window-content > * {
+  opacity: 1 !important;
+  transform: none !important;
+}
 html[data-bccl-embedded='true'] .settings-drag-area { display: none; }
 html[data-bccl-embedded='true'] .settings-window-scroll { min-height: 0; }
 html[data-bccl-embedded='true'] .settings-window-inner {

@@ -36,7 +36,6 @@ public partial class PageInstanceOverall
         BtnDisplayDesc.Click += BtnDisplayDesc_Click;
         BtnDisplayRename.Click += BtnDisplayRename_Click;
         ComboDisplayLogo.SelectionChanged += ComboDisplayLogo_SelectionChanged;
-        BtnDisplayStar.Click += BtnDisplayStar_Click;
         BtnFolderVersion.Click += BtnFolderVersion_Click;
         BtnFolderSaves.Click += BtnFolderSaves_Click;
         BtnFolderMods.Click += BtnFolderMods_Click;
@@ -74,7 +73,6 @@ public partial class PageInstanceOverall
         var instance = PageInstanceLeft.McInstance;
         // 刷新设置项目
         ComboDisplayType.SelectedIndex = States.Instance.CardType[instance.PathInstance];
-        BtnDisplayStar.Text = instance.IsStar ? Lang.Text("Instance.Overall.Unfavorite") : Lang.Text("Instance.Overall.Favorite");
         BtnFolderMods.Visibility = instance.Modable ? Visibility.Visible : Visibility.Collapsed;
         // 刷新实例显示
         PanDisplayItem.Children.Clear();
@@ -474,28 +472,6 @@ public partial class PageInstanceOverall
                 ex,
                 $"更改实例图标失败（{PageInstanceLeft.McInstance.Name}）",
                 ModBase.LogLevel.Feedback,
-                userSummary: Lang.Text("Instance.Overall.Error.OperationFailed"));
-        }
-    }
-
-    // 收藏夹
-    private void BtnDisplayStar_Click(object sender, MouseButtonEventArgs e)
-    {
-        try
-        {
-            States.Instance.Starred[PageInstanceLeft.McInstance.PathInstance] = !PageInstanceLeft.McInstance.IsStar;
-            PageInstanceLeft.McInstance = new McInstance(PageInstanceLeft.McInstance.Name).Load();
-            Reload();
-            ModInstanceList.mcInstanceListForceRefresh = true;
-            ModLoader.LoaderFolderRun(ModInstanceList.mcInstanceListLoader, ModFolder.mcFolderSelected,
-                ModLoader.LoaderFolderRunType.ForceRun, 1, @"versions\");
-        }
-        catch (Exception ex)
-        {
-            ModBase.Log(
-                ex,
-                $"实例 {PageInstanceLeft.McInstance.Name} 收藏状态更改失败",
-                ModBase.LogLevel.Msgbox,
                 userSummary: Lang.Text("Instance.Overall.Error.OperationFailed"));
         }
     }

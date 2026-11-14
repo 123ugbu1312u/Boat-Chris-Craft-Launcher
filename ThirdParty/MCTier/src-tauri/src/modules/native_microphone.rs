@@ -38,7 +38,7 @@ fn sessions() -> &'static Mutex<HashMap<String, Session>> {
 fn authorize(window: &WebviewWindow) -> Result<(), String> {
     let url = window.url().map_err(|e| e.to_string())?;
     if window.label() != "main" || !crate::modules::media_permission::trusted(url.as_str()) {
-        return Err("仅 MCTier 主窗口可操作麦克风".into());
+        return Err("仅 BCCL虚拟局域网联机 主窗口可操作麦克风".into());
     }
     Ok(())
 }
@@ -185,3 +185,7 @@ pub fn stop_all() {
 #[cfg(windows)]
 #[path = "native_microphone/windows.rs"]
 mod platform;
+
+#[cfg(all(test, windows))]
+#[path = "native_microphone/webview_test.rs"]
+mod webview_test;

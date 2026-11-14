@@ -33,7 +33,7 @@ export function DownloadFolderSetting() {
   };
   return <div style={{ display: 'grid', gap: 10 }}>
     <Input readOnly aria-label={tl('文件共享下载目录', 'File sharing download folder')}
-      value={ready ? path || tl('系统默认下载目录（MCTier）', 'System default download folder (MCTier)') : tl('加载中…', 'Loading…')} />
+      value={ready ? path || tl('系统默认下载目录（BCCL虚拟局域网联机）', 'System default download folder (BCCL虚拟局域网联机)') : tl('加载中…', 'Loading…')} />
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
       <Button type="primary" disabled={!ready || busy} onClick={() => void save(false)}>{tl('选择文件夹', 'Choose folder')}</Button>
       {path && <Button disabled={!ready || busy} onClick={() => void save(true)}>{tl('恢复默认', 'Reset')}</Button>}

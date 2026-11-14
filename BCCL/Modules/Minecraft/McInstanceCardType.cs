@@ -2,7 +2,7 @@ namespace BCCL;
 
 public enum McInstanceCardType
 {
-    Star = -1,
+    Retired = -1, // Preserve the old stored numeric value when reading legacy data.
     Auto = 0, // 仅用于强制实例分类的自动
     Hidden = 1,
     API = 2,

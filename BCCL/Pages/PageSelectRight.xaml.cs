@@ -235,11 +235,6 @@ public partial class PageSelectRight
                         cardName = Lang.Text("Select.Instance.Card.LessUsed");
                         break;
                     }
-                    case McInstanceCardType.Star:
-                    {
-                        cardName = Lang.Text("Select.Instance.Card.Favorites");
-                        break;
-                    }
                     case McInstanceCardType.Fool:
                     {
                         cardName = Lang.Text("Select.Instance.Card.AprilFools");
@@ -255,7 +250,7 @@ public partial class PageSelectRight
                 #endregion
 
                 // 建立控件
-                var cardTitle = $"{cardName}{(Card.Key == McInstanceCardType.Star ? "" : $" ({Lang.Number(filteredInstances.Count, "N0")})")}";
+                var cardTitle = $"{cardName} ({Lang.Number(filteredInstances.Count, "N0")})";
                 var newCard = new MyCard { Title = cardTitle, Margin = new Thickness(0d, 0d, 0d, 15d) };
                 var newStack = new StackPanel
                 {
@@ -427,33 +422,6 @@ public partial class PageSelectRight
         // 注册点击事件
         sender.Click += (a, b) => Item_Click((MyListItem)a, b);
         // 图标按钮
-        var btnStar = new MyIconButton();
-        if (version.IsStar)
-        {
-            btnStar.ToolTip = Lang.Text("Select.Instance.Unfavorite");
-            ToolTipService.SetPlacement(btnStar, PlacementMode.Center);
-            ToolTipService.SetVerticalOffset(btnStar, 30d);
-            ToolTipService.SetHorizontalOffset(btnStar, 2d);
-            btnStar.LogoScale = 1.1d;
-            btnStar.SvgIcon = "lucide/heart-filled";
-        }
-        else
-        {
-            btnStar.ToolTip = Lang.Text("Select.Instance.Favorite");
-            ToolTipService.SetPlacement(btnStar, PlacementMode.Center);
-            ToolTipService.SetVerticalOffset(btnStar, 30d);
-            ToolTipService.SetHorizontalOffset(btnStar, 2d);
-            btnStar.LogoScale = 1.1d;
-            btnStar.SvgIcon = "lucide/heart";
-        }
-
-        btnStar.Click += (_, _) =>
-        {
-            States.Instance.Starred[version.PathInstance] = !version.IsStar;
-            ModInstanceList.mcInstanceListForceRefresh = true;
-            ModLoader.LoaderFolderRun(ModInstanceList.mcInstanceListLoader, ModFolder.mcFolderSelected,
-                ModLoader.LoaderFolderRunType.ForceRun, 1, @"versions\");
-        };
         var btnOpenFolder = new MyIconButton { LogoScale = 1.1d, SvgIcon = "lucide/folder-open" };
         btnOpenFolder.ToolTip = Lang.Text("Select.Instance.OpenFolder");
         ToolTipService.SetPlacement(btnOpenFolder, PlacementMode.Center);
@@ -483,7 +451,7 @@ public partial class PageSelectRight
                 PageInstanceLeft.McInstance = version;
                 ModMain.frmMain.PageChange(FormMain.PageType.InstanceSetup);
             };
-            sender.Buttons = new[] { btnStar, btnOpenFolder, btnDel, btnCont };
+            sender.Buttons = new[] { btnOpenFolder, btnDel, btnCont };
         }
         else
         {
@@ -494,7 +462,7 @@ public partial class PageSelectRight
             ToolTipService.SetHorizontalOffset(btnCont, 2d);
             btnCont.Click += (_, _) => PageInstanceOverall.OpenVersionFolder(version);
             sender.MouseRightButtonUp += (_, _) => PageInstanceOverall.OpenVersionFolder(version);
-            sender.Buttons = new[] { btnStar, btnOpenFolder, btnDel, btnCont };
+            sender.Buttons = new[] { btnOpenFolder, btnDel, btnCont };
         }
     }
 
@@ -569,7 +537,6 @@ public partial class PageSelectRight
             }
 
             // 从 UI 中移除
-            if (mcInstance.displayType == McInstanceCardType.Hidden || !mcInstance.IsStar)
             {
                 // 仅出现在当前卡片
                 var parent = (StackPanel)item.Parent;
@@ -593,12 +560,6 @@ public partial class PageSelectRight
                     ModLoader.LoaderFolderRun(ModInstanceList.mcInstanceListLoader, ModFolder.mcFolderSelected,
                         ModLoader.LoaderFolderRunType.ForceRun, 1, @"versions\");
                 }
-            }
-            else
-            {
-                // 同时出现在当前卡片与收藏夹
-                ModLoader.LoaderFolderRun(ModInstanceList.mcInstanceListLoader, ModFolder.mcFolderSelected,
-                    ModLoader.LoaderFolderRunType.ForceRun, 1, @"versions\");
             }
         }
         catch (OperationCanceledException ex)

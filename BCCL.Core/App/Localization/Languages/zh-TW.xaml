@@ -1,4 +1,4 @@
-﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
+<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -422,14 +422,6 @@
     <sys:String x:Key="Download.Comp.Detail.DownloadModpackFile">下載模組包檔案</sys:String>
     <sys:String x:Key="Download.Comp.Detail.DownloadResource">{0}下載：{1}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.DownloadWorldFile">下載世界檔案</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorite">新增至我的最愛</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.Add">已將 {0} 新增到 {1} 中</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.BulkAdd">已將 {0} 個資源新增到 {1} 中！</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.BulkAddWithFailures">已將 {0} 個資源新增到 {1} 中，{2} 個資源已新增！</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.DefaultName">預設</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.FavoriteContextMenu">新增到 {0} 資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.Remove">已將 {0} 從 {1} 中刪除</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Favorites.UnfavoriteContextMenu">從 {0} 中移除</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FindingApplicableInstance">正在查詢適合的遊戲實例……</sys:String>
     <sys:String x:Key="Download.Comp.Detail.InputInstanceName">輸入實例名稱</sys:String>
     <sys:String x:Key="Download.Comp.Detail.InstallWorld">安裝世界</sys:String>
@@ -448,7 +440,6 @@
     <sys:String x:Key="Download.Comp.Detail.Task.Cancelled">已取消模組包安裝：{0}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.Task.Failed">模組包安裝失敗。&#xA;&#xA;任務：{0}&#xA;&#xA;詳細資訊：&#xA;{1}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.TranslateDescription">翻譯簡介</sys:String>
-    <sys:String x:Key="Download.Comp.Detail.Unfavorite">從我的最愛中移除</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Old">遠古版</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Other">其他</sys:String>
     <sys:String x:Key="Download.Comp.Detail.VersionGroup.Snapshot">快照</sys:String>
@@ -478,72 +469,6 @@
     <sys:String x:Key="Download.Comp.Detail.FileList.RequiredDependencies">必要前置資源</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FileList.Updated">更新於 {0}</sys:String>
     <sys:String x:Key="Download.Comp.Detail.FileList.VersionList">版本清單</sys:String>
-
-    <!-- Download.Comp.Favorites -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Action.Manage">管理</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Action.Unfavorite">從我的最愛中移除</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Cancel">從我的最愛中移除</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.CardTitle">{0} ({1})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Category.Mod">模組 ({0})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Deselect">取消選取</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Download">下載所選</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.EditNote">修改備註</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Empty.Description">在資源詳細資訊介面中可以點擊新增至我的最愛按鈕進行新增</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Empty.Title">還沒有我的最愛內容</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Error.OperationFailed">我的最愛資料夾操作失敗。請檢視錯誤詳情。</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.GetInfoFailed">部分資源線上資訊取得失敗，點此檢視詳情</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.BatchDownload">批次下載資源（{0}）</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.BatchDownloadSuitable">批次下載合適資源</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.LoaderName.QueryInfo">查詢資源資訊</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Loading">正在載入我的最愛資料夾清單</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Manage">管理</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Delete">刪除目前資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Import">匯入我的最愛</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.New">建立資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Rename">重新命名資料夾名稱</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Menu.Share">分享目前資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Search.Hint">搜尋我的最愛資料夾內容</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.SearchResults.Title">搜尋結果 ({0})</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Selection.Placeholder">已選擇 8 個檔案</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Share">分享所選</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.UnknownType">未分型別別</sys:String>
-
-    <!-- Download.Comp.Favorites.Dialog -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.BulkDownload.Content">批次下載功能仍舊處於測試狀態。&#xA;使用此功能下載模組不會自動下載前置項。&#xA;請在下載前仔細思考自己的需求，並仔細檢查自己的選擇，避免下載錯誤導致時間和網路流量的浪費。</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.BulkDownload.Title">確定使用此功能？</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Delete.Confirm">確認刪除我的最愛資料夾 {0}？&#xA;此資料夾有 {1} 個專案&#xA;資料夾 ID 為 {2}&#xA;此操作不可逆！</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Delete.Title">刪除確認</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.EditNote.Title">修改備註</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Content">由於線上資源被刪除或網路問題等因素導致以下資源未取得成功（以資源的 ID 展示）</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.CopyIds">複製這些 ID</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Remove">移除這些我的最愛專案</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.GetFailed.Title">部分我的最愛專案取得失敗</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.CurrentFolder">目前資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Hint">例如 ["8787"]</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Input">輸入分享的我的最愛</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.New">新資料夾名稱</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.NewFolder">新資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.NewHint">請輸入新的我的最愛資料夾名稱</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Import.Type">你希望將分享的我的最愛專案加入到目前資料夾還是新的資料夾中？</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.New.Title">建立我的最愛資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.NewPrompt">請輸入新資料夾名稱</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.Rename.Title">輸入新名稱</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.SelectLoader.Title">選擇期望的載入器</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Dialog.SelectVersion.Title">選擇期望的遊戲版本</sys:String>
-
-    <!-- Download.Comp.Favorites.Hint -->
-
-    <sys:String x:Key="Download.Comp.Favorites.Hint.Deleted">已刪除資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.LastCollection">您不能刪除最後一個資料夾</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.LoadingVersions">請稍後，正在查詢詳細版本支援中，這可能需要一段時間……</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.NoResource">不存在指定載入器且同版本的資源</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.NothingShared">分享了個寂寞啊！</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.Removed">已移除相關我的最愛專案</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectLoader">所選模組不支援相同的載入器</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectSaveLocation">已選擇 {0} 版本，下面請選擇儲存位置</sys:String>
-    <sys:String x:Key="Download.Comp.Favorites.Hint.SelectedCount">已選擇 {0} 個我的最愛專案</sys:String>
 
     <!-- Download.Comp.Filter -->
 
@@ -673,7 +598,6 @@
     <sys:String x:Key="Download.Left.DataPack">資料包</sys:String>
     <sys:String x:Key="Download.Left.Error.UnknownSubPageType">未知的下載子畫面種類：{0}</sys:String>
     <sys:String x:Key="Download.Left.Fabric">Fabric</sys:String>
-    <sys:String x:Key="Download.Left.Favorites">我的最愛</sys:String>
     <sys:String x:Key="Download.Left.Forge">Forge</sys:String>
     <sys:String x:Key="Download.Left.Hint.Refreshing">正在重新整理……</sys:String>
     <sys:String x:Key="Download.Left.Installation">安裝套件</sys:String>
@@ -949,7 +873,6 @@
     <sys:String x:Key="Instance.Overall.Description.EditTitle">更改描述</sys:String>
     <sys:String x:Key="Instance.Overall.EditDescription">修改實例描述</sys:String>
     <sys:String x:Key="Instance.Overall.Error.OperationFailed">實例概覽操作失敗。請檢視錯誤詳情。</sys:String>
-    <sys:String x:Key="Instance.Overall.Favorite">加入我的最愛</sys:String>
     <sys:String x:Key="Instance.Overall.Hide.ConfirmMessage">確認要從實例清單中隱藏該實例嗎？隱藏該實例後，它將不再出現於 BCCL 顯示的實例清單中。&#xA;此後，在實例清單頁面按下 F11 才可以檢視被隱藏的實例。</sys:String>
     <sys:String x:Key="Instance.Overall.Hide.ConfirmTitle">隱藏實例提示</sys:String>
     <sys:String x:Key="Instance.Overall.Name.EditTitle">重新命名實例</sys:String>
@@ -976,7 +899,6 @@
     <sys:String x:Key="Instance.Overall.Shortcuts.ModsFolder">模組資料夾</sys:String>
     <sys:String x:Key="Instance.Overall.Shortcuts.SavesFolder">存檔資料夾</sys:String>
     <sys:String x:Key="Instance.Overall.Shortcuts.Title">捷徑</sys:String>
-    <sys:String x:Key="Instance.Overall.Unfavorite">從我的最愛中移除</sys:String>
 
     <!-- Instance.Overall.Icon -->
 
@@ -1068,7 +990,6 @@
     <sys:String x:Key="Instance.Resource.Export.SelectSaveLocation">選擇儲存位置</sys:String>
     <sys:String x:Key="Instance.Resource.ExportInfo">匯出資訊</sys:String>
     <sys:String x:Key="Instance.Resource.ExportInfo.ToolTip">匯出詳細的資源的版本資訊</sys:String>
-    <sys:String x:Key="Instance.Resource.Favorite">新增至我的最愛</sys:String>
     <sys:String x:Key="Instance.Resource.InstallFromFiles">從檔案安裝</sys:String>
     <sys:String x:Key="Instance.Resource.List.Loading">正在載入資源清單</sys:String>
     <sys:String x:Key="Instance.Resource.Loading">正在載入資源清單</sys:String>
@@ -2401,7 +2322,6 @@
     <sys:String x:Key="Select.Instance.Error.ListLoad">載入 .minecraft 實例清單失敗</sys:String>
     <sys:String x:Key="Select.Instance.Error.Load">載入實例失敗（{0}）</sys:String>
     <sys:String x:Key="Select.Instance.Error.UiUpdate">將實例清單轉換顯示時失敗</sys:String>
-    <sys:String x:Key="Select.Instance.Favorite">新增至我的最愛</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptyMessage">沒有實例被隱藏，你可以在實例設定的實例分類選項中隱藏實例。&#xA;再次按下 F11 即可退出隱藏實例檢視模式。</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptySearchTitle">無匹配的隱藏實例</sys:String>
     <sys:String x:Key="Select.Instance.Hidden.EmptyTitle">無隱藏實例</sys:String>
@@ -2413,7 +2333,6 @@
     <sys:String x:Key="Select.Instance.Search.NoResult">沒有找到與 '{0}' 匹配的實例</sys:String>
     <sys:String x:Key="Select.Instance.Search.ToolTip">輸入實例名稱或 [遊戲版本號] [模組載入器] 進行搜尋</sys:String>
     <sys:String x:Key="Select.Instance.Settings">設定</sys:String>
-    <sys:String x:Key="Select.Instance.Unfavorite">從我的最愛中移除</sys:String>
 
     <!-- Select.Instance.Card -->
 
@@ -2421,7 +2340,6 @@
     <sys:String x:Key="Select.Instance.Card.Cleanroom">Cleanroom 實例</sys:String>
     <sys:String x:Key="Select.Instance.Card.Error">錯誤的實例</sys:String>
     <sys:String x:Key="Select.Instance.Card.Fabric">Fabric 實例</sys:String>
-    <sys:String x:Key="Select.Instance.Card.Favorites">我的最愛</sys:String>
     <sys:String x:Key="Select.Instance.Card.Forge">Forge 實例</sys:String>
     <sys:String x:Key="Select.Instance.Card.Hidden">隱藏的實例</sys:String>
     <sys:String x:Key="Select.Instance.Card.LabyMod">LabyMod 實例</sys:String>
@@ -3158,7 +3076,7 @@
 
     <!-- Setup.Ui.Theme -->
 
-    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">龍貓藍</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.CatBlue">PCL藍</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.CrashBlue">當機藍</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Hmcl">HMCL</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.SkyBlue">天空藍</sys:String>
@@ -3593,4 +3511,14 @@
     <sys:String x:Key="Launch.Account.Microsoft.Settings.SaveFailed">Could not save login settings. Check the application ID and write permissions.</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.OfficialSessionHint">提示：官方啟動器登入後不會自動同步至 BCCL，目前尚未提供官方工作階段匯入功能。</sys:String>
     <sys:String x:Key="Launch.Account.Microsoft.ClientIdHint">在「正版登入設定」中填寫 Client ID，儲存後開始驗證，並在 Microsoft 網頁完成授權。</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Mint">薄荷青</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Emerald">翡翠綠</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Forest">森林綠</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Amber">琥珀金</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Tangerine">暖陽橙</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Coral">珊瑚紅</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Rose">玫瑰粉</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Violet">鳶尾紫</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">薰衣草紫</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Slate">霧岩灰</sys:String>
 </ResourceDictionary>

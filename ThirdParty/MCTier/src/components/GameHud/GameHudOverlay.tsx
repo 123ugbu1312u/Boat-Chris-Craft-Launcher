@@ -199,7 +199,7 @@ export const GameHudOverlay: React.FC = () => {
       }}
       onMouseDown={onDragStart}
     >
-      <div className="hud-title">MCTier · {tl('大厅状态（可拖动）', 'Lobby (drag to move)')}</div>
+      <div className="hud-title">BCCL虚拟局域网联机 · {tl('大厅状态（可拖动）', 'Lobby (drag to move)')}</div>
       {peers.length === 0 ? (
         <div className="hud-empty">{tl('暂无队友数据', 'No teammates yet')}</div>
       ) : (

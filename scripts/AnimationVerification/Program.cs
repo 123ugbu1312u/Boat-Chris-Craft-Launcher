@@ -78,12 +78,95 @@ internal static class Program
             throw new Exception("Completion removed a replacement animation group.");
         aniGroups.Clear();
         checks++;
+        GlassInteractionVerification.Run();
+        CheckCapsuleHitTesting();
+        CheckResourceSharing();
+        CheckResourceActions();
+        CheckLeftContentControls();
         CheckPageTransitions();
         CheckPopupTransitions();
         CheckNavigationLayout();
+        AppearanceVerification.Run();
+        NativeWorkspaceVerification.Run();
         Console.WriteLine($"PASS: {checks} animation checks; opacity/shadow/brush/custom target, transforms, properties, scale, color resource, text and sequence.");
         if (Environment.GetCommandLineArgs().Contains("--measure")) MeasureAnimations();
         app.Shutdown();
+    }
+
+    private static void CheckResourceActions()
+    {
+        var resources = System.Windows.Application.Current.Resources;
+        foreach (var key in new[] { "ColorBrushGray1", "ColorBrushGray3", "ColorBrushGray4" })
+            resources[key] = Brushes.Gray;
+        var item = new MyCompItem();
+        if (item.FindName("BtnDelete") is not null) throw new Exception("Resource card still has a bookmark action.");
+        var download = (MyIconButton)item.FindName("BtnDownload");
+        item.ShowDownloadBtn = true;
+        if (download.Visibility != Visibility.Visible) throw new Exception("Quick download stopped working.");
+        item.ShowDownloadBtn = false;
+        if (download.Visibility != Visibility.Collapsed) throw new Exception("Quick download did not hide.");
+        Console.WriteLine("PASS: resource card has no bookmark button and quick download remains functional.");
+    }
+
+    private static void CheckResourceSharing()
+    {
+        var type = typeof(FormMain).Assembly.GetType("BCCL.CompShare")!;
+        var method = type.GetMethod("GetShareCode")!;
+        var ids = new HashSet<string> { "modrinth:abc", "curseforge:123" };
+        var result = (string)method.Invoke(null, [ids])!;
+        var restored = System.Text.Json.JsonSerializer.Deserialize<HashSet<string>>(result)!;
+        if (!ids.SetEquals(restored)) throw new Exception("Resource sharing format changed.");
+        Console.WriteLine("PASS: resource sharing retains its existing JSON ID list format.");
+    }
+
+    private static void CheckCapsuleHitTesting()
+    {
+        var capsule = new MyCapsuleCard();
+        // A full rectangular child must not intercept input outside the capsule.
+        capsule.Children.Add(new Border { Background = Brushes.White });
+        foreach (var size in new[] { new Size(120, 32), new Size(64, 32), new Size(160, 40) })
+        {
+            capsule.Width = size.Width;
+            capsule.Height = size.Height;
+            capsule.Measure(size);
+            capsule.Arrange(new Rect(size));
+            capsule.UpdateLayout();
+            Equal(size.Height / 2, capsule.CornerRadius.TopLeft);
+            foreach (var point in new[] { new Point(1, 1), new Point(size.Width - 1, 1), new Point(1, size.Height - 1), new Point(size.Width - 1, size.Height - 1) })
+                if (VisualTreeHelper.HitTest(capsule, point) is not null)
+                    throw new Exception("Capsule corner intercepted pointer input.");
+            foreach (var point in new[] { new Point(size.Width / 2, size.Height / 2), new Point(1, size.Height / 2), new Point(size.Width - 1, size.Height / 2) })
+                if (VisualTreeHelper.HitTest(capsule, point) is null)
+                    throw new Exception("Capsule clipped a valid action position.");
+        }
+        Console.WriteLine("PASS: capsule hit testing excludes all four corners and retains center/end actions through resize.");
+    }
+
+    private static void CheckLeftContentControls()
+    {
+        var panel = new StackPanel();
+        var targets = new FrameworkElement[]
+        {
+            new Expander { Header = "Empty section", IsExpanded = true },
+            new Expander { Header = "Collapsed section", IsExpanded = false },
+            new ContentControl(),
+            new ContentControl { Content = "Text content" },
+            new TextBlock { Text = "Navigation item" }
+        };
+        foreach (var item in targets) panel.Children.Add(item);
+        var left = new MyPageLeft { AnimatedControl = panel };
+        left.Children.Add(panel);
+        for (var repeat = 0; repeat < 3; repeat++)
+        {
+            left.TriggerShowAnimation();
+            AdvancePageAnimations();
+            foreach (var item in targets) Equal(item is TextBlock ? 0.6 : 1, item.Opacity);
+            left.TriggerHideAnimation();
+            AdvancePageAnimations();
+            foreach (var item in targets) Equal(0, item.Opacity);
+        }
+        if (!aniGroups.IsEmpty) throw new Exception("Left section animation failed to settle.");
+        Console.WriteLine("PASS: empty/collapsed expanders and empty/text content controls survive repeated left-page entry and exit.");
     }
 
     private static void CheckNavigationLayout()

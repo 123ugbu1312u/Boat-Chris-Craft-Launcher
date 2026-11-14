@@ -37,7 +37,17 @@ public enum ColorTheme
     SkyBlue = 0,
     CatBlue = 1,
     DeathBlue = 2,
-    HmclBlue = 3
+    HmclBlue = 3,
+    Mint = 4,
+    Emerald = 5,
+    Forest = 6,
+    Amber = 7,
+    Tangerine = 8,
+    Coral = 9,
+    Rose = 10,
+    Violet = 11,
+    Lavender = 12,
+    Slate = 13
 }
 
 /// <summary>

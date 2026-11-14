@@ -27,8 +27,6 @@
         <StackPanel Grid.Row="0" Grid.ColumnSpan="5" Margin="24,24,24,0">
             <TextBlock Text="{DynamicResource Workbench.Launch}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}" />
             <TextBlock Text="{DynamicResource Workbench.Account}" Margin="0,5,0,0" FontSize="12" Foreground="{DynamicResource ColorBrushGray3}" />
-            <local:MyButton x:Name="BtnNewPlayer" Height="34" Margin="0,12,0,0"
-                            Text="{DynamicResource Launch.Home.AddPlayer}" />
         </StackPanel>
         <Grid x:Name="PanInstanceActions" Grid.Row="3" Grid.ColumnSpan="5">
             <Grid.ColumnDefinitions>

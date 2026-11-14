@@ -568,9 +568,9 @@ fn validate_easytier_layout(
     config_dir: &Path,
 ) -> Result<(), String> {
     let executable_dir = std::env::current_exe()
-        .map_err(|e| format!("无法获取 MCTier 安装目录: {}", e))?
+        .map_err(|e| format!("无法获取 BCCL虚拟局域网联机 安装目录: {}", e))?
         .parent()
-        .ok_or_else(|| "MCTier 可执行文件缺少安装目录".to_string())?
+        .ok_or_else(|| "BCCL虚拟局域网联机 可执行文件缺少安装目录".to_string())?
         .to_path_buf();
     validate_runtime_location(&executable_dir, working_dir)?;
     if executable != &working_dir.join("easytier-core.exe") {

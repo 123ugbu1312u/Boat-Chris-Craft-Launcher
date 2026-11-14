@@ -173,7 +173,7 @@ fn ensure_emit_thread() {
             }
             for (port, motd) in entries {
                 let safe_motd = if motd.trim().is_empty() {
-                    "MCTier 世界".to_string()
+                    "BCCL虚拟局域网联机 世界".to_string()
                 } else {
                     motd.replace("[/MOTD]", " ").replace("[/AD]", " ")
                 };

@@ -306,7 +306,7 @@ export const GlobalAdvancedConfigPanel: React.FC = () => {
               <Switch />
             </Form.Item>
             <Form.Item name="dev_name" label={tl('TUN 设备名称', 'TUN Device Name')}>
-              <Input placeholder="MCTier_Net" />
+              <Input placeholder="BCCL虚拟局域网联机_Net" />
             </Form.Item>
             <Form.Item name="mtu" label={tl('MTU 大小', 'MTU Size')}>
               <InputNumber min={1280} max={1500} placeholder="1380" style={{ width: '100%' }} />

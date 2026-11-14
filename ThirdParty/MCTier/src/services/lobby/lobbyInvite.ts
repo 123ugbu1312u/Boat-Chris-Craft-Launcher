@@ -106,7 +106,7 @@ export const formatLobbyInviteText = async (invite: LobbyInvite, language: 'zh' 
   if (language === 'en') {
     return [
       '——————— Invitation to Join Lobby ———————',
-      'Copy everything, then open MCTier - Join Lobby (auto-detected)',
+      'Copy everything, then open BCCL虚拟局域网联机 - Join Lobby (auto-detected)',
       `Lobby Name: ${name}`,
       ...(safeServerNode ? [`Server Node: ${safeServerNode}`] : []),
       ...(safeSignalingServer ? [`Signaling Server: ${safeSignalingServer}`] : []),
@@ -117,7 +117,7 @@ export const formatLobbyInviteText = async (invite: LobbyInvite, language: 'zh' 
 
   return [
     '——————— 邀请您加入大厅 ———————',
-    '完整复制后打开 MCTier-加入大厅 界面（自动识别）',
+    '完整复制后打开 BCCL虚拟局域网联机-加入大厅 界面（自动识别）',
     `大厅名称：${name}`,
     ...(safeServerNode ? [`服务器节点：${safeServerNode}`] : []),
     ...(safeSignalingServer ? [`信令服务器：${safeSignalingServer}`] : []),

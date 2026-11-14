@@ -575,7 +575,7 @@ pub fn open_microphone_privacy_settings() -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         return Err(
-            "当前 Linux 桌面环境无法自动定位麦克风权限页，请在系统设置中手动允许 MCTier 使用麦克风"
+            "当前 Linux 桌面环境无法自动定位麦克风权限页，请在系统设置中手动允许 BCCL虚拟局域网联机 使用麦克风"
                 .to_string(),
         );
     }
@@ -596,14 +596,14 @@ pub fn reset_microphone_permission(app: tauri::AppHandle) -> Result<(), String> 
             .arg("--reset-microphone-permission")
             .creation_flags(0x08000000)
             .spawn()
-            .map_err(|e| format!("重启 MCTier 失败: {}", e))?;
+            .map_err(|e| format!("重启 BCCL虚拟局域网联机 失败: {}", e))?;
     }
     #[cfg(not(windows))]
     {
         std::process::Command::new(&exe)
             .arg("--reset-microphone-permission")
             .spawn()
-            .map_err(|e| format!("重启 MCTier 失败: {}", e))?;
+            .map_err(|e| format!("重启 BCCL虚拟局域网联机 失败: {}", e))?;
     }
     app.exit(0);
     Ok(())

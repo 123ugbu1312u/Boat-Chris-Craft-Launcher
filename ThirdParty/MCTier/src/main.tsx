@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { initializeStore } from './stores';
 import './i18n';
+import { initializeHostAppearance } from './theme/hostAppearance';
 
 // 主题主色配置已移除，统一使用品牌绿；清理历史遗留的自定义主色，避免旧的橙色等残留
 try {
@@ -10,7 +11,7 @@ try {
   document.documentElement.style.removeProperty('--mctier-primary');
 } catch { /* ignore */ }
 
-void initializeStore().then(() => ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+void Promise.all([initializeStore(), initializeHostAppearance()]).then(() => ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>

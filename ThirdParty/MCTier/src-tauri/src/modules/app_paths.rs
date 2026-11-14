@@ -9,7 +9,7 @@ pub const APP_ID: &str = "com.bccl.mctier.embedded";
 pub fn data_root() -> io::Result<PathBuf> {
     dirs::data_local_dir()
         .map(|base| base.join(APP_ID))
-        .ok_or_else(|| io::Error::other("无法获取 MCTier 本地数据目录"))
+        .ok_or_else(|| io::Error::other("无法获取 BCCL虚拟局域网联机 本地数据目录"))
 }
 
 pub fn config_path() -> io::Result<PathBuf> {

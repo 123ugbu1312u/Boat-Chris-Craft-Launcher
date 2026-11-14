@@ -1572,7 +1572,7 @@ pub async fn quark_support(
     if window.label() != "main"
         || !super::media_permission::trusted(window.url().map_err(|_| "无效来源")?.as_str())
     {
-        return Err("仅 MCTier 主窗口可管理夸克赞助".into());
+        return Err("仅 BCCL虚拟局域网联机 主窗口可管理夸克赞助".into());
     }
     if action == "startup_status" {
         // Persistence replaces the whole encrypted file atomically. This read-only

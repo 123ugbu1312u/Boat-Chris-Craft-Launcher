@@ -42,7 +42,6 @@ public partial class PageDownloadCompDetail
             PanIntro.Children.Remove(_compItem);
         _compItem = _project.ToCompItem(true, true);
         _compItem.CanInteraction = false;
-        _compItem.ShowFavoriteBtn = false;
         _compItem.Margin = new Thickness(-7, -7, 0d, 8d);
         PanIntro.Children.Insert(0, _compItem);
 
@@ -54,7 +53,6 @@ public partial class PageDownloadCompDetail
         BtnTranslate.Visibility = Lang.IsChineseMainland
             ? Visibility.Visible
             : Visibility.Collapsed;
-        RefreshFavoriteButton();
 
         ModAnimation.AniControlEnabled -= 1;
     }
@@ -592,11 +590,6 @@ public partial class PageDownloadCompDetail
         ModBase.ClipboardSet(_compItem.LabTitle.Text + _compItem.LabTitleRaw.Text);
     }
 
-    private void BtnFavorites_Click(object sender, EventArgs e)
-    {
-        ModComp.CompFavorites.ShowMenu(_project, (UIElement)sender, RefreshFavoriteButton);
-    }
-
     private void BtnIntroLinkCopy_Click(object sender, EventArgs e)
     {
         ModComp.CompClipboard.currentText = _project.Website;
@@ -612,28 +605,6 @@ public partial class PageDownloadCompDetail
             return;
         ModMain.MyMsgBox(Lang.Text("Download.Comp.Detail.DescriptionTranslationResult", _project.Description,
             chineseDescription));
-    }
-
-    /// <summary>
-    ///     刷新收藏按钮的显示状态
-    /// </summary>
-    public void RefreshFavoriteButton()
-    {
-        try
-        {
-            if (_project is null) return;
-
-            var isFavourite = ModComp.CompFavorites.IsFavourite(_project.Id);
-            BtnFavorites.SvgIcon = isFavourite ? "lucide/heart-filled" : "lucide/heart";
-
-            // 刷新顶部的项目卡片收藏状态
-            if (_compItem is not null)
-                _compItem.RefreshFavoriteStatus();
-        }
-        catch (Exception ex)
-        {
-            ModBase.Log(ex, "刷新收藏按钮状态时出错");
-        }
     }
 
     #region 加载器
@@ -658,7 +629,6 @@ public partial class PageDownloadCompDetail
         BtnIntroWeb.Click += BtnIntroWeb_Click;
         BtnIntroWiki.Click += BtnIntroWiki_Click;
         BtnIntroCopy.Click += BtnIntroCopy_Click;
-        BtnFavorites.Click += BtnFavorites_Click;
         BtnIntroLinkCopy.Click += BtnIntroLinkCopy_Click;
         BtnTranslate.Click += BtnTranslate_Click;
     }

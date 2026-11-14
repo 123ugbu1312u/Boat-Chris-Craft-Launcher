@@ -90,6 +90,7 @@ public partial class FormMain
         InitializeComponent();
         InitializeNavigationDock();
         InitializeWorkbench();
+        Loaded += PreloadMultiplayerOnLoaded;
         Opacity = 0d;
         try
         {
@@ -1397,7 +1398,7 @@ public partial class FormMain
         DownloadResourcePack = 5,
         DownloadShader = 6,
         DownloadWorld = 7,
-        DownloadCompFavorites = 8,
+        RetiredDownloadPage8 = 8,
         DownloadClient = 9,
         DownloadOptiFine = 10,
         DownloadForge = 11,
@@ -1407,6 +1408,7 @@ public partial class FormMain
         DownloadLiteLoader = 16,
         DownloadLabyMod = 17,
         DownloadLegacyFabric = 18,
+        DownloadJava = 19,
 
         SetupLaunch = 0,
         SetupUI = 1,
@@ -1821,7 +1823,7 @@ public partial class FormMain
                 case PageType.Multiplayer:
                     {
                         multiplayerLeft ??= new MyPageLeft { Width = 0 };
-                        multiplayerPage ??= new PageMultiplayerOriginal();
+                        InitializeMultiplayerWorkspace();
                         PageChangeAnim(multiplayerLeft, multiplayerPage);
                         break;
                     }
@@ -1942,11 +1944,26 @@ public partial class FormMain
 
     private int pageTransitionVersion;
 
-    private void PageChangeAnim(FrameworkElement targetLeft, FrameworkElement targetRight)
+    private async void PageChangeAnim(FrameworkElement targetLeft, FrameworkElement targetRight)
     {
         var nextLeft = (MyPageLeft)targetLeft;
         var nextRight = (MyPageRight)targetRight;
         var version = ++pageTransitionVersion;
+        MultiplayerPreparation.Visibility = Visibility.Collapsed;
+        if (nextRight is PageMultiplayerOriginal multiplayer)
+        {
+            var preparation = multiplayer.PrepareAsync();
+            if (!preparation.IsCompleted)
+            {
+                // An immediate click during cold startup keeps the current page
+                // drawn until the native surface has its first frame.
+                MultiplayerPreparation.Visibility = Visibility.Visible;
+                await preparation;
+                if (version != pageTransitionVersion || Dispatcher.HasShutdownStarted) return;
+                MultiplayerPreparation.Visibility = Visibility.Collapsed;
+            }
+        }
+        else multiplayerPage?.SetWorkspaceActive(false);
         ModAnimation.AniStop("FrmMain PageChange");
         ModAnimation.AniStop("FrmMain LeftChange");
         ModAnimation.AniStop("PageLeft PageChange"); // 停止左边栏变更导致的右页面切换动画，防止它与本动画一起触发多次 PageOnEnter
@@ -1996,6 +2013,7 @@ public partial class FormMain
                 nextLeft.Opacity = nextRight.Opacity = 1d;
                 nextLeft.TriggerShowAnimation();
                 nextRight.PageOnEnter();
+                if (nextRight is PageMultiplayerOriginal readyWorkspace) readyWorkspace.SetWorkspaceActive(true);
                 PanMainLeft_Resize(PanMainLeft.ActualWidth);
                 BtnExtraBack.ShowRefresh();
             }, 16, true),
