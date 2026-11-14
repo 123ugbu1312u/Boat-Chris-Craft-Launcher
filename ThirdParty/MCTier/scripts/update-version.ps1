@@ -15,6 +15,7 @@ $ErrorActionPreference = 'Stop'
 
 $root = if ($WorkspaceRoot) { [IO.Path]::GetFullPath($WorkspaceRoot) } else { Split-Path -Parent (Split-Path -Parent $PSScriptRoot) }
 $desktop = Split-Path -Parent $PSScriptRoot
+$readmePath = [IO.Path]::GetFullPath((Join-Path $desktop '../../README.md'))
 # 安卓端已移动到桌面应用文件夹内，方便统一提交源码
 $android = Join-Path $desktop 'MCTier-Android'
 $legacyAndroid = Join-Path $root 'MCTier-Android'
@@ -266,7 +267,7 @@ Write-Host "  [检查] 前端未硬编码 clientVersion（运行时读 Tauri 版
 
 # 第三方声明文件头部的「对应 MCTier x.y.z」与更新日期。该文件会被打进安装包
 # （tauri.conf.json 的 resources），版本对不上会让合规声明指向错误的版本。
-$noticesPath = Join-Path $desktop 'THIRD_PARTY_NOTICES.md'
+$noticesPath = Join-Path $desktop 'THIRD_PARTY_NOTICES.txt'
 $noticesPattern = '(最后更新 / Last updated: )(\d{4}-\d{2}-\d{2})(（对应 MCTier )\d+\.\d+\.\d+(）)'
 if ($sameVersion) {
     # 同版本重新同步时保留原日期：这一行记录的是文档自身的更新时间，
@@ -277,14 +278,8 @@ if ($sameVersion) {
     Update-File $noticesPath $noticesPattern ('${1}' + $today + '${3}' + $newVersion + '${4}') 1 | Out-Null
 }
 
-# README 徽章
-Update-File (Join-Path $desktop 'README.md') '(version-)[^-]*(-blue)' $g12 | Out-Null
-
-# 英文 README 徽章(确保英文文档版本号同步)
-Update-File (Join-Path $desktop 'README_EN.md') '(version-)[^-]*(-blue)' $g12 | Out-Null
-
-# 根目录 README 徽章(若存在版本徽章)
-Update-File (Join-Path $root 'README.md') '(version-)[^-]*(-blue)' $g12 | Out-Null
+# 上游说明与版本徽章已合并至 BCCL 根目录 README。
+Update-File $readmePath '(version-)[^-]*(-blue)' $g12 | Out-Null
 
 Write-Host ""
 Write-Host "[安卓端 MCTier-Android]" -ForegroundColor Cyan
@@ -396,8 +391,7 @@ $syncChecks = @(
     @{ Name = 'src-tauri/Cargo.toml';   Path = (Join-Path $desktop 'src-tauri\Cargo.toml');      Pattern = '(?m)^version\s*=\s*"([^"]+)"';       Expected = $newVersion },
     @{ Name = 'src-tauri/Cargo.lock';   Path = (Join-Path $desktop 'src-tauri\Cargo.lock');      Pattern = 'name = "mctier"\r?\nversion = "([^"]+)"'; Expected = $newVersion },
     @{ Name = 'Android Models.kt';      Path = (Join-Path $android 'app\src\main\java\top\pmh13\mctier\data\Models.kt'); Pattern = 'AppClientVersion\s*=\s*"([^"]+)"'; Expected = $newVersion },
-    @{ Name = 'README 徽章';            Path = (Join-Path $desktop 'README.md');                 Pattern = 'version-([^-]+)-blue';                Expected = $newVersion },
-    @{ Name = 'README_EN 徽章';         Path = (Join-Path $desktop 'README_EN.md');              Pattern = 'version-([^-]+)-blue';                Expected = $newVersion },
+    @{ Name = 'README 徽章';            Path = $readmePath;                                      Pattern = 'version-([^-]+)-blue';                Expected = $newVersion },
     @{ Name = 'THIRD_PARTY_NOTICES';    Path = $noticesPath;                                      Pattern = '（对应 MCTier (\d+\.\d+\.\d+)）';       Expected = $newVersion }
 )
 

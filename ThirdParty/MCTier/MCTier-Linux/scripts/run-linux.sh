@@ -64,7 +64,7 @@ fi
 # 自建的 WebKitGTK（开了 ENABLE_WEB_RTC）放在这个目录时自动优先加载，
 # 只对本进程生效，不影响系统里其他用 WebKit 的程序。
 # 背景：Debian 官方的 webkit2gtk 编译期没开 WebRTC，语音/屏幕共享/远程控制无法启动，
-# 详见 MCTier-Linux/README.md 的"已知限制"。
+# 详见仓库根目录 README.md 中的“MCTier Linux 构建与限制”。
 for webkit_dir in "${MCTIER_WEBKIT_LIB_DIR:-}" "$HOME/.local/lib/mctier-webkit" /opt/mctier/webkit/lib; do
   if [[ -n "$webkit_dir" && -d "$webkit_dir" ]]; then
     export LD_LIBRARY_PATH="${webkit_dir}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"

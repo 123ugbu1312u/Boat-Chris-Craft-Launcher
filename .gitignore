@@ -350,9 +350,9 @@ MaskFiles/
 # Local publisher configuration (public Microsoft OAuth application ID).
 scripts/MicrosoftOAuth.local.json
 
-# Source publishing: README.md is the only Markdown filename included.
+# Source publishing: only the root README.md is included.
 *.[mM][dD]
-!README.md
+!/README.md
 /Archives/
 /Temp/
 /Backup/

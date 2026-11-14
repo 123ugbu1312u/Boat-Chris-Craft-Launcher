@@ -10,7 +10,7 @@ fail() { printf '错误: %s\n' "$*" >&2; exit 1; }
 log()  { printf '%s\n' "$*"; }
 
 command -v apt-get >/dev/null 2>&1 \
-  || fail "本脚本仅适用于 Debian 家族（需要 apt-get）。其他发行版请参考 MCTier-Linux/README.md 手动安装等价依赖。"
+  || fail "本脚本仅适用于 Debian 家族（需要 apt-get）。其他发行版请参考仓库根目录 README.md 的 MCTier Linux 构建说明手动安装等价依赖。"
 
 if [[ "${EUID}" -eq 0 ]]; then
   SUDO=""
