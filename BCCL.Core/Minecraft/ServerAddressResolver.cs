@@ -34,7 +34,8 @@ public static class ServerAddressResolver
     private static readonly Regex _TrailingPort =
         new(@":(?<port>\d{1,5})$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-    public static async Task<ResolvedServerAddress> GetResolvedServerAddressAsync(string address, CancellationToken cancelToken = default)
+    public static async Task<ResolvedServerAddress> GetResolvedServerAddressAsync(string address,
+        CancellationToken cancelToken = default, bool publicOnly = false)
     {
         if (string.IsNullOrWhiteSpace(address))
             throw new ArgumentException("服务器地址不能为空", nameof(address));
@@ -50,20 +51,23 @@ public static class ServerAddressResolver
         {
             _ValidatePort(explicitPort);
             LogWrapper.Info($"使用显式端口，跳过 SRV：{hostOrIp}:{explicitPort}");
-            var target = await _ResolveReachableAsync(hostOrIp, explicitPort, cancelToken).ConfigureAwait(false);
+            var target = await _ResolveReachableAsync(hostOrIp, explicitPort, cancelToken, publicOnly).ConfigureAwait(false);
             if (target is not null)
                 return new ResolvedServerAddress(hostOrIp, target.Value.Ip, target.Value.Port);
 
             // 回退策略：无法连接则仍返回解析到的首个 IP
-            var fallbackIp = await _ResolveFirstIpAsync(hostOrIp, cancelToken).ConfigureAwait(false);
+            var fallbackIp = await _ResolveFirstIpAsync(hostOrIp, cancelToken, publicOnly).ConfigureAwait(false);
             return new ResolvedServerAddress(hostOrIp, fallbackIp, explicitPort);
         }
 
         // 3) 未指定端口
         // 3.1 纯 IP（IPv4/IPv6）=> 直接使用默认端口
-        if (IPAddress.TryParse(hostOrIp, out _))
+        if (IPAddress.TryParse(hostOrIp, out var literal))
         {
-            var target = await _ResolveReachableAsync(hostOrIp, DefaultPort, cancelToken).ConfigureAwait(false);
+            if (publicOnly && !IsPublicAddress(literal))
+                return new ResolvedServerAddress(hostOrIp, null, DefaultPort);
+
+            var target = await _ResolveReachableAsync(hostOrIp, DefaultPort, cancelToken, publicOnly).ConfigureAwait(false);
             if (target is not null)
                 return new ResolvedServerAddress(hostOrIp, target.Value.Ip, target.Value.Port);
 
@@ -82,7 +86,7 @@ public static class ServerAddressResolver
                 var targetHost = _TrimTrailingDot(srv.Target);
                 var port = srv.Port;
 
-                var reachable = await _ResolveReachableAsync(targetHost, port, cancelToken).ConfigureAwait(false);
+                var reachable = await _ResolveReachableAsync(targetHost, port, cancelToken, publicOnly).ConfigureAwait(false);
                 if (reachable is not null)
                 {
                     LogWrapper.Info($"SRV 命中：{targetHost}:{port} -> {reachable.Value.Ip}:{port}");
@@ -92,7 +96,7 @@ public static class ServerAddressResolver
 
             // SRV 全部不可达则回退到 SRV 第一条的解析 IP 或域名默认端口
             var first = srvOrdered[0];
-            var firstIp = await _ResolveFirstIpAsync(_TrimTrailingDot(first.Target), cancelToken).ConfigureAwait(false);
+            var firstIp = await _ResolveFirstIpAsync(_TrimTrailingDot(first.Target), cancelToken, publicOnly).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(firstIp)) return new ResolvedServerAddress(idnHost, firstIp, first.Port);
         }
         else
@@ -101,7 +105,7 @@ public static class ServerAddressResolver
         }
 
         // 3.3 最终回退：域名 + 默认端口
-        var ip = await _ResolveFirstIpAsync(idnHost, cancelToken).ConfigureAwait(false);
+        var ip = await _ResolveFirstIpAsync(idnHost, cancelToken, publicOnly).ConfigureAwait(false);
         return new ResolvedServerAddress(idnHost, ip, DefaultPort);
     }
 
@@ -282,19 +286,22 @@ public static class ServerAddressResolver
 
     // ===== DNS 与连接可达性 =====
 
-    private static async Task<(string Ip, int Port)?> _ResolveReachableAsync(string hostOrIp, int port, CancellationToken ct)
+    private static async Task<(string Ip, int Port)?> _ResolveReachableAsync(string hostOrIp, int port,
+        CancellationToken ct, bool publicOnly)
     {
         try
         {
             // 已是字面量 IP
             if (IPAddress.TryParse(hostOrIp, out var ipLiteral))
             {
+                if (publicOnly && !IsPublicAddress(ipLiteral))
+                    return null;
                 var result = await _ConnectOneAsync(ipLiteral, port, ct).ConfigureAwait(false);
                 if (result.ok) return (ipLiteral.ToString(), port);
                 return null;
             }
 
-            var addresses = await Dns.GetHostAddressesAsync(_TrimTrailingDot(hostOrIp), ct).ConfigureAwait(false);
+            var addresses = await _ResolveIpsAsync(hostOrIp, ct, publicOnly).ConfigureAwait(false);
             if (addresses.Length == 0)
                 return null;
 
@@ -321,14 +328,14 @@ public static class ServerAddressResolver
         }
     }
 
-    private static async Task<string?> _ResolveFirstIpAsync(string hostOrIp, CancellationToken ct)
+    private static async Task<string?> _ResolveFirstIpAsync(string hostOrIp, CancellationToken ct, bool publicOnly)
     {
         try
         {
             if (IPAddress.TryParse(hostOrIp, out var ip))
-                return ip.ToString();
+                return !publicOnly || IsPublicAddress(ip) ? ip.ToString() : null;
 
-            var addresses = await Dns.GetHostAddressesAsync(_TrimTrailingDot(hostOrIp), ct).ConfigureAwait(false);
+            var addresses = await _ResolveIpsAsync(hostOrIp, ct, publicOnly).ConfigureAwait(false);
             var chosen = addresses.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetworkV6)
                          ?? addresses.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork);
             return chosen?.ToString();
@@ -338,6 +345,38 @@ public static class ServerAddressResolver
             LogWrapper.Warn(ex, $"DNS 解析失败：{hostOrIp}");
             return null;
         }
+    }
+
+    private static async Task<IPAddress[]> _ResolveIpsAsync(string host, CancellationToken ct, bool publicOnly)
+    {
+        host = _TrimTrailingDot(host);
+        if (!publicOnly)
+            return await Dns.GetHostAddressesAsync(host, ct).ConfigureAwait(false);
+
+        var addresses = await DnsQuery.Instance.QueryForIpAsync(host, ct).ConfigureAwait(false);
+        return addresses?.Where(IsPublicAddress).ToArray() ?? [];
+    }
+
+    public static bool IsPublicAddress(IPAddress ip)
+    {
+        if (ip.IsIPv4MappedToIPv6)
+            ip = ip.MapToIPv4();
+        var bytes = ip.GetAddressBytes();
+        // Directory entries are untrusted. Check the resolved IP before opening any socket.
+        if (ip.AddressFamily == AddressFamily.InterNetworkV6)
+            return bytes[0] is >= 0x20 and <= 0x3f &&
+                   !(bytes[0] == 0x20 && (bytes[1] == 2 || bytes[1] == 1 && bytes[2] < 2));
+
+        return bytes[0] switch
+        {
+            0 or 10 or 127 or >= 224 => false,
+            100 => bytes[1] is < 64 or > 127,
+            169 => bytes[1] != 254,
+            172 => bytes[1] is < 16 or > 31,
+            192 => bytes[1] is not (0 or 168),
+            198 => bytes[1] is not (18 or 19),
+            _ => true
+        };
     }
 
     private static async Task<string?> _ConnectAnyAsync(IReadOnlyList<IPAddress> addrs, int port, TimeSpan delay, CancellationToken ct)

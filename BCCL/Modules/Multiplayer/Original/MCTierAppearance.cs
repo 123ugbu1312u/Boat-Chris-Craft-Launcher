@@ -2,10 +2,11 @@ using System.IO;
 using System.Text.Json;
 using System.Windows.Media;
 using BCCL.Core.App;
+using BCCL.Core.App.Localization;
 
 namespace BCCL.Multiplayer.Original;
 
-/// <summary>Publishes only the launcher's current palette to its embedded workspace.</summary>
+/// <summary>Publishes the launcher's palette and UI language to its embedded workspace.</summary>
 internal static class MCTierAppearance
 {
     private static string? published;
@@ -30,6 +31,7 @@ internal static class MCTierAppearance
             var json = JsonSerializer.Serialize(new
             {
                 theme = ThemeManager.IsDarkMode ? "dark" : "light",
+                language = LocalizationService.CurrentLanguage.CultureName,
                 background = Hex(background), top = Hex(top), bottom = Hex(bottom)
             });
             if (json == published && File.Exists(FilePath)) return;

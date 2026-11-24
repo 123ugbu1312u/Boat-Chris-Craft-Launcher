@@ -19,6 +19,8 @@ public partial class PageLaunchRight : IRefreshable
     {
         InitializeComponent();
         InitializeWorkspaceSummary();
+        InitializeWorkspaceSlogan();
+        InitializeWorkspaceShortcuts();
         onlineLoader = new ModLoader.LoaderTask<string, int>(
             Lang.Text("Launch.Homepage.Task.Download"),
             OnlineLoaderSub)

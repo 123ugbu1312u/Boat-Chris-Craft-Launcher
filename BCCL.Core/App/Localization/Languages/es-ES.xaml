@@ -1,4 +1,4 @@
-﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
+<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -36,4 +36,21 @@
     <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violeta</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavanda</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Pizarra</sys:String>
+    <!-- Launch memory optimization -->
+    <sys:String x:Key="Setup.Launch.Memory.Optimize">Optimizar la memoria antes de iniciar el juego</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.ToolTip">Libera memoria física del sistema antes de iniciar el juego y puede solicitar permisos de administrador. Los discos mecánicos pueden ralentizarse brevemente. El juego se iniciará aunque se rechace el permiso o falle la optimización.</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.On">Activado</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.Off">Desactivado</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Stage.MemoryOptimize">Optimizando memoria</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Cancelled">Se canceló la optimización de memoria. Continúa el inicio del juego.</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Failed">Falló la optimización de memoria. Continúa el inicio del juego; consulta el registro.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder">Bordes de botones y paneles</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder.ToolTip">Muestra los bordes Liquid Glass de botones y paneles. Elige su color arriba.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorderColor">Color del borde</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Silver">Plateado</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.White">Blanco</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Charcoal">Gris carbón</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lemon">Amarillo limón</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Cobalt">Azul cobalto</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.SkyBlue">Azul cielo</sys:String>
 </ResourceDictionary>

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
@@ -9,7 +9,6 @@ using FluentValidation;
 using BCCL.Core.App;
 using BCCL.Core.App.Localization;
 using BCCL.Core.Logging;
-using BCCL.Core.Minecraft.ResourceProject;
 using BCCL.Core.UI;
 using BCCL.Core.Utils;
 using BCCL.Core.Utils.Validate;
@@ -266,6 +265,8 @@ public partial class PageDownloadCompDetail
             _ => null
         };
 
+        if (file is null) return;
+        var project = _project;
         ModBase.RunInNewThread(() =>
         {
             try
@@ -299,7 +300,7 @@ public partial class PageDownloadCompDetail
                     // 获取资源所需的加载器
                     if (file.ModLoaders.Any())
                         allowedLoaders = file.ModLoaders;
-                    else if (_project.ModLoaders.Any()) allowedLoaders = _project.ModLoaders;
+                    else if (project.ModLoaders.Any()) allowedLoaders = project.ModLoaders;
                     ModBase.Log(
                         $"[Comp] {desc}要求的加载器种类：{(allowedLoaders.Any() ? string.Join(" / ", allowedLoaders) : "无要求")}");
 
@@ -380,189 +381,21 @@ public partial class PageDownloadCompDetail
                 }
 
                 // 获取文件名并弹窗
-                var fileName = ModComp.CompFileNameGet(_project, file);
-                ModBase.RunInUi(() =>
+                var fileName = ModComp.CompFileNameGet(project, file);
+                var target = ModBase.RunInUiWait(() =>
                 {
-                    var target = SystemDialogs.SelectSaveFile(Lang.Text("Download.Comp.Detail.SelectSaveLocation"),
+                    var selectedPath = SystemDialogs.SelectSaveFile(Lang.Text("Download.Comp.Detail.SelectSaveLocation"),
                         fileName, Lang.Text("Download.Comp.Detail.ResourceFile.Filter", desc) + "|" +
                                   (file.Type == ModComp.CompType.Mod
                                       ? file.FileName.EndsWith(".litemod") ? "*.litemod" : "*.jar"
-                                      : file.FileName.EndsWith(".mrpack")
-                                          ? "*.mrpack"
-                                          : "*.zip"),
+                                      : file.FileName.EndsWith(".mrpack") ? "*.mrpack" : "*.zip"),
                         defaultFolder);
-
-                    if (!target.Contains("\\")) return;
-
-                    // 记录缓存路径
-                    var targetDir = ModBase.GetPathFromFullPath(target);
-                    if (target != defaultFolder)
-                    {
-                        if (cachedFolder.ContainsKey(file.Type))
-                            cachedFolder[file.Type] = targetDir;
-                        else
-                            cachedFolder.Add(file.Type, targetDir);
-                    }
-
-                    if (file.Type == ModComp.CompType.Mod && Config.Download.Comp.AutoInstallDependencies &&
-                        file.Dependencies.Any())
-                    {
-                        try
-                        {
-                            McInstance? targetInstance = null;
-                            var knownInstances = new List<McInstance>();
-                            if (ModInstanceList.McMcInstanceSelected is not null)
-                            {
-                                knownInstances.Add(ModInstanceList.McMcInstanceSelected);
-                            }
-
-                            knownInstances.AddRange(ModInstanceList.mcInstanceList.Values.SelectMany(list => list)
-                                .Where(instance => instance is not null));
-                            targetInstance = knownInstances
-                                .Distinct()
-                                .FirstOrDefault(instance =>
-                                    targetDir.StartsWith(instance.PathIndie, StringComparison.OrdinalIgnoreCase));
-                            if (targetInstance is not null && !targetInstance.IsLoaded)
-                            {
-                                targetInstance.Load();
-                            }
-
-                            var mcVersion = targetInstance?.Info?.VanillaName
-                                            ?? file.GameVersions.FirstOrDefault(version => version.Contains("."))
-                                            ?? string.Empty;
-                            var targetLoaders = new List<ModComp.CompLoaderType>();
-                            if (targetInstance is not null)
-                            {
-                                if (targetInstance.Info.HasForge || targetInstance.Info.HasCleanroom)
-                                    targetLoaders.Add(ModComp.CompLoaderType.Forge);
-                                if (targetInstance.Info.HasFabric || targetInstance.Info.HasLegacyFabric)
-                                    targetLoaders.Add(ModComp.CompLoaderType.Fabric);
-                                if (targetInstance.Info.HasQuilt)
-                                    targetLoaders.Add(ModComp.CompLoaderType.Quilt);
-                                if (targetInstance.Info.HasNeoForge)
-                                    targetLoaders.Add(ModComp.CompLoaderType.NeoForge);
-                                if (targetInstance.Info.HasLiteLoader)
-                                    targetLoaders.Add(ModComp.CompLoaderType.LiteLoader);
-                            }
-
-                            if (!targetLoaders.Any())
-                            {
-                                targetLoaders = allowedLoaders.ToList();
-                            }
-
-                            ModBase.Log($"[CompDeps] 开始解析必需前置: {file.Dependencies.Count} 个依赖");
-                            var request = ModCompDependency.BuildRequest(file, _project, mcVersion, targetLoaders,
-                                targetDir);
-                            var resolver = new ModDependencyResolver();
-                            var result = resolver.Resolve(request);
-
-                            void DownloadDependencies()
-                            {    
-                                if (!result.ToInstall.Any())
-                                {
-                                    ModBase.Log("[CompDeps] 所有前置均无法解析，仅下载 Mod 本体");
-                                    return;
-                                }
-                                
-                                ModBase.Log($"[CompDeps] 准备下载: {result.ToInstall.Count} 个前置");
-                                var depDownloads = ModCompDependency.BuildDependencyDownloads(result, targetDir);
-                                foreach (var (depFilename, downloadFile) in depDownloads)
-                                {
-                                    var depLoaderName = Lang.Text("Download.Comp.Detail.DownloadResource", desc,
-                                        ModBase.GetFileNameWithoutExtentionFromPath(depFilename));
-                                    var depLoaders = new List<ModLoader.LoaderBase>
-                                    {
-                                        new LoaderDownload(Lang.Text("Download.Comp.Detail.DownloadFile"),
-                                            new List<DownloadFile> { downloadFile })
-                                        {
-                                            ProgressWeight = 6,
-                                            block = true
-                                        }
-                                    };
-
-                                    // 启动加载器
-                                    var depLoader = new ModLoader.LoaderCombo<int>(depLoaderName, depLoaders);
-                                    depLoader.OnStateChanged = ModDownloadLib.LoaderStateChangedHintOnly;
-                                    depLoader.Start(1);
-                                    ModLoader.LoaderTaskbarAdd(depLoader);
-                                }
-                            }
-                            
-                            if (result.Unresolved.Any() || result.ToInstall.Any())
-                            {
-                                var installChoice = ModCompDependency.ConfirmDependencyInstall(result);
-
-                                switch (installChoice)
-                                {
-                                    case ModComp.CompDepsInstallTypes.Unresolved:
-                                        ModBase.Log("[CompDeps] 发现无法解析的前置");
-                                        DownloadDependencies();
-                                        break;
-
-                                    case ModComp.CompDepsInstallTypes.WithDeps:
-                                        DownloadDependencies();
-                                        break;
-
-                                    case ModComp.CompDepsInstallTypes.WithoutDeps:
-                                        ModBase.Log("[CompDeps] 用户选择仅下载 Mod 本体，跳过前置下载");
-                                        break;
-
-                                    case ModComp.CompDepsInstallTypes.Cancel:
-                                        ModBase.Log("[CompDeps] 用户取消安装");
-                                        return;
-
-                                    default:
-                                        ModBase.Log($"[CompDeps] 未知返回值: {installChoice} ，终止下载");
-                                        return;
-                                }
-                            }
-                            else
-                            {
-                                ModBase.Log("[CompDeps] 已满足: 所有必需前置已安装");
-                            }
-                        }
-                        catch (Exception depEx)
-                        {
-                            ModBase.Log(depEx, "[CompDeps] 依赖解析失败，跳过前置安装");
-                            var message = ExceptionDetails.Compose(
-                                Lang.Text("Download.Comp.Dependency.ResolveFailed.Message"),
-                                depEx);
-                            ModMain.MyMsgBox(
-                                message,
-                                Lang.Text("Download.Comp.Dependency.ResolveFailed.Title"),
-                                Lang.Text("Download.Comp.Dependency.ResolveFailed.Continue"),
-                                isWarn: true,
-                                forceWait: true);
-                        }
-                    }
-
-                    // 构造下载任务
-                    var loaderName = Lang.Text("Download.Comp.Detail.DownloadResource", desc,
-                        ModBase.GetFileNameWithoutExtentionFromPath(target));
-                    var loaders = new List<ModLoader.LoaderBase>
-                    {
-                        new LoaderDownload(Lang.Text("Download.Comp.Detail.DownloadFile"),
-                            new List<DownloadFile>
-                            {
-                                file.Type == ModComp.CompType.Mod
-                                    ? file.ToNetFile(target)
-                                    : file.ToNetFile(target, ModComp.DownloadReason.Standalone, null)
-                            })
-                        {
-                            ProgressWeight = 6,
-                            block = true
-                        }
-                    };
-
-                    // 启动加载器
-                    var loader = new ModLoader.LoaderCombo<int>(loaderName, loaders);
-                    loader.OnStateChanged = ModDownloadLib.LoaderStateChangedHintOnly;
-                    loader.Start(1);
-                    ModLoader.LoaderTaskbarAdd(loader);
-
-                    ModMain.frmMain.BtnExtraDownload.ShowRefresh();
-                    ModMain.frmMain.BtnExtraDownload.Ribble();
+                    if (selectedPath.Length > 0)
+                        cachedFolder[file.Type] = ModBase.GetPathFromFullPath(selectedPath);
+                    return selectedPath;
                 });
+                if (target.Length > 0)
+                    ModCompDependency.Download(project, file, target, instance: null, extractWorld: false);
             }
             catch (Exception ex)
             {

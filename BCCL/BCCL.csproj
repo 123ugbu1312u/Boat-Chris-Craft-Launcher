@@ -11,11 +11,10 @@
         <AssemblyName>BCCL</AssemblyName>
         <PublishUrl>publish\</PublishUrl>
         <PublishSingleFile>true</PublishSingleFile>
-        <!-- A RID alone no longer implies self-contained publishing. -->
-        <SelfContained>true</SelfContained>
+        <SelfContained>false</SelfContained>
         <PublishTrimmed>false</PublishTrimmed>
-        <!-- Lossless bundle compression; all assemblies, resources and runtime features remain included. -->
-        <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+        <!-- The SDK only supports single-file compression for self-contained builds. -->
+        <EnableCompressionInSingleFile Condition="'$(SelfContained)' == 'true'">true</EnableCompressionInSingleFile>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
         <!-- WPF popup accessibility/COM and late-bound libraries need stable on-disk
              assembly paths. Keep the distribution single-file, but extract all runtime
@@ -133,7 +132,10 @@
         <Resource Include="Images\**" />
         <Resource Include="Resources\**" />
         <EmbeddedResource Include="metadata.json" />
-        <EmbeddedResource Include="$(MCTierBundleArchive)" LogicalName="BCCL.Multiplayer.Original.bundle.zip" Condition="'$(MCTierBundleArchive)' != ''" />
+        <!-- Give the already compressed payload its own entry so the bundler can compress BCCL.dll separately. -->
+        <Content Include="$(MCTierBundleArchive)" Condition="'$(MCTierBundleArchive)' != ''"
+                 TargetPath="BCCL.Multiplayer.Original.bundle.zip" CopyToOutputDirectory="PreserveNewest"
+                 CopyToPublishDirectory="PreserveNewest" />
         <EmbeddedResource Include="$(MCTierBundleManifest)" LogicalName="BCCL.Multiplayer.Original.bundle.json" Condition="'$(MCTierBundleManifest)' != ''" />
     </ItemGroup>
     <ItemGroup>

@@ -41,6 +41,8 @@ public class ModSetup
         Config.Preference.GlassAutomaticConfig.Observe(new ConfigObserver(ConfigEvent.Changed, _ => LiquidGlassTheme.SettingsChanged()));
         Config.Preference.GlassButtonsConfig.Observe(new ConfigObserver(ConfigEvent.Changed, _ => ModBase.RunInUi(LiquidGlassTheme.Apply)));
         Config.Preference.CapsuleButtonsConfig.Observe(new ConfigObserver(ConfigEvent.Changed, _ => ModBase.RunInUi(LiquidGlassTheme.Apply)));
+        Config.Preference.GlassButtonBorderConfig.Observe(new ConfigObserver(ConfigEvent.Changed, _ => ModBase.RunInUi(LiquidGlassTheme.ApplyBorders)));
+        Config.Preference.GlassButtonBorderColorConfig.Observe(new ConfigObserver(ConfigEvent.Changed, _ => ModBase.RunInUi(LiquidGlassTheme.ApplyBorders)));
         Config.Preference.LiquidGlassConfig.Observe(new ConfigObserver(ConfigEvent.Changed,
             _ => { LiquidGlassTheme.SettingsChanged(); ThemeManager.ThemeRefresh(); }));
         Config.Preference.Theme.WindowOpacityConfig.Observe(new ConfigObserver(ConfigEvent.Changed,

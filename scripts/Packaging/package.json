@@ -1,0 +1,7 @@
+{
+  "name": "bccl-publish-tools",
+  "private": true,
+  "dependencies": {
+    "@gfx/zopfli": "1.0.15"
+  }
+}

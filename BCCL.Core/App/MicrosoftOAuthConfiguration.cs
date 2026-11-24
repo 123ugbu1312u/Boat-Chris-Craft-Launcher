@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 
 namespace BCCL.Core.App;
@@ -7,7 +8,17 @@ namespace BCCL.Core.App;
 /// <summary>Stores only the public application ID, never account credentials.</summary>
 public static class MicrosoftOAuthConfiguration
 {
-    public static string FilePath => Path.Combine(AppContext.BaseDirectory, "BCCL", "MicrosoftOAuth.json");
+    public static string FilePath
+    {
+        get
+        {
+            // AppContext.BaseDirectory can point to a different extraction folder for each bundled build.
+            var directory = Assembly.GetEntryAssembly()?.GetName().Name == "BCCL"
+                ? Path.GetDirectoryName(Environment.ProcessPath)
+                : null;
+            return Path.Combine(directory ?? AppContext.BaseDirectory, "BCCL", "MicrosoftOAuth.json");
+        }
+    }
 
     public static string Normalize(string? value)
     {

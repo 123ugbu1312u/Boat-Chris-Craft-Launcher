@@ -8,6 +8,7 @@ public sealed record class ModDependencyReference
 {
     public string ProjectId { get; init; } = string.Empty;
     public string Source { get; init; } = string.Empty;
+    public string? VersionId { get; init; }
     public bool IsRequired { get; init; } = true;
 }
 
@@ -17,6 +18,8 @@ public sealed record class ModDependencyRequest
     public List<string> TargetLoaders { get; init; } = [];
     public List<ModDependencyReference> RequiredDependencies { get; init; } = [];
     public List<InstalledModIdentity> InstalledMods { get; init; } = [];
+    public Func<string, string, IEnumerable<InstalledModIdentity>>? FindInstalledMods { get; init; }
+    public ModDependencyReference? MainFile { get; init; }
     public Func<string, string, ModDependencyProject?> ProjectResolver { get; init; } = (_, _) => null;
 }
 
@@ -37,7 +40,7 @@ public sealed record class ModDependencyFile
     public List<string> Loaders { get; init; } = [];
     public int ReleaseType { get; init; }
     public DateTime ReleaseDate { get; init; }
-    public List<ModDependencyReference> RequiredDependencies { get; init; } = [];
+    public IEnumerable<ModDependencyReference> RequiredDependencies { get; init; } = [];
 }
 
 public sealed record class InstalledModIdentity
@@ -45,6 +48,9 @@ public sealed record class InstalledModIdentity
     public string? SourceProjectId { get; init; }
     public string? Source { get; init; }
     public string? ModId { get; init; }
+    public string? FileId { get; init; }
+    public string? LocalPath { get; init; }
+    public string? Hash { get; init; }
     public List<string> GameVersions { get; init; } = [];
     public List<string> Loaders { get; init; } = [];
 }
@@ -54,6 +60,7 @@ public sealed record class ModDependencyResolutionResult
     public List<ResolvedDependencyInstall> ToInstall { get; } = [];
     public List<UnresolvedDependency> Unresolved { get; } = [];
     public List<IgnoredDependency> Satisfied { get; } = [];
+    public List<InstalledModIdentity> Mismatched { get; } = [];
 }
 
 public sealed record class ResolvedDependencyInstall
@@ -89,7 +96,7 @@ public sealed class ModDependencyResolver
         ArgumentNullException.ThrowIfNull(request.ProjectResolver);
 
         var context = new ResolutionContext(request);
-        foreach (var dependency in request.RequiredDependencies)
+        foreach (var dependency in request.RequiredDependencies.OrderByDescending(dep => dep.VersionId is not null))
         {
             ResolveDependency(context, dependency, 0);
         }
@@ -116,17 +123,28 @@ public sealed class ModDependencyResolver
             return;
         }
 
-        var visitedKey = context.GetVisitedKey(dependency.ProjectId, dependency.Source);
-        if (!context.Visited.Add(visitedKey))
+        var key = context.ProjectKey(dependency.Source, dependency.ProjectId);
+        if (context.Selection.TryGetValue(key, out var selectedVersion))
         {
+            if (dependency.VersionId is not null && !Comparer.Equals(selectedVersion, dependency.VersionId))
+                context.AddUnresolved(dependency.ProjectId, dependency.Source, "Conflicting required dependency versions.");
             return;
         }
 
-        if (context.IsInstalledCompatible(dependency.ProjectId, dependency.Source))
+        var installed = (context.Request.FindInstalledMods?.Invoke(dependency.Source, dependency.ProjectId)
+            ?? context.Request.InstalledMods).Where(mod =>
+            Comparer.Equals(mod.SourceProjectId, dependency.ProjectId) && Comparer.Equals(mod.Source, dependency.Source)).ToList();
+        var compatible = installed.FirstOrDefault(mod => context.IsInstalledCompatible(mod, dependency.VersionId));
+        if (compatible is not null)
         {
+            context.Selection[key] = compatible.FileId;
             context.AddSatisfied(dependency.ProjectId, dependency.Source, "Already installed and compatible.");
             return;
         }
+
+        foreach (var mod in installed)
+            if (!context.Result.Mismatched.Contains(mod))
+                context.Result.Mismatched.Add(mod);
 
         var project = context.Request.ProjectResolver(dependency.Source, dependency.ProjectId);
         if (project is null)
@@ -135,16 +153,17 @@ public sealed class ModDependencyResolver
             return;
         }
 
-        var selectedFile = SelectBestFile(project.Files, context.TargetMinecraftVersion, context.TargetLoaders);
+        var selectedFile = SelectBestFile(project.Files, dependency.VersionId, context.TargetMinecraftVersion, context.TargetLoaders);
         if (selectedFile is null)
         {
             context.AddUnresolved(project.ProjectId, project.Source, "No compatible file was found.");
             return;
         }
 
+        context.Selection[key] = selectedFile.Id;
         context.AddInstall(project, selectedFile);
 
-        foreach (var nestedDependency in selectedFile.RequiredDependencies)
+        foreach (var nestedDependency in selectedFile.RequiredDependencies.OrderByDescending(dep => dep.VersionId is not null))
         {
             ResolveDependency(context, nestedDependency, depth + 1);
         }
@@ -152,13 +171,14 @@ public sealed class ModDependencyResolver
 
     private static ModDependencyFile? SelectBestFile(
         IEnumerable<ModDependencyFile> files,
+        string? versionId,
         string targetMinecraftVersion,
         HashSet<string> targetLoaders)
     {
         return files
-            .Where(file => IsCompatibleFile(file, targetMinecraftVersion, targetLoaders))
-            .OrderByDescending(file => HasExactGameVersionMatch(file, targetMinecraftVersion))
-            .ThenByDescending(file => HasLoaderMatch(file, targetLoaders))
+            .Where(file => (versionId is null || Comparer.Equals(file.Id, versionId))
+                           && IsCompatibleFile(file, targetMinecraftVersion, targetLoaders))
+            .OrderByDescending(file => HasLoaderMatch(file, targetLoaders))
             .ThenBy(file => NormalizeReleaseType(file.ReleaseType))
             .ThenByDescending(file => file.ReleaseDate)
             .FirstOrDefault();
@@ -220,33 +240,28 @@ public sealed class ModDependencyResolver
         {
             Request = request;
             Result = new ModDependencyResolutionResult();
-            Visited = new HashSet<string>(Comparer);
+            if (request.MainFile is { } main)
+                Selection[ProjectKey(main.Source, main.ProjectId)] = main.VersionId;
             TargetMinecraftVersion = request.TargetMinecraftVersion ?? string.Empty;
             TargetLoaders = new HashSet<string>(
                 request.TargetLoaders.Where(static loader => !string.IsNullOrWhiteSpace(loader)),
                 Comparer);
-            LoaderSetKey = string.Join(",", TargetLoaders.OrderBy(static loader => loader, Comparer));
         }
 
         public ModDependencyRequest Request { get; }
         public ModDependencyResolutionResult Result { get; }
-        public HashSet<string> Visited { get; }
+        public Dictionary<(string Source, string Project), string?> Selection { get; } = new();
         public string TargetMinecraftVersion { get; }
         public HashSet<string> TargetLoaders { get; }
-        private string LoaderSetKey { get; }
 
-        public string GetVisitedKey(string projectId, string source)
-        {
-            return $"{source}:{projectId}:{TargetMinecraftVersion}:{LoaderSetKey}";
-        }
+        public (string Source, string Project) ProjectKey(string source, string projectId)
+            => (source.ToUpperInvariant(), projectId.ToUpperInvariant());
 
-        public bool IsInstalledCompatible(string projectId, string source)
+        public bool IsInstalledCompatible(InstalledModIdentity installed, string? versionId)
         {
-            return Request.InstalledMods.Any(installed =>
-                Comparer.Equals(installed.SourceProjectId, projectId)
-                && Comparer.Equals(installed.Source, source)
+            return (versionId is null || Comparer.Equals(installed.FileId, versionId))
                 && installed.GameVersions.Any(version => Comparer.Equals(version, TargetMinecraftVersion))
-                && LoadersCompatible(installed.Loaders));
+                && LoadersCompatible(installed.Loaders);
         }
 
         public void AddInstall(ModDependencyProject project, ModDependencyFile file)

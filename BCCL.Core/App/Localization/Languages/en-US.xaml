@@ -407,7 +407,19 @@
     <sys:String x:Key="Download.Comp.Dependency.Install.WithDependencies">Install mod and dependencies</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Install.WithoutDependencies">Download mod only (not recommended)</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Continue">Continue download</sys:String>
-    <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Message">Failed to resolve the mod dependencies. Only the main mod will be downloaded.</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Message">Could not check the required mods. Download only the selected file?</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Missing.Message">Required mods are missing. Download them too?</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Skip">Don’t download</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Mismatch.Message">The installed dependency versions are incompatible. You can update the dependencies or download an older version of this mod.</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Update">Update dependencies</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Older">Download older version</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.NoOlder.Message">No older version works with the installed dependencies.</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.NoUpdate.Message">Could not update all required mods.&#xA;{0}</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Incomplete.Message">The following required mods are unavailable. Download only the selected file?&#xA;{0}</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.OverwriteOlder.Message">“{0}” already exists. Overwrite it?</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Busy.Message">A dependency download is already in progress for this location.</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.CheckFailed.Message">Could not finish checking the dependency versions.</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.ConflictingFile.Message">The destination file conflicts with another file or has changed: {0}</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Title">Failed to resolve dependencies</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Unresolved.ContinueWithoutDependencies">Continue download</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Unresolved.ListItem">- {0} {1}: {2}</sys:String>
@@ -2220,6 +2232,8 @@
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ChangeBirthDate.Message">Please modify the account's date of birth on the opened webpage (change to at least 18 years old).&#xA;Wait one minute after the modification is successful, then return to BCCL and you can log in normally!</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ChangeBirthDate.SupportMessage">Please modify the account's date of birth on the opened webpage (change to at least 18 years old).&#xA;Wait one minute after the modification is successful, then return to BCCL and you can log in normally!</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.CreateProfile.Button">Create profile</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ServiceForbidden">Microsoft account and Xbox authentication succeeded, but Minecraft Services refused the BCCL sign-in request (HTTP 403). For a newly registered client ID, have the launcher developer request Minecraft API access and retry after approval. If the app was already approved, check that BCCL is using the approved client ID.</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Login.Microsoft.OpenAppReview">Open AppID review form</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.CreateProfile.Message">Please create a Minecraft player profile first, then log in again.</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.NotPurchased">Unable to get account information. This account may not have purchased Minecraft: Java Edition, or its Xbox Game Pass may have expired.</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ProfileAlreadyAdded">You have already added this profile...</sys:String>
@@ -2540,44 +2554,6 @@
     <sys:String x:Key="Setup.Feedback.Status.Waiting">Waiting</sys:String>
     <sys:String x:Key="Setup.Feedback.Status.WaitingProcess">Awaiting processing</sys:String>
 
-    <!-- Setup.GameLink -->
-
-    <sys:String x:Key="Setup.GameLink.CliDebugOutput">Output CLI information to logs for debugging</sys:String>
-    <sys:String x:Key="Setup.GameLink.CliDebugOutput.ToolTip">Output EasyTier CLI information to the launcher log every 30 seconds for developer and community support investigation.&#xA;This option is for debugging only and is not recommended to keep enabled.</sys:String>
-    <sys:String x:Key="Setup.GameLink.EnableIPv6">Allow IPv6 communication</sys:String>
-    <sys:String x:Key="Setup.GameLink.EnableIPv6.ToolTip">Compared with IPv4, IPv6 makes P2P communication easier and can greatly improve the multiplayer experience. Do not disable it unless you have a specific reason.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.ConfigChangeFailed">Failed to change configuration item.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.InitFailed">Failed to initialize multiplayer settings</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.NetworkTestFailed">Failed to get network test results. See the details below.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Initialized">Multiplayer settings have been initialized!</sys:String>
-    <sys:String x:Key="Setup.GameLink.LatencyFirstMode">Select the lowest-latency path instead of the shortest path</sys:String>
-    <sys:String x:Key="Setup.GameLink.LatencyFirstMode.ToolTip">When enabled, EasyTier will choose the path with the lowest latency rather than the path with the fewest routing hops.&#xA;Enabling this may reduce latency in some cases, but may increase packet loss.</sys:String>
-    <sys:String x:Key="Setup.GameLink.PortGuessNat">Perform port guessing for symmetric NAT</sys:String>
-    <sys:String x:Key="Setup.GameLink.PortGuessNat.ToolTip">Let EasyTier attempt port guessing for symmetric NAT (birthday paradox).&#xA;This may improve the multiplayer experience, but it may also cause issues in some cases.&#xA;Generally, keep it enabled.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Preference">Protocol preference</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Tcp">TCP</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Tcp.ToolTip">Let EasyTier prefer TCP communication, which usually provides better stability.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Udp">UDP</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Udp.ToolTip">Let EasyTier prefer UDP communication, which usually provides lower latency.</sys:String>
-    <sys:String x:Key="Setup.GameLink.RestartRequired">A lobby restart is required for changes on this page to take effect.</sys:String>
-    <sys:String x:Key="Setup.GameLink.Username">Username</sys:String>
-    <sys:String x:Key="Setup.GameLink.Username.ToolTip">BCCL will try to use this username for lobby display.&#xA;If left blank, the Natayark ID username will be used.&#xA;&#xA;In some cases, the Natayark ID username may still be displayed instead of the name set here.</sys:String>
-
-    <!-- Setup.GameLink.NetworkTest -->
-
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Ipv6Status">IPv6 status: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Ipv6Status.NotTested">IPv6: Not tested</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.NotTested">Not tested</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Start">Start test</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Supported">Supported</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.TcpNatType">TCP NAT type: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.TcpNatType.NotTested">TCP NAT type: Not tested</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Testing">Testing...</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Title">Network test</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.UdpNatType">UDP NAT type: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.UdpNatType.NotTested">UDP NAT type: Not tested</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Unsupported">Unsupported</sys:String>
-
     <!-- Setup.GameManage -->
 
     <sys:String x:Key="Setup.GameManage.Error.InitFailed">Failed to initialize game management settings</sys:String>
@@ -2605,8 +2581,8 @@
 
     <!-- Setup.GameManage.Community -->
 
-    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies">Auto-check and install required dependencies when downloading mods</sys:String>
-    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies.ToolTip">When installing a mod, if missing required dependencies are detected, a list will be shown for confirmation before auto-downloading and installing them (can be cancelled during confirmation)</sys:String>
+    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies">Check required mods when downloading mods or resource packs</sys:String>
+    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies.ToolTip">When downloading mods or resource packs, check required mods and ask how to proceed.</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat">File name format</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat.Style0">【Create】create-1.21.1-6.0.4</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat.Style1">[Create] create-1.21.1-6.0.4</sys:String>
@@ -2819,13 +2795,11 @@
     <sys:String x:Key="Setup.Left.Category.About">About</sys:String>
     <sys:String x:Key="Setup.Left.Category.Game">Game</sys:String>
     <sys:String x:Key="Setup.Left.Category.Launcher">Launcher</sys:String>
-    <sys:String x:Key="Setup.Left.Category.Tools">Tools</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.Message">Please check the feedback list for similar issues before submitting new feedback to avoid duplicate submissions.</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.SubmitNew">New feedback</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.Title">Feedback</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.ViewList">Feedback list</sys:String>
     <sys:String x:Key="Setup.Left.Refreshing">Refreshing...</sys:String>
-    <sys:String x:Key="Setup.Left.Reset.GameLink.Message">Do you want to initialize all settings on the Tools – Multiplayer page? This action cannot be undone.</sys:String>
     <sys:String x:Key="Setup.Left.Reset.GameManage.Message">Do you want to initialize all settings on the Game – Management page? This action cannot be undone.</sys:String>
     <sys:String x:Key="Setup.Left.Reset.Language.Message">Do you want to initialize all settings on the Launcher – Language page? This action cannot be undone.</sys:String>
     <sys:String x:Key="Setup.Left.Reset.Launch.Message">Do you want to initialize all settings on the Game – Launch page? This action cannot be undone.</sys:String>
@@ -2837,7 +2811,6 @@
 
     <sys:String x:Key="Setup.Left.Item.About">About</sys:String>
     <sys:String x:Key="Setup.Left.Item.Feedback">Feedback</sys:String>
-    <sys:String x:Key="Setup.Left.Item.GameLink">Multiplayer</sys:String>
     <sys:String x:Key="Setup.Left.Item.GameManage">Management</sys:String>
     <sys:String x:Key="Setup.Left.Item.Java">Java</sys:String>
     <sys:String x:Key="Setup.Left.Item.Launch">Launch</sys:String>
@@ -3032,7 +3005,6 @@
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.FeatureHide">Feature hiding</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.FeatureHide.ToolTip">Only this tab will be hidden. Disabled content settings are still valid.&#xA;This can avoid feature hiding being changed while keeping the Personalization page.</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Feedback">Feedback</sys:String>
-    <sys:String x:Key="Setup.Ui.FeatureHide.Item.GameLink">Multiplayer</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.GameManage">Management</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.InstanceSelect">Selection</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.InstanceSelect.ToolTip">Hide the selection and properties buttons below the Launch button.</sys:String>
@@ -3244,6 +3216,27 @@
     <sys:String x:Key="Tools.Left.Multiplayer">Multiplayer</sys:String>
     <sys:String x:Key="Tools.Left.Utilities">Utilities</sys:String>
     <sys:String x:Key="Tools.Left.Utilities.Title">Toolbox</sys:String>
+    <sys:String x:Key="Tools.Daily.Title">Daily recommendations</sys:String>
+    <sys:String x:Key="Tools.Daily.RankingTitle">{1} recommendations for {0}</sys:String>
+    <sys:String x:Key="Tools.Daily.Cumulative">Collecting today’s download counts. Showing all-time downloads for now.</sys:String>
+    <sys:String x:Key="Tools.Daily.Estimate">Ranked by sampled downloads today</sys:String>
+    <sys:String x:Key="Tools.Daily.Partial">Some download sources are temporarily unavailable.</sys:String>
+    <sys:String x:Key="Tools.Daily.Unavailable">Download sources are temporarily unavailable.</sys:String>
+    <sys:String x:Key="Tools.Daily.Retry">Retry</sys:String>
+    <sys:String x:Key="Tools.Daily.Updating">Updating rankings</sys:String>
+    <sys:String x:Key="Tools.Daily.CachedUpdating">Updating rankings. Showing cached results.</sys:String>
+    <sys:String x:Key="Tools.Daily.CachedOffline">Download sources are unavailable. Showing cached results.</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Title">Server recommendations</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.OnlinePlayers">Players online now</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Latency">Java server status response time measured from this device</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Accelerator">A game accelerator is needed for smooth play</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.RegionSource">Server region is estimated from its IP address by DB-IP.com</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.LastPlayers">Last known player count.</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.DirectoryPlayers">Latest player count reported by the directory.</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Copied">✓ Copied</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Unavailable">Server recommendations are temporarily unavailable</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Cached">Showing the {0} 16:00 server list (Beijing time)</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Incomplete">The directories returned {0} of {1} eligible servers</sys:String>
 
     <!-- Tools.GameLink -->
 
@@ -3610,4 +3603,20 @@
     <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violet</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavender</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Slate</sys:String>
+    <!-- Launch memory optimization -->
+    <sys:String x:Key="Setup.Launch.Memory.Optimize">Optimize memory before starting the game</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.ToolTip">Reclaims system physical memory before starting the game and may request administrator permission. Mechanical disks may briefly stall. The game will still start if permission is declined or optimization fails.</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.On">On</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.Off">Off</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Stage.MemoryOptimize">Optimizing memory</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Cancelled">Memory optimization was cancelled. Continuing game launch.</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Failed">Memory optimization failed. Continuing game launch; see the log for details.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder">Button and panel borders</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder.ToolTip">Show Liquid Glass borders around buttons and panels. Set their color above.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorderColor">Border color</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Silver">Silver</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.White">White</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Charcoal">Charcoal</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lemon">Lemon yellow</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Cobalt">Cobalt blue</sys:String>
 </ResourceDictionary>

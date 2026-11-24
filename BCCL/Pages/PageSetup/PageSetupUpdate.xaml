@@ -1,11 +1,11 @@
-﻿<local:MyPageRight
+<local:MyPageRight
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:BCCL" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" x:Class="BCCL.PageSetupUpdate"
     PanScroll="{Binding ElementName=PanBack}">
-    <local:MyScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
+    <local:MyScrollViewer SmoothScrolling="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
         <StackPanel x:Name="PanMain" Margin="25,25,25,10">
             <local:MyCard Height="Auto">
                 <StackPanel Margin="20,15,20,15">
@@ -80,7 +80,7 @@
                             <RowDefinition Height="10" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Image x:Name="ImgUpdateIcon" Source="/BCCL;component/Images/icon.ico" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                        <Image x:Name="ImgUpdateIcon" Source="/BCCL;component/Images/icon.ico" RenderOptions.BitmapScalingMode="HighQuality"
                                        Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Height="50" Width="50"
                                        HorizontalAlignment="Left" VerticalAlignment="Center" />
                         <TextBlock x:Name="TextUpdateName" Text="BCCL 2.14.0" FontWeight="Bold" FontSize="20"
@@ -116,7 +116,7 @@
                             <RowDefinition Height="1" />
                             <RowDefinition Height="20" />
                         </Grid.RowDefinitions>
-                        <Image RenderOptions.BitmapScalingMode="NearestNeighbor" Source="/BCCL;component/Images/icon.ico" Grid.Column="0" Grid.Row="0"
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" Source="/BCCL;component/Images/icon-rounded.png" Grid.Column="0" Grid.Row="0"
                                Grid.RowSpan="3" Height="50" Width="50" HorizontalAlignment="Left"
                                VerticalAlignment="Center" />
                         <TextBlock x:Name="TextCurrentVersion" Text="BCCL Alpha 0.2.2" FontWeight="Bold" FontSize="20"

@@ -2873,7 +2873,10 @@ public static class ModBase
     /// <summary>
     ///     设置剪贴板。将在另一线程运行，且不会抛出异常。
     /// </summary>
-    public static void ClipboardSet(string text, bool showSuccessHint = true)
+    public static void ClipboardSet(string text, bool showSuccessHint = true) =>
+        ClipboardSet(text, showSuccessHint, null);
+
+    public static void ClipboardSet(string text, bool showSuccessHint, Action? onSuccess)
     {
         RunInThread(() =>
         {
@@ -2882,7 +2885,7 @@ public static class ModBase
             for (var attempt = 0; attempt <= 5; attempt++)
                 try
                 {
-                    RunInUi(() => Clipboard.SetText(text));
+                    RunInUiWait(() => Clipboard.SetText(text));
                     success = true;
                     break;
                 }
@@ -2899,8 +2902,13 @@ public static class ModBase
                         userSummary: Lang.Text("Common.Hint.CopyFailed"));
                 }
 
-            if (success && showSuccessHint)
-                RunInUi(() => HintService.Hint(Lang.Text("Common.Hint.Copied"), HintType.Success));
+            if (success && (showSuccessHint || onSuccess is not null))
+                RunInUi(() =>
+                {
+                    if (showSuccessHint)
+                        HintService.Hint(Lang.Text("Common.Hint.Copied"), HintType.Success);
+                    onSuccess?.Invoke();
+                });
         });
     }
 

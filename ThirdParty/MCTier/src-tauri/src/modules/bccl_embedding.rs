@@ -8,6 +8,8 @@ pub fn enabled() -> bool {
 #[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub struct HostAppearance {
     theme: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    language: Option<String>,
     background: String,
     top: String,
     bottom: String,

@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { BCCL_EMBEDDED } from '../bcclEmbedding';
+import { synchronizeHostLanguage } from '../i18n';
 import { readThemePreference, THEME_CHANGED_EVENT } from './themePreference';
 import { isHostAppearance, resolveWorkspaceTheme, type HostAppearance } from './hostAppearancePolicy';
 
@@ -20,6 +21,7 @@ export function useHostAppearance() {
 function applyPalette() {
   const root = document.documentElement;
   if (!palette) return;
+  synchronizeHostLanguage(palette.language);
   const preference = readThemePreference();
   root.toggleAttribute('data-bccl-host-theme', preference === 'system');
   root.style.setProperty('--bccl-host-background', palette.background);
@@ -46,6 +48,13 @@ export function startHostAppearanceSync(): () => void {
     finally { if (active) timer = setTimeout(poll, 750); }
   };
   window.addEventListener(THEME_CHANGED_EVENT, applyPalette);
+  const handleSystemLanguage = () => synchronizeHostLanguage(palette?.language);
+  window.addEventListener('languagechange', handleSystemLanguage);
   void poll();
-  return () => { active = false; if (timer) clearTimeout(timer); window.removeEventListener(THEME_CHANGED_EVENT, applyPalette); };
+  return () => {
+    active = false;
+    if (timer) clearTimeout(timer);
+    window.removeEventListener(THEME_CHANGED_EVENT, applyPalette);
+    window.removeEventListener('languagechange', handleSystemLanguage);
+  };
 }

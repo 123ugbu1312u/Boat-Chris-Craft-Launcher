@@ -5,6 +5,7 @@ using BCCL.Core.Logging;
 using BCCL.Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -64,77 +65,15 @@ public class McPingService : IMcPingService
     /// <returns></returns>
     public async Task<McPingResult?> PingAsync(CancellationToken cancellationToken = default)
     {
-        using var so = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        using var timeoutCts = new CancellationTokenSource(_timeout);
-        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
-
-        try
-        {
-            LogWrapper.Debug(ModuleName, $"Connecting to {_endpoint}");
-            await so.ConnectAsync(_endpoint.Address, _endpoint.Port, linkedCts.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            LogWrapper.Error(new TimeoutException(Lang.Text("Tools.ServerQuery.Error.Timeout.Connect")), ModuleName, $"Failed to connect to the {_endpoint}");
+        var (payload, latency) = await _QueryPayloadAsync(cancellationToken, statusOnly: false);
+        if (payload is null)
             return null;
-        }
-        catch (Exception e)
-        {
-            LogWrapper.Error(e, ModuleName, $"Failed to connect to the {_endpoint}");
-            return null;
-        }
 
-        LogWrapper.Debug(ModuleName, $"Connection established: {_endpoint}");
-        await using var stream = new NetworkStream(so, false);
-
-        var handshakePacket = _BuildHandshakePacket(_host, _endpoint.Port);
-        var statusPacket = _BuildStatusRequestPacket();
-
-        byte[]? statusPayload;
-        long latency = 0;
-        try
-        {
-            await stream.WriteAsync(handshakePacket, linkedCts.Token);
-            LogWrapper.Debug(ModuleName, $"Handshake sent, packet length: {handshakePacket.Length}");
-
-            await stream.WriteAsync(statusPacket, linkedCts.Token);
-            LogWrapper.Debug(ModuleName, $"Status sent, packet length: {statusPacket.Length}");
-
-            var pingTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var pingPacket = _BuildPingRequestPacket(pingTimestamp);
-            
-            await stream.WriteAsync(pingPacket, linkedCts.Token);
-            LogWrapper.Debug(ModuleName, $"Ping sent, packet length: {pingPacket.Length}");
-
-            (statusPayload, latency) = await _ReadStatusPayloadAsync(stream, linkedCts.Token);
-        }
-        catch (OperationCanceledException)
-        {
-            LogWrapper.Error(new TimeoutException(Lang.Text("Tools.ServerQuery.Error.Timeout.ReadWrite")), "McPing", $"Operation timed out on {_endpoint}");
-            return null;
-        }
-        catch (Exception e)
-        {
-            LogWrapper.Error(e, ModuleName, $"Failed to communicate with {_endpoint}: {e.Message}");
-            return null;
-        }
-        finally
-        {
-            if (so.Connected) so.Shutdown(SocketShutdown.Both);
-        }
-
-        so.Close();
-
-        if (statusPayload is null || statusPayload.Length == 0) throw new InvalidDataException(Lang.Text("Tools.ServerQuery.State.NoInfo"));
-        var retCtx = Encoding.UTF8.GetString(statusPayload);
-
-        var retJson = JsonCompat.ParseNode(retCtx) ?? throw new NullReferenceException(Lang.Text("Tools.ServerQuery.Error.InvalidResponse"));
+        var retJson = _ParseStatus(payload);
 #if DEBUG
         var resJsonDebug = retJson.DeepClone();
         if (resJsonDebug is JsonObject jsonObject && jsonObject.ContainsKey("favicon"))
-        {
             jsonObject["favicon"] = "...";
-        }
 
         LogWrapper.Debug(ModuleName, resJsonDebug.ToJsonString());
 #endif
@@ -148,12 +87,84 @@ public class McPingService : IMcPingService
         if (response?.Version is null)
             throw new NullReferenceException(Lang.Text("Tools.ServerQuery.Error.InvalidResponse"));
 
-        response = response with
-        {
-            Latency = latency
-        };
+        return response with { Latency = latency };
+    }
 
-        return response;
+    public async Task<(JsonNode? Status, long? LatencyMs)> QueryStatusAsync(CancellationToken cancellationToken)
+    {
+        var (payload, latency) = await _QueryPayloadAsync(cancellationToken, statusOnly: true).ConfigureAwait(false);
+        return payload is null ? (null, null) : (_ParseStatus(payload), latency);
+    }
+
+    private async Task<(byte[]? Payload, long Latency)> _QueryPayloadAsync(CancellationToken cancellationToken, bool statusOnly)
+    {
+        using var so = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        using var timeoutCts = new CancellationTokenSource(_timeout);
+        using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
+        try
+        {
+            LogWrapper.Debug(ModuleName, $"Connecting to {_endpoint}");
+            await so.ConnectAsync(_endpoint.Address, _endpoint.Port, linkedCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            if (!statusOnly)
+                LogWrapper.Error(new TimeoutException(Lang.Text("Tools.ServerQuery.Error.Timeout.Connect")), ModuleName, $"Failed to connect to the {_endpoint}");
+            return (null, 0);
+        }
+        catch (Exception e)
+        {
+            if (!statusOnly)
+                LogWrapper.Error(e, ModuleName, $"Failed to connect to the {_endpoint}");
+            return (null, 0);
+        }
+
+        LogWrapper.Debug(ModuleName, $"Connection established: {_endpoint}");
+        await using var stream = new NetworkStream(so, false);
+
+        var handshakePacket = _BuildHandshakePacket(_host, _endpoint.Port);
+        var statusPacket = _BuildStatusRequestPacket();
+
+        try
+        {
+            await stream.WriteAsync(handshakePacket, linkedCts.Token);
+            LogWrapper.Debug(ModuleName, $"Handshake sent, packet length: {handshakePacket.Length}");
+
+            var statusStarted = Stopwatch.GetTimestamp();
+            await stream.WriteAsync(statusPacket, linkedCts.Token);
+            LogWrapper.Debug(ModuleName, $"Status sent, packet length: {statusPacket.Length}");
+
+            var pingTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var pingPacket = _BuildPingRequestPacket(pingTimestamp);
+            
+            await stream.WriteAsync(pingPacket, linkedCts.Token);
+            LogWrapper.Debug(ModuleName, $"Ping sent, packet length: {pingPacket.Length}");
+
+            return await _ReadStatusPayloadAsync(stream, linkedCts.Token, statusOnly, statusStarted);
+        }
+        catch (OperationCanceledException)
+        {
+            if (!statusOnly)
+                LogWrapper.Error(new TimeoutException(Lang.Text("Tools.ServerQuery.Error.Timeout.ReadWrite")), ModuleName, $"Operation timed out on {_endpoint}");
+            return (null, 0);
+        }
+        catch (Exception e)
+        {
+            if (statusOnly)
+                LogWrapper.Debug(e, ModuleName, $"Failed to read background status from {_endpoint}");
+            else
+                LogWrapper.Error(e, ModuleName, $"Failed to communicate with {_endpoint}: {e.Message}");
+            return (null, 0);
+        }
+    }
+
+    private static JsonNode _ParseStatus(byte[] payload)
+    {
+        if (payload.Length == 0)
+            throw new InvalidDataException(Lang.Text("Tools.ServerQuery.State.NoInfo"));
+        return JsonCompat.ParseNode(Encoding.UTF8.GetString(payload))
+            ?? throw new InvalidDataException(Lang.Text("Tools.ServerQuery.Error.InvalidResponse"));
     }
 
     public void Dispose()
@@ -203,7 +214,8 @@ public class McPingService : IMcPingService
         return pingRequest.ToArray();
     }
 
-    private async Task<(byte[] StatusPayload, long Latency)> _ReadStatusPayloadAsync(Stream stream, CancellationToken cancellationToken)
+    private async Task<(byte[] StatusPayload, long Latency)> _ReadStatusPayloadAsync(Stream stream,
+        CancellationToken cancellationToken, bool statusOnly, long statusStarted)
     {
         byte[]? statusPayload = null;
         long? latency = null;
@@ -215,6 +227,8 @@ public class McPingService : IMcPingService
                 var packetLength = checked((int)await VarIntHelper.ReadFromStreamAsync(stream, cancellationToken));
                 LogWrapper.Debug(ModuleName, $"Packet length: {packetLength}");
                 if (packetLength <= 0) throw new InvalidDataException(Lang.Text("Tools.ServerQuery.Error.EmptyPacket"));
+                if (packetLength > 128 * 1024)
+                    throw new InvalidDataException(Lang.Text("Tools.ServerQuery.Error.InvalidResponse"));
 
                 var packetData = await _ReadExactAsync(stream, packetLength, cancellationToken);
                 using var packetStream = new MemoryStream(packetData, writable: false);
@@ -225,20 +239,25 @@ public class McPingService : IMcPingService
                 {
                     case 0:
                         var jsonLength = checked((int)await VarIntHelper.ReadFromStreamAsync(packetStream, cancellationToken));
+                        if (jsonLength > packetStream.Length - packetStream.Position)
+                            throw new InvalidDataException(Lang.Text("Tools.ServerQuery.Error.InvalidResponse"));
                         statusPayload = await _ReadExactAsync(packetStream, jsonLength, cancellationToken);
+                        if (statusOnly)
+                            return (statusPayload, (long)Math.Ceiling(Stopwatch.GetElapsedTime(statusStarted).TotalMilliseconds));
                         if (packetStream.Position != packetStream.Length)
                             LogWrapper.Warn(ModuleName, $"Status packet contains {packetStream.Length - packetStream.Position} trailing bytes.");
                         break;
 
                     case 1:
                         var pongData = await _ReadExactAsync(packetStream, 8, cancellationToken);
-                        if (packetStream.Position != packetStream.Length)
+                        if (!statusOnly && packetStream.Position != packetStream.Length)
                             LogWrapper.Warn(ModuleName, $"Pong packet contains {packetStream.Length - packetStream.Position} trailing bytes.");
                         latency = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - _ReadInt64BigEndian(pongData);
                         break;
 
                     default:
-                        LogWrapper.Warn(ModuleName, $"Ignore unexpected packet type: {packetId}");
+                        if (!statusOnly)
+                            LogWrapper.Warn(ModuleName, $"Ignore unexpected packet type: {packetId}");
                         break;
                 }
             }

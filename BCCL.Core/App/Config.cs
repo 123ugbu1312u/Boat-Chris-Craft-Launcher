@@ -8,6 +8,15 @@ namespace BCCL.Core.App;
 // ReSharper disable InconsistentNaming
 public static partial class Config
 {
+    /// <summary>实例的内存优化开关独立于内存分配模式：0 跟随全局，1 开启，2 关闭。</summary>
+    public static bool IsLaunchMemoryOptimizationEnabled(string instancePath)
+        => Instance.MemoryOptimizationMode[instancePath] switch
+        {
+            1 => true,
+            2 => false,
+            _ => Launch.OptimizeMemoryBeforeLaunch
+        };
+
     /// <summary>
     /// 系统配置。
     /// </summary>
@@ -194,6 +203,8 @@ public static partial class Config
         [ConfigItem<bool>("UiGlassAutomatic", false, ConfigSource.Local)] public partial bool GlassAutomatic { get; set; }
         [ConfigItem<bool>("UiGlassButtons", true, ConfigSource.Local)] public partial bool GlassButtons { get; set; }
         [ConfigItem<bool>("UiCapsuleButtons", true, ConfigSource.Local)] public partial bool CapsuleButtons { get; set; }
+        [ConfigItem<bool>("UiGlassButtonBorder", true, ConfigSource.Local)] public partial bool GlassButtonBorder { get; set; }
+        [ConfigItem<int>("UiGlassButtonBorderColor", 0, ConfigSource.Local)] public partial int GlassButtonBorderColor { get; set; }
         [ConfigItem<bool>("UiNavigationClickAway", true, ConfigSource.Local)] public partial bool NavigationClickAway { get; set; }
 
         /// <summary>
@@ -451,7 +462,6 @@ public static partial class Config
             [ConfigItem<bool>("UiHiddenSetupGameManage", false, ConfigSource.Local)] public partial bool SetupGameManage { get; set; }
             [ConfigItem<bool>("UiHiddenSetupJava", false, ConfigSource.Local)] public partial bool SetupJava { get; set; }
             [ConfigItem<bool>("UiHiddenSetupUpdate", false, ConfigSource.Local)] public partial bool SetupUpdate { get; set; }
-            [ConfigItem<bool>("UiHiddenSetupGameLink", false, ConfigSource.Local)] public partial bool SetupGameLink { get; set; } // 新增
             [ConfigItem<bool>("UiHiddenSetupAbout", false, ConfigSource.Local)] public partial bool SetupAbout { get; set; } // 修正名称
             [ConfigItem<bool>("UiHiddenSetupFeedback", false, ConfigSource.Local)] public partial bool SetupFeedback { get; set; } // 修正名称
             [ConfigItem<bool>("UiHiddenSetupLog", false, ConfigSource.Local)] public partial bool SetupLog { get; set; } // 修正名称
@@ -487,6 +497,9 @@ public static partial class Config
         /// 内存分配模式。
         /// </summary>
         [ConfigItem<int>("LaunchRamType", 0, ConfigSource.Local)] public partial int MemoryAllocationMode { get; set; }
+
+        /// <summary>启动游戏前整理系统物理内存。</summary>
+        [ConfigItem<bool>("LaunchRamOptimize", false, ConfigSource.Local)] public partial bool OptimizeMemoryBeforeLaunch { get; set; }
 
         /// <summary>
         /// 自定义内存分配大小。
@@ -636,6 +649,7 @@ public static partial class Config
         [ConfigItem<bool>("VersionAdvanceDisableLF", false)] public partial ArgConfig<bool> DisableLF { get; }
         [ConfigItem<bool>("VersionUseDebugLog4j2Config", false)] public partial ArgConfig<bool> UseDebugLof4j2Config { get; }
         [ConfigItem<int>("VersionRamType", 2)] public partial ArgConfig<int> MemorySolution { get; }
+        [ConfigItem<int>("VersionRamOptimize", 0)] public partial ArgConfig<int> MemoryOptimizationMode { get; }
         [ConfigItem<int>("VersionRamCustom", 15)] public partial ArgConfig<int> CustomMemorySize { get; }
         [ConfigItem<int>("VersionRamCustomInitial", 0)] public partial ArgConfig<int> CustomInitialMemorySize { get; }
         [ConfigItem<string>("VersionArgumentTitle", "")] public partial ArgConfig<string> Title { get; }

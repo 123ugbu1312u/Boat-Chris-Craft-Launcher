@@ -35,6 +35,7 @@ public partial class PageInstanceSetup
         RadioRamType1.Check += RadioBoxChange;
         SliderRamCustom.Change += SliderChange;
         SliderRamInitialCustom.Change += SliderChange;
+        ComboRamOptimize.SelectionChanged += (_, e) => ComboChange(ComboRamOptimize, e);
 
         ComboServerLoginRequire.SelectionChanged += ComboServerLogin_Changed;
         TextServerAuthServer.TextChanged += TextBoxChange;
@@ -109,6 +110,7 @@ public partial class PageInstanceSetup
             ((MyRadioBox)FindName("RadioRamType" + ramType)).Checked = true;
             SliderRamCustom.Value = Config.Instance.CustomMemorySize[PageInstanceLeft.McInstance.PathInstance];
             SliderRamInitialCustom.Value = Config.Instance.CustomInitialMemorySize[PageInstanceLeft.McInstance.PathInstance];
+            ComboRamOptimize.SelectedIndex = Math.Clamp(Config.Instance.MemoryOptimizationMode[PageInstanceLeft.McInstance.PathInstance], 0, 2);
             RamType(ramType);
 
             // 服务器

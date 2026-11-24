@@ -8,7 +8,7 @@
     x:Class="BCCL.PageSetupLauncherLanguage"
     PanScroll="{Binding ElementName=PanBack}">
 
-    <local:MyScrollViewer
+    <local:MyScrollViewer SmoothScrolling="True"
         x:Name="PanBack"
         VerticalScrollBarVisibility="Auto"
         HorizontalScrollBarVisibility="Disabled">

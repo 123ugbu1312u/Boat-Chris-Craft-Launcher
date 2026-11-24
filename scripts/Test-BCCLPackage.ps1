@@ -24,12 +24,8 @@ $startInfo.CreateNoWindow = $true
 $startInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
 $startInfo.RedirectStandardOutput = $true
 $startInfo.RedirectStandardError = $true
-$missingRuntime = Join-Path $testPath 'no-installed-dotnet'
-$startInfo.Environment['DOTNET_ROOT'] = $missingRuntime
-$startInfo.Environment['DOTNET_ROOT_X64'] = $missingRuntime
-$startInfo.Environment['DOTNET_MULTILEVEL_LOOKUP'] = '0'
 $startInfo.Environment['DOTNET_DISABLE_GUI_ERRORS'] = '1'
-# Force fresh native-runtime extraction so a previous single-file build's
+# Force fresh bundle extraction so a previous single-file build's
 # cached DLLs cannot mask an incomplete or broken compressed package.
 $startInfo.Environment['DOTNET_BUNDLE_EXTRACT_BASE_DIR'] = Join-Path $testPath 'bundle-cache'
 
@@ -60,8 +56,8 @@ try {
     if (Test-Path -LiteralPath (Join-Path $testPath $legacyDirectoryName)) {
         throw 'The launcher left or recreated the legacy data directory.'
     }
-    Write-Output 'PASS: standalone EXE reached Loaded and handled --gpu without a path (exit 1).'
-    Write-Output 'PASS: Chinese/spaced path, different working directory, no adjacent DLLs, no DOTNET_ROOT runtime.'
+    Write-Output 'PASS: single-file EXE used the installed desktop runtime, reached Loaded and handled --gpu without a path (exit 1).'
+    Write-Output 'PASS: Chinese/spaced path, different working directory, no adjacent DLLs.'
     Get-FileHash -LiteralPath $testExe -Algorithm SHA256
 }
 finally {

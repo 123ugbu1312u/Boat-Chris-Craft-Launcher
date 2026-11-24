@@ -1,4 +1,4 @@
-﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. --><ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. --><ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
 
     <!-- Meta -->
 
@@ -313,4 +313,21 @@ Ce que vous pouvez essayer
     <sys:String x:Key="Setup.Ui.Theme.Color.Violet">Violet</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">Lavande</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Slate">Ardoise</sys:String>
+    <!-- Launch memory optimization -->
+    <sys:String x:Key="Setup.Launch.Memory.Optimize">Optimiser la mémoire avant de lancer le jeu</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.ToolTip">Libère de la mémoire physique avant de lancer le jeu et peut demander des droits administrateur. Les disques mécaniques peuvent ralentir brièvement. Le jeu sera lancé même si l’autorisation est refusée ou si l’optimisation échoue.</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.On">Activé</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.Off">Désactivé</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Stage.MemoryOptimize">Optimisation de la mémoire</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Cancelled">Optimisation de la mémoire annulée. Poursuite du lancement du jeu.</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Failed">Échec de l’optimisation de la mémoire. Poursuite du lancement du jeu ; consultez le journal.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder">Bordures des boutons et des panneaux</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder.ToolTip">Affiche les bordures Liquid Glass des boutons et des panneaux. Choisissez leur couleur ci-dessus.</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorderColor">Couleur de bordure</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Silver">Argenté</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.White">Blanc</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Charcoal">Gris anthracite</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lemon">Jaune citron</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Cobalt">Bleu cobalt</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.SkyBlue">Bleu ciel</sys:String>
 </ResourceDictionary>

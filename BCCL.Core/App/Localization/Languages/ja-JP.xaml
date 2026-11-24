@@ -1,4 +1,4 @@
-﻿<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. --><ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
+<!-- Formatted by xaml-lang-formatter at 2026-06-28T17:16:52. --><ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:sys="clr-namespace:System;assembly=mscorlib" xml:space="preserve">
 
     <!-- Meta -->
 
@@ -48,4 +48,21 @@
     <sys:String x:Key="Setup.Ui.Theme.Color.Violet">バイオレット</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">ラベンダー</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Slate">スレート</sys:String>
+    <!-- Launch memory optimization -->
+    <sys:String x:Key="Setup.Launch.Memory.Optimize">ゲーム起動前にメモリを最適化する</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.ToolTip">ゲーム起動前にシステムの物理メモリを整理します。管理者権限が必要になる場合があります。HDDでは一時的に動作が遅くなることがあります。権限の許可を取り消した場合や最適化に失敗した場合もゲームの起動を続行します。</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.On">オン</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.Off">オフ</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Stage.MemoryOptimize">メモリを最適化中</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Cancelled">メモリの最適化をキャンセルしました。ゲームの起動を続行します。</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Failed">メモリの最適化に失敗しました。ゲームの起動を続行します。詳細はログをご確認ください。</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder">ボタンとパネルの枠線</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder.ToolTip">ボタンとパネルの Liquid Glass の枠線を表示します。色は上の項目で設定できます。</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorderColor">枠線の色</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Silver">シルバー</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.White">白</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Charcoal">チャコール</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lemon">レモンイエロー</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Cobalt">コバルトブルー</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.SkyBlue">スカイブルー</sys:String>
 </ResourceDictionary>

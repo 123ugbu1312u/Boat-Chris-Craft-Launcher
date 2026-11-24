@@ -82,6 +82,22 @@ public static class ProfileUi
         return true;
     }
 
+    public static bool HandleMinecraftLoginForbidden(IdentityModelAuthenticationException exception)
+    {
+        if (exception.Error != MicrosoftProvider.MinecraftLoginForbidden)
+            return false;
+
+        ModBase.RunInUiWait(() =>
+        {
+            if (ModMain.MyMsgBox(Lang.Text("Minecraft.Launch.Login.Microsoft.ServiceForbidden"),
+                    Lang.Text("Minecraft.Launch.Login.Failed"),
+                    Lang.Text("Minecraft.Launch.Login.Microsoft.OpenAppReview"),
+                    Lang.Text("Common.Action.Close"), isWarn: true) == 1)
+                ModBase.OpenWebsite("https://aka.ms/mce-reviewappid");
+        });
+        return true;
+    }
+
     /// <summary>
     ///     处理微软账号未购买 Minecraft 的错误，提供购买入口。
     /// </summary>

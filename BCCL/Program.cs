@@ -64,6 +64,8 @@ internal static class Program
             var form = new FormMain();
             return form;
         };
+        Lifecycle.When(LifecycleState.Loaded, RecommendedServers.Start);
+        Lifecycle.When(LifecycleState.WindowCreated, DailyResourceRecommendations.StartWarmup);
         // From dotnet/wpf #2393: fix tablet devices broken on .NET Core 3.0+
         _ = Tablet.TabletDevices;
         // Start lifecycle

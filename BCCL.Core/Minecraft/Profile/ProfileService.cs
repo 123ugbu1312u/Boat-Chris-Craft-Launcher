@@ -201,6 +201,9 @@ public partial class ProfileService
                     if (select) Select(existing!);
                     return existing!;
                 }
+                // Reauthorizing the Microsoft account does not resolve a Minecraft Services refusal.
+                if (ex.Error == MicrosoftProvider.MinecraftLoginForbidden)
+                    throw;
             }
             catch (Exception ex)
             {

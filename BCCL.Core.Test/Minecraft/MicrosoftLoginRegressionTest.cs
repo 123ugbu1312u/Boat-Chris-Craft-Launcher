@@ -122,6 +122,41 @@ public sealed class MicrosoftLoginRegressionTest
     }
 
     [TestMethod]
+    [DataRow("/authentication/login_with_xbox", true)]
+    [DataRow("/entitlements/mcstore", false)]
+    public async Task ForbiddenResponseIdentifiesTheMinecraftLoginEndpointOnly(string rejectedPath, bool isLoginRejection)
+    {
+        using var handler = new ScriptedHandler(request =>
+        {
+            var uri = request.RequestUri!;
+            if (uri.Host.EndsWith(".xboxlive.com", StringComparison.Ordinal))
+                return Task.FromResult(Xbox("token"));
+            if (uri.AbsolutePath == rejectedPath)
+                return Task.FromResult(Json(HttpStatusCode.Forbidden, "{}"));
+            Assert.AreEqual("/authentication/login_with_xbox", uri.AbsolutePath);
+            return Task.FromResult(Json(HttpStatusCode.OK,
+                "{\"username\":\"account\",\"roles\":[],\"access_token\":\"minecraft\",\"token_type\":\"Bearer\",\"expires_in\":86400}"));
+        });
+        using var client = new HttpClient(handler);
+        var provider = new MicrosoftProvider(ClientId, client);
+        var oauth = new AuthorizeResult { AccessToken = "oauth" };
+
+        if (isLoginRejection)
+        {
+            var error = await Assert.ThrowsExactlyAsync<IdentityModelAuthenticationException>(() =>
+                provider.CompleteAsync(oauth, default));
+            Assert.AreEqual(MicrosoftProvider.MinecraftLoginForbidden, error.Error);
+            Assert.AreEqual(HttpStatusCode.Forbidden, (error.InnerException as HttpRequestException)?.StatusCode);
+        }
+        else
+        {
+            var error = await Assert.ThrowsExactlyAsync<HttpRequestException>(() =>
+                provider.CompleteAsync(oauth, default));
+            Assert.AreEqual(HttpStatusCode.Forbidden, error.StatusCode);
+        }
+    }
+
+    [TestMethod]
     public async Task ReadingCancelledResponsePreservesCancellation()
     {
         using var response = new HttpResponseMessage(HttpStatusCode.OK) { Content = new CancelledContent() };

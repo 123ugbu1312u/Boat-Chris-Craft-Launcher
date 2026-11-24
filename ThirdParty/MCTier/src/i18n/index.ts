@@ -1,7 +1,7 @@
 /**
  * 多语言国际化（i18next + react-i18next）
  * - 默认跟随系统语言，匹配不到回退中文
- * - 用户选择持久化到 localStorage
+ * - 内嵌模式跟随启动器语言，忽略历史手动设置
  * - 缺失翻译自动回退默认语言（zh）
  */
 
@@ -9,11 +9,13 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { zh } from './zh';
 import { en } from './en';
+import { BCCL_EMBEDDED } from '../bcclEmbedding';
 
 const LANG_KEY = 'mctier_language';
 
 export type AppLanguage = 'zh' | 'en';
 export type LanguagePreference = 'system' | AppLanguage;
+let hostLanguage: AppLanguage | null = null;
 
 function detectSystemLanguage(): AppLanguage {
   const sys = (navigator.language || 'zh').toLowerCase();
@@ -21,12 +23,24 @@ function detectSystemLanguage(): AppLanguage {
 }
 
 function readStoredPreference(): LanguagePreference {
+  if (BCCL_EMBEDDED) return 'system';
   const saved = localStorage.getItem(LANG_KEY);
   return saved === 'zh' || saved === 'en' || saved === 'system' ? saved : 'system';
 }
 
 export function resolveLanguagePreference(preference: LanguagePreference): AppLanguage {
+  if (BCCL_EMBEDDED) return hostLanguage ?? detectSystemLanguage();
   return preference === 'system' ? detectSystemLanguage() : preference;
+}
+
+/** The launcher publishes its resolved UI culture before the first embedded frame. */
+export function synchronizeHostLanguage(culture: unknown): void {
+  if (!BCCL_EMBEDDED) return;
+  hostLanguage = typeof culture === 'string' && culture.trim()
+    ? (/^en(?:-|$)/i.test(culture) ? 'en' : 'zh')
+    : null;
+  const language = resolveLanguagePreference('system');
+  if (i18n.language !== language) setLanguagePreference('system');
 }
 
 void i18n.use(initReactI18next).init({
@@ -49,6 +63,7 @@ export function setLanguage(lang: 'zh' | 'en'): void {
 }
 
 export function setLanguagePreference(preference: LanguagePreference): void {
+  if (BCCL_EMBEDDED) preference = 'system';
   localStorage.setItem(LANG_KEY, preference);
   const lang = resolveLanguagePreference(preference);
   applyLanguageLocal(lang);

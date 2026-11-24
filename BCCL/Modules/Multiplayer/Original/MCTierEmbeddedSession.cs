@@ -77,6 +77,7 @@ internal sealed class MCTierEmbeddedSession
     {
         Lifecycle.When(LifecycleState.Exiting, Close);
         ThemeManager.AppearanceChanged += MCTierAppearance.Publish;
+        BCCL.Core.App.Localization.LocalizationService.LanguageChanged += MCTierAppearance.Publish;
     }
 
     public void Start()

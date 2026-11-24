@@ -151,6 +151,7 @@ public partial class FormMain
         FormMain_SizeChanged();
         ModBase.applicationStartTick = TimeUtils.GetTimeTick();
         ModBase.frmHandle = new WindowInteropHelper(this).Handle;
+        _ = Task.Run(TaskbarIconService.RefreshPinnedIcons);
         // 读取设置
         PageSetupUI.BackgroundRefresh(false, true);
         ModMusic.MusicRefreshPlay(false, true);
@@ -1417,7 +1418,7 @@ public partial class FormMain
         SetupAbout = 4,
         SetupLog = 5,
         SetupFeedback = 6, // Retired page ID; retained for navigation compatibility.
-        SetupGameLink = 7,
+        SetupGameLink = 7, // Retired page ID; retained for navigation compatibility.
         SetupUpdate = 8,
         SetupJava = 9,
         SetupLauncherMisc = 10,
@@ -1425,6 +1426,7 @@ public partial class FormMain
 
         ToolsGameLink = 1,
         ToolsTest = 3,
+        ToolsDailyRecommendations = 4,
 
         VersionOverall = 0,
         VersionSetup = 1,

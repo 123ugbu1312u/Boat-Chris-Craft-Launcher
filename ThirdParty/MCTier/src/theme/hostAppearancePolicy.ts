@@ -2,6 +2,7 @@ import type { EffectiveTheme, ThemePreference } from './themePreference';
 
 export interface HostAppearance {
   theme: EffectiveTheme;
+  language?: string;
   background: string;
   top: string;
   bottom: string;

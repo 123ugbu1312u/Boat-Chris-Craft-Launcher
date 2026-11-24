@@ -7,7 +7,7 @@
                    mc:Ignorable="d"
                    d:DesignHeight="450" d:DesignWidth="800"
                    PanScroll="{Binding ElementName=PanBack}" RenderOptions.BitmapScalingMode="LowQuality">
-    <local:MyScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
+    <local:MyScrollViewer SmoothScrolling="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
         <DockPanel>
             <local:MyCard DockPanel.Dock="Top" Title="{DynamicResource Setup.Log.Operations}" Margin="25,25,25,5">
                 <WrapPanel ItemHeight="35" Margin="25,40,20,20">

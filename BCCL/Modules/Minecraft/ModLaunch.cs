@@ -356,6 +356,16 @@ public static class ModLaunch
                 new ModLoader.LoaderTask<int, int>(Lang.Text("Minecraft.Launch.Stage.End"), _ => McLaunchEnd()) { ProgressWeight = 1d }
             }; // .ProgressWeight = 15, .Block = False
 
+            // 在计算自动内存分配之前完成优化；仅导出启动脚本时不改变系统内存。
+            if (currentLaunchOptions?.SaveBatch is null &&
+                Config.IsLaunchMemoryOptimizationEnabled(ModInstanceList.McMcInstanceSelected.PathInstance))
+                loaders.Insert(3, new ModLoader.LoaderTask<int, int>(Lang.Text("Minecraft.Launch.Stage.MemoryOptimize"), task =>
+                {
+                    if (task.IsAborted) throw new ThreadInterruptedException();
+                    MemoryOptimizationTool.RunBeforeLaunchAsync(task.AbortedToken).GetAwaiter().GetResult();
+                    if (task.IsAborted) throw new ThreadInterruptedException();
+                }) { ProgressWeight = 2d });
+
             var launchLoader = new ModLoader.LoaderCombo<object>(Lang.Text("Minecraft.Launch.Stage.Root"), loaders) { show = false };
             if (mcLoginLoader.State == ModBase.LoadState.Finished)
                 mcLoginLoader.State = ModBase.LoadState.Waiting; // 要求重启登录主加载器，它会自行决定是否启动副加载器
@@ -684,6 +694,7 @@ public static class ModLaunch
         }
         catch (IdentityModelAuthenticationException ex) when (
             ProfileUi.HandleMicrosoftXstsError(ex) ||
+            ProfileUi.HandleMinecraftLoginForbidden(ex) ||
             ProfileUi.HandleMicrosoftNotOwnedError(ex) ||
             ProfileUi.HandleMicrosoftCreateProfileError(ex))
         {

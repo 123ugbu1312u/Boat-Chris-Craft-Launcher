@@ -72,7 +72,7 @@ public partial class Application
             // 设置初始窗口
             if (Config.Preference.ShowStartupLogo)
             {
-                ModMain.frmStart = new SplashScreen(@"Images\splash.png");
+                ModMain.frmStart = new SplashScreen(@"Images\splash-rounded.png");
                 ModMain.frmStart.Show(false, true);
             }
 

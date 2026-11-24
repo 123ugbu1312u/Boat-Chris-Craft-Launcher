@@ -24,19 +24,4 @@ public partial class PageLaunchRight
         LabWorkspaceVersion.SetBinding(System.Windows.Controls.TextBlock.TextProperty,
             new Binding("Text") { Source = ModMain.frmLaunchLeft.LabVersion });
     }
-
-    private void WorkspaceAction_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-    {
-        if (sender is not FrameworkElement element) return;
-        var form = ModMain.frmMain;
-        switch (element.Tag as string)
-        {
-            case "instances": form.PageChange(FormMain.PageType.InstanceSelect); break;
-            case "install": form.PageChange(FormMain.PageType.Download, FormMain.PageSubType.DownloadInstall); break;
-            case "mods": form.PageChange(FormMain.PageType.Download, FormMain.PageSubType.DownloadMod); break;
-            case "packs": form.PageChange(FormMain.PageType.Download, FormMain.PageSubType.DownloadPack); break;
-            case "tasks": form.PageChange(FormMain.PageType.TaskManager); break;
-            case "setup": form.PageChange(FormMain.PageType.Setup, FormMain.PageSubType.SetupLaunch); break;
-        }
-    }
 }

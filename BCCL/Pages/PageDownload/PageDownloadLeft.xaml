@@ -14,12 +14,29 @@
                                 <ControlTemplate TargetType="ToggleButton">
                                     <Border x:Name="HeaderBack" CornerRadius="9" Padding="12,10" Margin="4,4,4,2" Background="Transparent" MinHeight="42">
                                         <DockPanel>
-                                            <TextBlock x:Name="Arrow" Text="▸" Width="20" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" />
+                                            <TextBlock x:Name="Arrow" Text="▸" Width="20" TextAlignment="Center" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.5">
+                                                <TextBlock.RenderTransform><RotateTransform /></TextBlock.RenderTransform>
+                                            </TextBlock>
                                             <TextBlock Text="{Binding Header, RelativeSource={RelativeSource AncestorType=Expander}}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{TemplateBinding Foreground}" />
                                         </DockPanel>
                                     </Border>
                                     <ControlTemplate.Triggers>
-                                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="Arrow" Property="Text" Value="▾" /></Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard><Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="90" Duration="0:0:0.28">
+                                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseInOut" /></DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                </Storyboard></BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard><Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetName="Arrow" Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)" To="0" Duration="0:0:0.28">
+                                                        <DoubleAnimation.EasingFunction><CubicEase EasingMode="EaseInOut" /></DoubleAnimation.EasingFunction>
+                                                    </DoubleAnimation>
+                                                </Storyboard></BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
                                         <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="HeaderBack" Property="Background" Value="{DynamicResource WorkbenchAccentFill}" /></Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -33,7 +50,7 @@
     <local:MyScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
                           Style="{StaticResource ScrollViewerFullMargin}" Margin="0,12,6,12">
         <!-- Inset the scroll track from the context panel's rounded border. -->
-        <StackPanel Name="PanItem">
+        <local:MyRevealStackPanel x:Name="PanItem" UseLayoutRounding="True">
             <Expander x:Name="GroupAutomatic" Header="自动安装" IsExpanded="True" Style="{StaticResource DownloadSectionStyle}" />
 
             <local:MyListItem x:Name="ItemInstall" Checked="True" IsScaleAnimationEnabled="False" Type="RadioBox"
@@ -298,6 +315,6 @@
                     </x:Array>
                 </local:MyListItem.Buttons>
             </local:MyListItem>
-        </StackPanel>
+        </local:MyRevealStackPanel>
     </local:MyScrollViewer>
 </local:MyPageLeft>

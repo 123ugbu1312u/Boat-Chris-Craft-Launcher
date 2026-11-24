@@ -18,7 +18,7 @@ internal static class Program
         const System.Reflection.BindingFlags hidden = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic;
         config.GetMethod("_InitializeConfigItems", hidden)!.Invoke(null, null);
         config.GetField("_isConfigItemsInitialized", hidden)!.SetValue(null, true);
-        var app = new System.Windows.Application();
+        var app = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
         var panel = new Border { Opacity = 0.2, Background = Brushes.Black, Width = 100, Height = 80 };
         CheckAnimation(AaOpacity(panel, 0.8, 100), () => Equal(0.6, panel.Opacity), () => Equal(1, panel.Opacity));
         var shadow = new DropShadowEffect { Opacity = 0.2 };
@@ -83,6 +83,7 @@ internal static class Program
         CheckResourceSharing();
         CheckResourceActions();
         CheckLeftContentControls();
+        DownloadSectionVerification.Run();
         CheckPageTransitions();
         CheckPopupTransitions();
         CheckNavigationLayout();

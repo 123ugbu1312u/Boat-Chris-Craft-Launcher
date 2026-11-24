@@ -9,6 +9,7 @@ public partial class PageToolsLeft
 {
     private bool isLoad;
     private bool isPageSwitched; // 如果在 Loaded 前切换到其他页面，会导致触发 Loaded 时再次切换一次
+    private PageToolsDailyRecommendations? dailyRecommendations;
 
     public PageToolsLeft()
     {
@@ -35,7 +36,10 @@ public partial class PageToolsLeft
         // 选择第一个未被禁用的子页面
         if (isPageSwitched) 
             return;
-        ItemTest.SetChecked(true, false, false);
+        if (ItemTest.Visibility == Visibility.Visible)
+            ItemTest.SetChecked(true, false, false);
+        else
+            ItemDailyRecommendations.SetChecked(true, false, true);
     }
 
     private void PageOtherLeft_Unloaded(object sender, RoutedEventArgs e)
@@ -76,6 +80,8 @@ public partial class PageToolsLeft
                     ModMain.frmToolsTest = new PageToolsTest();
                 return ModMain.frmToolsTest;
             }
+            case FormMain.PageSubType.ToolsDailyRecommendations:
+                return dailyRecommendations ??= new PageToolsDailyRecommendations();
             default:
             {
                 throw new Exception("未知的更多子页面种类：" + (int)targetID);

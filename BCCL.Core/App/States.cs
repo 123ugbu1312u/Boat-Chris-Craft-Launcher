@@ -195,6 +195,9 @@ public static partial class States
         /// </summary>
         [ConfigItem<double>("WindowWidth", 900, ConfigSource.Local)] public partial double WindowWidth { get; set; }
 
+        [ConfigItem<int>("WorkbenchLastSlogan", -1, ConfigSource.Local)] public partial int WorkbenchLastSlogan { get; set; }
+
+        [ConfigItem<string>("WorkbenchLastShortcuts", "", ConfigSource.Local)] public partial string WorkbenchLastShortcuts { get; set; }
     }
 
     /// <summary>

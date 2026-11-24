@@ -186,29 +186,6 @@ public static class ModComp
         World = 7
     }
 
-    public enum CompDepsInstallTypes
-    {
-        /// <summary>
-        ///     无法解析依赖
-        /// </summary>
-        Unresolved = 0,
-
-        /// <summary>
-        ///     用户选择安装前置
-        /// </summary>
-        WithDeps = 1,
-
-        /// <summary>
-        ///     用户选择只安装本体，不安装前置
-        /// </summary>
-        WithoutDeps = 2,
-
-        /// <summary>
-        ///     用户取消安装
-        /// </summary>        
-        Cancel = 3,
-    }
-    
     public enum DownloadReason
     {
         Standalone,
@@ -1737,7 +1714,7 @@ public static class ModComp
         /// <summary>
         ///     获取对应的 CurseForge API 请求链接。若返回 Nothing 则为不进行 CurseForge 请求。
         /// </summary>
-        public string GetCurseForgeAddress()
+        public string GetCurseForgeAddress(int pageSize = compPageSize)
         {
             if (!source.HasFlag(CompSourceType.CurseForge))
                 return null;
@@ -1748,7 +1725,7 @@ public static class ModComp
             // 应用筛选参数
             var address =
                 new StringBuilder(
-                    $"https://api.curseforge.com/v1/mods/search?gameId=432&sortOrder=desc&pageSize={compPageSize}");
+                    $"https://api.curseforge.com/v1/mods/search?gameId=432&sortOrder=desc&pageSize={pageSize}");
             switch (type)
             {
                 case CompType.Mod:
@@ -1833,7 +1810,7 @@ public static class ModComp
         /// <summary>
         ///     获取对应的 Modrinth API 请求链接。若返回 Nothing 则为不进行 Modrinth 请求。
         /// </summary>
-        public string GetModrinthAddress()
+        public string GetModrinthAddress(int pageSize = compPageSize)
         {
             if (!source.HasFlag(CompSourceType.Modrinth))
                 return null;
@@ -1842,7 +1819,7 @@ public static class ModComp
             if (storage.modrinthTotal > -1 && storage.modrinthTotal <= storage.modrinthOffset)
                 return null;
             // 应用筛选参数
-            var address = $"https://api.modrinth.com/v2/search?limit={compPageSize}";
+            var address = $"https://api.modrinth.com/v2/search?limit={pageSize}";
             switch (sort)
             {
                 case CompSortType.Relevance:
@@ -2542,6 +2519,9 @@ public static class ModComp
         /// </summary>
         public readonly List<string> RawDependencies = new();
 
+        // Modrinth 的必需前置可以指定发布文件，也可以只提供发布文件 ID。
+        public readonly Dictionary<string, string?> RequiredDependencyVersions = new(StringComparer.Ordinal);
+
         /// <summary>
         ///     该文件的所有可选依赖工程的原始 ID。
         ///     这些 ID 可能没有加载，在加载后会添加到 OptionalDependencies 中（主要是因为 Modrinth 返回的是字符串 ID 而非 Slug，导致 Project.Id 查询不到）。
@@ -2617,6 +2597,8 @@ public static class ModComp
                     GameVersions = data["GameVersions"].ToObject<List<string>>();
                 if (data.ContainsKey("RawDependencies"))
                     RawDependencies = data["RawDependencies"].ToObject<List<string>>();
+                if (data["RequiredDependencyVersions"] is JsonObject versions)
+                    RequiredDependencyVersions = versions.ToObject<Dictionary<string, string?>>();
                 if (data.ContainsKey("Dependencies"))
                     Dependencies = data["Dependencies"].ToObject<List<string>>();
                 if (data.ContainsKey("RawOptionalDependencies"))
@@ -2662,8 +2644,7 @@ public static class ModComp
                     if (data.ContainsKey("dependencies"))
                     {
                         RawDependencies = data["dependencies"].AsArray()
-                            .Where(d => d["relationType"].ToObject<int>() == 3 &&
-                                        d["modId"].ToObject<int>() != 306612 && d["modId"].ToObject<int>() != 634179)
+                            .Where(d => d["relationType"].ToObject<int>() == 3)
                             .Select(d => d["modId"].ToString()).ToList(); // 种类为必要依赖
                         // 排除 Fabric API 和 Quilt API
                         RawOptionalDependencies = data["dependencies"].AsArray()
@@ -2796,14 +2777,16 @@ public static class ModComp
                     // Dependencies
                     if (data.ContainsKey("dependencies"))
                     {
-                        RawDependencies = data["dependencies"].AsArray()
-                            .Where(d => (string)d["dependency_type"] == "required" &&
-                                        d["project_id"] is not null &&
-                                        (string)d["project_id"] != "P7dR8mSH" &&
-                                        (string)d["project_id"] != "qvIfYCYJ" && d["project_id"] is not null)
-                            .Select(d => d["project_id"].ToString()).ToList(); // 种类为必要依赖
-                        // 排除 Fabric API 和 Quilt API
-                        // 有时候真的会空……
+                        foreach (var dependency in data["dependencies"].AsArray()
+                                     .Where(d => (string)d["dependency_type"] == "required"))
+                        {
+                            var projectId = (string?)dependency["project_id"];
+                            var versionId = (string?)dependency["version_id"];
+                            if (!string.IsNullOrWhiteSpace(projectId))
+                                RawDependencies.Add(projectId);
+                            if (!string.IsNullOrWhiteSpace(versionId))
+                                RequiredDependencyVersions[versionId] = projectId;
+                        }
                         RawOptionalDependencies = data["dependencies"].AsArray()
                             .Where(d => (string)d["dependency_type"] == "optional" &&
                                         d["project_id"] is not null &&
@@ -2985,6 +2968,8 @@ public static class ModComp
             if (Hash is not null)
                 json.Add("Hash", Hash);
             json.Add("RawDependencies", new JsonArray(RawDependencies.Select(s => (JsonNode)s).ToArray()));
+            if (RequiredDependencyVersions.Count > 0)
+                json.Add("RequiredDependencyVersions", JsonSerializer.SerializeToNode(RequiredDependencyVersions));
             json.Add("RawOptionalDependencies", new JsonArray(RawOptionalDependencies.Select(s => (JsonNode)s).ToArray()));
             json.Add("Dependencies", new JsonArray(Dependencies.Select(s => (JsonNode)s).ToArray()));
             json.Add("OptionalDependencies", new JsonArray(OptionalDependencies.Select(s => (JsonNode)s).ToArray()));
@@ -3077,7 +3062,7 @@ public static class ModComp
     ///     获取某个工程下的全部文件列表。
     ///     必须在工作线程执行，失败会抛出异常。
     /// </summary>
-    public static List<CompFile> CompFilesGet(string projectId, bool fromCurseForge)
+    public static List<CompFile> CompFilesGet(string projectId, bool fromCurseForge, bool includeDependencyProjects = true)
     {
         // 1. 获取工程对象（使用 TryGetValue 提高效率并防止并发异常）
         CompProject targetProject = null;
@@ -3124,6 +3109,8 @@ public static class ModComp
         }
 
         var currentFiles = compFilesCache[projectId];
+        if (!includeDependencyProjects)
+            return currentFiles;
 
         // 3. 提取所有需要获取信息的前置 ID（合并必要和可选）
         var allRawDeps = currentFiles.SelectMany(f => f.RawDependencies.Concat(f.RawOptionalDependencies)).Distinct()
@@ -3240,7 +3227,7 @@ public static class ModComp
     /// <summary>
     /// 资源卡片的快速下载入口：按 <see cref="Config.Download.Comp.QuickDownloadBehavior"/> 指定的行为，
     /// 下载该资源最新（优先 Release、其次最新发布）的兼容版本到目标实例或文件夹。
-    /// 由 <see cref="MyCompItem"/> 上的快速下载按钮调用。快速下载不会自动安装前置。
+    /// 由 <see cref="MyCompItem"/> 上的快速下载按钮调用。
     /// </summary>
     public static void QuickDownload(CompProject project)
     {
@@ -3334,7 +3321,7 @@ public static class ModComp
         //只下载一次，避免并发写同一文件
         if (startedTargets is not null && !startedTargets.Add(target))
             return;
-        _StartQuickDownload(file, target);
+        if (!ModCompDependency.Download(project, file, target, instance, extractWorld: true)) return;
         HintService.Hint(Lang.Text("Download.Comp.QuickDownload.Hint.DownloadStarted", project.RawName), HintType.Success);
     }
 
@@ -3391,60 +3378,8 @@ public static class ModComp
             SystemDialogs.SelectFolder(Lang.Text("Download.Comp.QuickDownload.Hint.SelectFolder")));
         if (string.IsNullOrWhiteSpace(saveFolder)) return; // 取消
         var target = Path.Combine(saveFolder, CompFileNameGet(project, file));
-        _StartQuickDownload(file, target);
+        if (!ModCompDependency.Download(project, file, target, instance: null, extractWorld: true)) return;
         HintService.Hint(Lang.Text("Download.Comp.QuickDownload.Hint.DownloadStarted", project.RawName), HintType.Success);
-    }
-
-    /// <summary>构造并启动单文件下载任务（与详情页 Save_Click 末段一致）。</summary>
-    private static void _StartQuickDownload(CompFile file, string target)
-    {
-        var desc = file.Type switch
-        {
-            CompType.Mod => Lang.Text("Download.Comp.Type.Mod"),
-            CompType.ResourcePack => Lang.Text("Download.Comp.Type.ResourcePack"),
-            CompType.Shader => Lang.Text("Download.Comp.Type.Shader"),
-            CompType.DataPack => Lang.Text("Download.Comp.Type.DataPack"),
-            CompType.World => Lang.Text("Download.Comp.Type.World"),
-            _ => Lang.Text("Download.Comp.Type.Mod")
-        };
-        var loaderName = Lang.Text("Download.Comp.Detail.DownloadResource", desc,
-            ModBase.GetFileNameWithoutExtentionFromPath(target));
-        var loaders = new List<ModLoader.LoaderBase>
-        {
-            new LoaderDownload(Lang.Text("Download.Comp.Detail.DownloadFile"),
-                new List<DownloadFile>
-                {
-                    file.Type == CompType.Mod
-                        ? file.ToNetFile(target)
-                        : file.ToNetFile(target, DownloadReason.Standalone, null)
-                })
-            {
-                ProgressWeight = 6,
-                block = true
-            }
-        };
-        if (file.Type == CompType.World)
-        {
-            var extractDir = Path.GetDirectoryName(target);
-            loaders.Add(new ModLoader.LoaderTask<int, int>(
-                Lang.Text("Download.Comp.Detail.InstallWorld"),
-                _ => ModBase.ExtractFile(target, extractDir, Encoding.UTF8))
-            {
-                ProgressWeight = 0.1d,
-                block = true
-            });
-            loaders.Add(new ModLoader.LoaderTask<int, int>(
-                Lang.Text("Download.Comp.Detail.CleanCache"),
-                _ => System.IO.File.Delete(target)));
-        }
-        var loader = new ModLoader.LoaderCombo<int>(loaderName, loaders)
-        {
-            OnStateChanged = ModDownloadLib.LoaderStateChangedHintOnly
-        };
-        loader.Start(1);
-        ModLoader.LoaderTaskbarAdd(loader);
-        ModMain.frmMain.BtnExtraDownload.ShowRefresh();
-        ModMain.frmMain.BtnExtraDownload.Ribble();
     }
 
     /// <summary>根据资源类型返回实例内的目标子文件夹（与 Save_Click 一致）。</summary>

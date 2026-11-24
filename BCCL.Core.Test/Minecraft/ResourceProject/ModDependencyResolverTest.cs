@@ -193,7 +193,7 @@ public class ModDependencyResolverTest
     }
 
     [TestMethod]
-    public void TreatsInstalledIncompatibleDependencyAsMissing()
+    public void ReportsInstalledIncompatibleDependencyAndSelectsReplacement()
     {
         var resolver = new ModDependencyResolver();
         var projects = CreateProjectStore(
@@ -209,6 +209,7 @@ public class ModDependencyResolverTest
             CreateDependency("B")));
 
         Assert.AreEqual(1, result.ToInstall.Count);
+        Assert.AreEqual(1, result.Mismatched.Count);
         Assert.AreEqual("B", result.ToInstall[0].ProjectId);
         Assert.AreEqual("b-file", result.ToInstall[0].File.Id);
         Assert.AreEqual(0, result.Satisfied.Count);
@@ -228,6 +229,27 @@ public class ModDependencyResolverTest
         Assert.AreEqual(1, result.Satisfied.Count);
         Assert.AreEqual("B", result.Satisfied[0].ProjectId);
         StringAssert.Contains(result.Satisfied[0].Reason, "Optional dependency ignored");
+    }
+
+    [TestMethod]
+    public void UsesRequiredFileVersionAndCanKeepInstalledVersionForOlderMainFile()
+    {
+        var resolver = new ModDependencyResolver();
+        var projects = CreateProjectStore(CreateProject("B",
+            CreateFile("b-installed"), CreateFile("b-required", releaseType: 2)));
+        var installed = CreateInstalledMod("B") with { FileId = "b-installed", LocalPath = "mods/b.jar" };
+        var dependency = CreateDependency("B");
+
+        var current = resolver.Resolve(CreateRequest(projects, [installed], dependency with { VersionId = "b-required" }));
+
+        Assert.AreEqual(installed, current.Mismatched.Single());
+        Assert.AreEqual("b-required", current.ToInstall.Single().File.Id);
+
+        var older = resolver.Resolve(CreateRequest(projects, [installed], dependency with { VersionId = "b-installed" }));
+
+        Assert.AreEqual(0, older.Mismatched.Count);
+        Assert.AreEqual(0, older.ToInstall.Count);
+        Assert.AreEqual("B", older.Satisfied.Single().ProjectId);
     }
 
     [TestMethod]

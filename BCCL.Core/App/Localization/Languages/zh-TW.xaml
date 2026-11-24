@@ -398,7 +398,19 @@
     <sys:String x:Key="Download.Comp.Dependency.Install.WithDependencies">安裝模組與必需前置</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Install.WithoutDependencies">僅下載模組本體（不建議）</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Continue">繼續下載</sys:String>
-    <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Message">無法解析模組前置，將僅下載模組本體。</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Message">無法檢查前置模組。是否只下載目前的檔案？</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Missing.Message">您尚未下載前置模組，是否一併下載？</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Skip">不下載</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Mismatch.Message">前置模組版本不相容！您可以「更新前置模組」或「下載舊版模組」。</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Update">更新前置模組</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Older">下載舊版模組</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.NoOlder.Message">找不到可搭配已安裝前置模組的舊版本。</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.NoUpdate.Message">無法更新所有必要的前置模組。&#xA;{0}</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Incomplete.Message">以下必要的前置模組無法取得。是否只下載目前的檔案？&#xA;{0}</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.OverwriteOlder.Message">檔案「{0}」已存在。是否覆蓋？</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.Busy.Message">此位置正在處理另一項前置模組下載。</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.CheckFailed.Message">無法完成前置模組版本檢查。</sys:String>
+    <sys:String x:Key="Download.Comp.Dependency.ConflictingFile.Message">目標檔案發生衝突或已被修改：{0}</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.ResolveFailed.Title">前置解析失敗</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Unresolved.ContinueWithoutDependencies">繼續下載</sys:String>
     <sys:String x:Key="Download.Comp.Dependency.Unresolved.ListItem">- {0} {1}: {2}</sys:String>
@@ -2173,6 +2185,8 @@
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ChangeBirthDate.Message">請在開啟的網頁中修改帳戶的出生日期（至少改為 18 歲以上）。&#xA;在修改成功後等待一分鐘，然後再回到 BCCL，就可以正常登入了！</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ChangeBirthDate.SupportMessage">請在開啟的網頁中修改帳戶的出生日期（至少改為 18 歲以上）。&#xA;在修改成功後等待一分鐘，然後再回到 BCCL，就可以正常登入了！</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.CreateProfile.Button">建立檔案</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ServiceForbidden">Microsoft 帳戶和 Xbox 驗證已通過，但 Minecraft 服務拒絕了 BCCL 的登入要求（HTTP 403）。如果使用新註冊的用戶端 ID，請由啟動器開發者申請 Minecraft API 存取審核，獲准後再試。如果已獲准，請確認 BCCL 填入的是獲准的用戶端 ID。</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Login.Microsoft.OpenAppReview">開啟 AppID 審核表單</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.CreateProfile.Message">請先建立 Minecraft 玩家檔案，然後再重新登入。</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.NotPurchased">暫時無法取得到此帳戶資訊，此帳戶可能沒有購買 Minecraft Java Edition 或帳戶的 Xbox Game Pass 已過期</sys:String>
     <sys:String x:Key="Minecraft.Launch.Login.Microsoft.ProfileAlreadyAdded">你已經新增了這個檔案...</sys:String>
@@ -2493,44 +2507,6 @@
     <sys:String x:Key="Setup.Feedback.Status.Waiting">等待</sys:String>
     <sys:String x:Key="Setup.Feedback.Status.WaitingProcess">等待處理</sys:String>
 
-    <!-- Setup.GameLink -->
-
-    <sys:String x:Key="Setup.GameLink.CliDebugOutput">在日誌中輸出 Cli 資訊以用於除錯</sys:String>
-    <sys:String x:Key="Setup.GameLink.CliDebugOutput.ToolTip">在啟動器日誌中每 30s 輸出一次 EasyTier Cli 資訊以便於開發者和社群支援調查。&#xA;該選項僅用於除錯目的，不推薦一直開啟。</sys:String>
-    <sys:String x:Key="Setup.GameLink.EnableIPv6">允許使用 IPv6 通訊</sys:String>
-    <sys:String x:Key="Setup.GameLink.EnableIPv6.ToolTip">IPv6 相比於 IPv4 更容易進行 P2P 通訊，能極大改善連線體驗，除有特殊原因外不建議關閉。</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.ConfigChangeFailed">改變設定項失敗</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.InitFailed">初始化連線頁設定失敗</sys:String>
-    <sys:String x:Key="Setup.GameLink.Error.NetworkTestFailed">取得網路測試結果失敗。請檢視錯誤詳情。</sys:String>
-    <sys:String x:Key="Setup.GameLink.Initialized">已初始化連線頁設定！</sys:String>
-    <sys:String x:Key="Setup.GameLink.LatencyFirstMode">選擇最低延遲路徑而不是最短路徑</sys:String>
-    <sys:String x:Key="Setup.GameLink.LatencyFirstMode.ToolTip">啟用後，EasyTier 將在通訊時選擇延遲最低的路徑，而不是路由跳數最少的路徑。&#xA;啟用此選項在部分情況下能降低連線時的延遲，但可能會提高丟包率。</sys:String>
-    <sys:String x:Key="Setup.GameLink.PortGuessNat">對對稱型 NAT 進行埠猜測</sys:String>
-    <sys:String x:Key="Setup.GameLink.PortGuessNat.ToolTip">讓 EasyTier 嘗試對對稱型 NAT 進行埠猜測（生日悖論）。&#xA;這也許可以改善連線體驗，但在部分情況下也可能導致一些問題。&#xA;一般保持開啟即可。</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Preference">協議偏好</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Tcp">TCP</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Tcp.ToolTip">讓 EasyTier 優先使用 TCP 進行通訊，TCP 通常能帶來更好的穩定性</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Udp">UDP</sys:String>
-    <sys:String x:Key="Setup.GameLink.Protocol.Udp.ToolTip">讓 EasyTier 優先使用 UDP 進行通訊，UDP 通常能帶來更低的通訊時延</sys:String>
-    <sys:String x:Key="Setup.GameLink.RestartRequired">修改此處的設定後，需要重新啟動大廳以使設定生效。</sys:String>
-    <sys:String x:Key="Setup.GameLink.Username">使用者名稱</sys:String>
-    <sys:String x:Key="Setup.GameLink.Username.ToolTip">BCCL 會盡可能使用此處的使用者名稱用於大廳資訊展示。&#xA;若留空，則使用 Natayark ID 的使用者名稱。&#xA;&#xA;部分情況下可能始終展示 Natayark ID 使用者名稱，而非此處設定的名稱。</sys:String>
-
-    <!-- Setup.GameLink.NetworkTest -->
-
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Ipv6Status">IPv6: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Ipv6Status.NotTested">IPv6: 尚未偵測</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.NotTested">尚未偵測</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Start">開始測試</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Supported">支援</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.TcpNatType">TCP NAT 型別: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.TcpNatType.NotTested">TCP NAT 型別: 尚未偵測</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Testing">正在測試</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Title">網路測試</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.UdpNatType">UDP NAT 型別: {0}</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.UdpNatType.NotTested">UDP NAT 型別: 尚未偵測</sys:String>
-    <sys:String x:Key="Setup.GameLink.NetworkTest.Unsupported">不支援</sys:String>
-
     <!-- Setup.GameManage -->
 
     <sys:String x:Key="Setup.GameManage.Error.InitFailed">初始化其他頁設定失敗</sys:String>
@@ -2558,8 +2534,8 @@
 
     <!-- Setup.GameManage.Community -->
 
-    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies">下載模組時自動檢查並安裝必需前置</sys:String>
-    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies.ToolTip">安裝模組時，若偵測到缺少必需前置，將列出前置清單供確認後自動下載安裝（可在確認時取消）</sys:String>
+    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies">下載模組或資源包時檢查必要前置模組</sys:String>
+    <sys:String x:Key="Setup.GameManage.Community.AutoInstallDependencies.ToolTip">下載模組或資源包時，檢查必要的前置模組並詢問如何處理。</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat">檔案名格式</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat.Style0">【機械動力】create-1.21.1-6.0.4</sys:String>
     <sys:String x:Key="Setup.GameManage.Community.FilenameFormat.Style1">[機械動力] create-1.21.1-6.0.4</sys:String>
@@ -2763,13 +2739,11 @@
     <sys:String x:Key="Setup.Left.Category.About">關於</sys:String>
     <sys:String x:Key="Setup.Left.Category.Game">遊戲</sys:String>
     <sys:String x:Key="Setup.Left.Category.Launcher">啟動器</sys:String>
-    <sys:String x:Key="Setup.Left.Category.Tools">工具</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.Message">在提交新回饋前，建議先搜尋回饋清單，以避免重複提交。&#xA;如果無法開啟該網頁，請嘗試使用加速器或 VPN。</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.SubmitNew">提交新回饋</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.Title">回饋</sys:String>
     <sys:String x:Key="Setup.Left.Feedback.ViewList">檢視回饋清單</sys:String>
     <sys:String x:Key="Setup.Left.Refreshing">正在重新整理……</sys:String>
-    <sys:String x:Key="Setup.Left.Reset.GameLink.Message">是否要初始化 工具-連線 頁面的所有設定？該操作不可復原。</sys:String>
     <sys:String x:Key="Setup.Left.Reset.GameManage.Message">是否要初始化 遊戲-管理 頁面的所有設定？該操作不可復原。</sys:String>
     <sys:String x:Key="Setup.Left.Reset.Language.Message">是否要初始化 啟動器-語言 頁面的所有設定？該操作不可復原。</sys:String>
     <sys:String x:Key="Setup.Left.Reset.Launch.Message">是否要初始化 遊戲-啟動 頁面的所有設定？該操作不可復原。</sys:String>
@@ -2781,7 +2755,6 @@
 
     <sys:String x:Key="Setup.Left.Item.About">軟體資訊</sys:String>
     <sys:String x:Key="Setup.Left.Item.Feedback">回饋</sys:String>
-    <sys:String x:Key="Setup.Left.Item.GameLink">連線</sys:String>
     <sys:String x:Key="Setup.Left.Item.GameManage">管理</sys:String>
     <sys:String x:Key="Setup.Left.Item.Java">Java</sys:String>
     <sys:String x:Key="Setup.Left.Item.Launch">啟動</sys:String>
@@ -2976,7 +2949,6 @@
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.FeatureHide">功能隱藏</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.FeatureHide.ToolTip">僅隱藏本頁籤，設定的停用內容依然有效。&#xA;可以在保留個人化設定畫面的情況下避免隱藏設定被修改。</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Feedback">回饋</sys:String>
-    <sys:String x:Key="Setup.Ui.FeatureHide.Item.GameLink">連線</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.GameManage">管理</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.InstanceSelect">實例管理</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.InstanceSelect.ToolTip">隱藏啟動按鈕下方的實例選擇與實例設定入口。</sys:String>
@@ -3188,6 +3160,27 @@
     <sys:String x:Key="Tools.Left.Multiplayer">連線</sys:String>
     <sys:String x:Key="Tools.Left.Utilities">奇妙小工具</sys:String>
     <sys:String x:Key="Tools.Left.Utilities.Title">百寶箱</sys:String>
+    <sys:String x:Key="Tools.Daily.Title">每日推薦</sys:String>
+    <sys:String x:Key="Tools.Daily.RankingTitle">{0}的{1}推薦</sys:String>
+    <sys:String x:Key="Tools.Daily.Cumulative">正在採集今日下載量，暫時顯示累計排行</sys:String>
+    <sys:String x:Key="Tools.Daily.Estimate">按今日取樣的下載增量排序</sys:String>
+    <sys:String x:Key="Tools.Daily.Partial">部分下載來源暫時無法使用</sys:String>
+    <sys:String x:Key="Tools.Daily.Unavailable">下載來源暫時無法使用</sys:String>
+    <sys:String x:Key="Tools.Daily.Retry">重試</sys:String>
+    <sys:String x:Key="Tools.Daily.Updating">正在更新排行</sys:String>
+    <sys:String x:Key="Tools.Daily.CachedUpdating">正在更新，暫時顯示快取結果</sys:String>
+    <sys:String x:Key="Tools.Daily.CachedOffline">下載來源暫時無法使用，已顯示快取結果</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Title">伺服器推薦</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.OnlinePlayers">目前線上人數</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Latency">本機測得的 Java 伺服器狀態回應延遲</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Accelerator">需要加速器才能流暢遊玩</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.RegionSource">伺服器地區依 IP 估算，資料來自 DB-IP.com</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.LastPlayers">上次查到的線上人數</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.DirectoryPlayers">推薦目錄最近回報的線上人數</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Copied">✓ 已複製</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Unavailable">暫時無法取得伺服器推薦</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Cached">暫時顯示 {0} 16:00 批次的伺服器推薦（北京時間）</sys:String>
+    <sys:String x:Key="Tools.Daily.Server.Incomplete">資料來源目前只回傳 {0}/{1} 個符合條件的伺服器</sys:String>
 
     <!-- Tools.GameLink -->
 
@@ -3521,4 +3514,20 @@
     <sys:String x:Key="Setup.Ui.Theme.Color.Violet">鳶尾紫</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Lavender">薰衣草紫</sys:String>
     <sys:String x:Key="Setup.Ui.Theme.Color.Slate">霧岩灰</sys:String>
+    <!-- Launch memory optimization -->
+    <sys:String x:Key="Setup.Launch.Memory.Optimize">啟動遊戲前進行記憶體最佳化</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.ToolTip">啟用後在啟動遊戲前整理系統實體記憶體，可能需要系統管理員授權。傳統硬碟可能短暫卡頓；取消授權或最佳化失敗仍會繼續啟動遊戲。</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.On">開啟</sys:String>
+    <sys:String x:Key="Setup.Launch.Memory.Optimize.Off">關閉</sys:String>
+    <sys:String x:Key="Minecraft.Launch.Stage.MemoryOptimize">記憶體最佳化</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Cancelled">已取消記憶體最佳化，繼續啟動遊戲。</sys:String>
+    <sys:String x:Key="Minecraft.Launch.MemoryOptimize.Failed">記憶體最佳化失敗，繼續啟動遊戲；詳情請查看記錄。</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder">按鈕與區塊邊框</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorder.ToolTip">顯示按鈕與區塊的液態玻璃邊框。邊框顏色可在上方設定。</sys:String>
+    <sys:String x:Key="Setup.Ui.Basic.ButtonBorderColor">邊框顏色</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Silver">銀白</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.White">純白</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Charcoal">炭灰</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Lemon">檸檬黃</sys:String>
+    <sys:String x:Key="Setup.Ui.Theme.Color.Cobalt">鈷藍</sys:String>
 </ResourceDictionary>

@@ -68,6 +68,10 @@ function App() {
 
 function useLanguagePreference(): void {
   useEffect(() => {
+    if (BCCL_EMBEDDED) {
+      setLanguagePreference('system');
+      return;
+    }
     void invoke<{ language?: LanguagePreference }>('get_settings')
       .then((settings) => setLanguagePreference(settings.language ?? getLanguagePreference()))
       .catch((error) => console.error('读取语言设置失败:', error));

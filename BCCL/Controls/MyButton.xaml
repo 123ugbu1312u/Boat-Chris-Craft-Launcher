@@ -14,7 +14,9 @@
         <Border CornerRadius="{Binding CornerRadius, ElementName=PanBack}" IsHitTestVisible="False"
                 Background="{DynamicResource GlassCardSheen}" Visibility="{DynamicResource GlassButtonVisibility}" />
         <local:LiquidGlassSurface x:Name="ButtonOptics" Radius="{Binding CornerRadius.TopLeft, ElementName=PanBack}"
-                                 InteractionHost="{Binding ElementName=PanBack}" Visibility="{DynamicResource GlassButtonVisibility}" />
+                                 InteractionHost="{Binding ElementName=PanBack}" Visibility="{DynamicResource GlassButtonVisibility}"
+                                 RimVisibility="{DynamicResource GlassButtonBorderVisibility}"
+                                 RimTint="{DynamicResource GlassButtonBorderTint}" />
         <TextBlock TextOptions.TextFormattingMode="Display" SnapsToDevicePixels="True" TextTrimming="None"
                    HorizontalAlignment="Center" x:Name="LabText" VerticalAlignment="Center"
                    RenderTransformOrigin="0.5,0.5"

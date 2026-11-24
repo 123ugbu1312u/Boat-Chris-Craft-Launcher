@@ -1,0 +1,6 @@
+IP Geolocation by DB-IP (https://db-ip.com/)
+Source: DB-IP IP to Country Lite, November 2026.
+https://db-ip.com/db/download/ip-to-country-lite
+License: Creative Commons Attribution 4.0 International.
+https://creativecommons.org/licenses/by/4.0/
+Adaptation: country ranges reduced to the warning classification and adjacent equal ranges merged.

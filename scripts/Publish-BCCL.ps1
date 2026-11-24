@@ -33,12 +33,18 @@ $outputPath = [System.IO.Path]::GetFullPath($OutputDirectory)
 $temporaryRoot = [System.IO.Path]::GetFullPath((Join-Path $repositoryRoot '../Temp'))
 $publishPath = Join-Path $temporaryRoot ('publish-' + [Guid]::NewGuid().ToString('N'))
 
+# Keep the EXE, splash and in-app logos on the same rounded silhouette.
+& powershell.exe -NoProfile -STA -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'Branding/Build-Icons.ps1')
+if ($LASTEXITCODE -ne 0) { throw 'BCCL icon generation failed.' }
+& node (Join-Path $PSScriptRoot 'MCTier/Sync-Branding.mjs')
+if ($LASTEXITCODE -ne 0) { throw 'Multiplayer icon synchronization failed.' }
+
 # Bundle the complete verified multiplayer runtime before compiling the launcher.
 # Only the final launcher EXE needs to be copied to the user's computer.
 $multiplayerBundle = & (Join-Path $PSScriptRoot 'MCTier/Pack-SingleFile.ps1')
 if (!$multiplayerBundle.Archive -or !$multiplayerBundle.Manifest) { throw 'Multiplayer bundle preparation failed.' }
 
-& dotnet publish $project -c Release -r win-x64 --self-contained true `
+& dotnet publish $project -c Release -r win-x64 --self-contained false `
     "-p:MicrosoftOAuthClientId=$MicrosoftClientId" `
     "-p:MCTierBundleArchive=$($multiplayerBundle.Archive)" `
     "-p:MCTierBundleManifest=$($multiplayerBundle.Manifest)" `
@@ -55,7 +61,7 @@ if ($MaximumExecutableBytes -gt 0 -and (Get-Item -LiteralPath $publishedExe).Len
 }
 $externalLibraries = @(Get-ChildItem -LiteralPath $publishPath -Filter '*.dll' -Recurse -File)
 if ($externalLibraries.Count -gt 0) {
-    throw 'Publish left external DLLs. Refusing to ship an incomplete standalone EXE.'
+    throw 'Publish left external DLLs. Expected a single-file EXE.'
 }
 
 New-Item -ItemType Directory -Path $outputPath -Force | Out-Null

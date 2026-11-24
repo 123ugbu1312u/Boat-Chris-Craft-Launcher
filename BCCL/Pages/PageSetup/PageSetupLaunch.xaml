@@ -8,7 +8,7 @@
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" x:Class="BCCL.PageSetupLaunch"
     PanScroll="{Binding ElementName=PanBack, Mode=OneWay}">
-    <local:MyScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
+    <local:MyScrollViewer SmoothScrolling="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" x:Name="PanBack">
         <StackPanel x:Name="PanMain" Margin="25,25,25,10">
             <local:MyCard x:Name="CardArgument" Margin="0,0,0,15" Title="{DynamicResource Setup.Launch.Options.Title}">
                 <StackPanel Margin="25,40,25,15">
@@ -197,6 +197,9 @@
                                         Tag="LaunchRamCustomInitial" MaxValue="49" Value="0" Change="SliderChange"
                                         ToolTip="{DynamicResource Setup.Launch.Memory.Initial.ToolTip}" />
                     </Grid>
+                    <local:MyCheckBox x:Name="CheckRamOptimize" Tag="LaunchRamOptimize" Change="CheckBoxChange"
+                                      Text="{DynamicResource Setup.Launch.Memory.Optimize}"
+                                      ToolTip="{DynamicResource Setup.Launch.Memory.Optimize.ToolTip}" Margin="0,9,0,0" />
                     <Grid x:Name="PanRamDisplay" Margin="0,11,2,0" SnapsToDevicePixels="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition x:Name="ColumnRamUsed" Width="4.7*" />

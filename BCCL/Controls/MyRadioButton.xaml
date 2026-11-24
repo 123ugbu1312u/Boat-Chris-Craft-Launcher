@@ -11,7 +11,9 @@
     <Grid>
         <Grid x:Name="GlassSurface" IsHitTestVisible="False" Visibility="Collapsed">
             <local:LiquidGlassSurface xmlns:local="clr-namespace:BCCL" Radius="20"
-                                     InteractionHost="{Binding ElementName=PanBack}" />
+                                     InteractionHost="{Binding ElementName=PanBack}"
+                                     RimVisibility="{DynamicResource GlassButtonBorderVisibility}"
+                                     RimTint="{DynamicResource GlassButtonBorderTint}" />
             <Border x:Name="GlassSheen" CornerRadius="20">
                 <Border.Background>
                     <RadialGradientBrush Center="0.28,0.15" GradientOrigin="0.28,0.15" RadiusX="0.95" RadiusY="0.9">
@@ -21,15 +23,8 @@
                     </RadialGradientBrush>
                 </Border.Background>
             </Border>
-            <Border CornerRadius="20" BorderThickness="1.1">
-                <Border.BorderBrush>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#f2ffffff" Offset="0" />
-                        <GradientStop Color="#35ffffff" Offset="0.48" />
-                        <GradientStop Color="#a6ffffff" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.BorderBrush>
-            </Border>
+            <Border CornerRadius="20" BorderThickness="1.1" BorderBrush="{DynamicResource GlassNavigationButtonBorderBrush}"
+                    Visibility="{DynamicResource GlassButtonBorderVisibility}" />
         </Grid>
         <StackPanel x:Name="PanContent" Orientation="Horizontal" VerticalAlignment="Center">
         <Grid x:Name="LogoHost"

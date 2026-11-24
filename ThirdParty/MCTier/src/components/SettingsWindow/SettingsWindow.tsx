@@ -29,7 +29,6 @@ import {
   type CommunityNode,
 } from '../../services/lobby/communityNodes';
 import './SettingsWindow.css';
-import { ComplianceDocuments } from '../ComplianceGate/ComplianceGate';
 
 /** 可自定义的全局快捷键项 */
 type HotkeyKey = 'micHotkey' | 'globalMuteHotkey' | 'pushToTalkHotkey' | 'summonHotkey';
@@ -85,7 +84,6 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
   const [showStats, setShowStats] = useState(false);
   const [themePreference, setThemePreference] = useState<ThemePreference>(readThemePreference);
   const { t } = useTranslation();
-  const [lang, setLang] = useState<LanguagePreference>(getLanguagePreference());
   const [pendingGpuValue, setPendingGpuValue] = useState(true);
   // 用ref保存完整设置，避免Switch切换时丢失输入框的已填数据
   const settingsRef = useRef<Record<string, any>>({});
@@ -118,7 +116,7 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
       const sm = settings.startMinimized ?? false;
       const egr = settings.enableGpuRendering ?? true;
       const fsdd = settings.fileShareDownloadDir || null;
-      const language: LanguagePreference = settings.language === 'zh' || settings.language === 'en' || settings.language === 'system'
+      const language: LanguagePreference = BCCL_EMBEDDED ? 'system' : settings.language === 'zh' || settings.language === 'en' || settings.language === 'system'
         ? settings.language
         : getLanguagePreference();
       setAutoStartup(as_);
@@ -132,7 +130,6 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
       setEnableGpuRendering(egr);
       setAvatarData(settings.avatarData || undefined);
       useAppStore.getState().updateConfig({ avatarData: settings.avatarData || undefined });
-      setLang(language);
       setLanguagePreference(language);
       // 读取自定义快捷键（后端缺省会回落到默认键位）
       const hk: Record<HotkeyKey, string> = {
@@ -935,36 +932,6 @@ export const SettingsWindow: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 {tl('选择进入大厅后默认使用的音色，开麦即生效；进大厅后也可在大厅动态设置中一键切换', 'Choose the default voice used after joining a lobby; you can also switch it live in lobby settings')}
               </div>
               <VoiceChangerPicker />
-            </motion.div>
-
-            <motion.div className="settings-card" variants={itemVariants}>
-              <div className="settings-card-header">
-                <div className="settings-card-icon settings-card-icon-yellow">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-                  </svg>
-                </div>
-                <span className="settings-card-title">{t('settings.language')}</span>
-              </div>
-              <div className="settings-card-desc">
-                {t('settings.languageDesc')}
-              </div>
-              <div className="settings-centered-control">
-                <Button.Group className="mct-choice-group">
-                  <Button className="mct-choice-button" type={lang === 'system' ? 'primary' : 'default'} onClick={() => { setLanguagePreference('system'); setLang('system'); void saveAll({ language: 'system' }); }}>{tl('自动', 'Auto')}</Button>
-                  <Button className="mct-choice-button" type={lang === 'zh' ? 'primary' : 'default'} onClick={() => { setLanguagePreference('zh'); setLang('zh'); void saveAll({ language: 'zh' }); }}>简体中文</Button>
-                  <Button className="mct-choice-button" type={lang === 'en' ? 'primary' : 'default'} onClick={() => { setLanguagePreference('en'); setLang('en'); void saveAll({ language: 'en' }); }}>English</Button>
-                </Button.Group>
-              </div>
-            </motion.div>
-
-            <motion.div className="settings-card" variants={itemVariants}>
-              <div className="settings-card-header">
-                <div className="settings-card-icon settings-card-icon-cyan"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z"/><path d="m8 12 3 3 5-6"/></svg></div>
-                <span className="settings-card-title">{tl('隐私与协议', 'Privacy & Terms')}</span>
-              </div>
-              <div className="settings-card-desc">{tl('查看隐私政策、用户协议、权限用途说明和免责声明。', 'Review the Privacy Policy, User Agreement, Permission Usage and Disclaimer.')}</div>
-              <ComplianceDocuments />
             </motion.div>
 
             <motion.div className="settings-card" variants={itemVariants}>

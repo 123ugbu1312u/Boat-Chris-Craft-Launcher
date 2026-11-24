@@ -70,6 +70,39 @@ Reject(MakePayload(contents, extraEntry: "../escaped.exe"), "zip-slip", "archive
 Reject(MakePayload(contents, extraEntry: "unknown.dll"), "unknown", "unexpected executable-search-path files are rejected");
 Reject(MakePayload(contents, extraEntry: "MCTier.exe"), "duplicate", "duplicate archive entries are rejected");
 Reject(MakePayload(contents, manifestPath: "../escaped.exe"), "manifest-slip", "manifest traversal is rejected");
+var embeddedDriver = contents["runtime/driver.sys"];
+var restoredExecutable = contents["MCTier.exe"].Concat(embeddedDriver).ToArray();
+var rangeOffset = contents["MCTier.exe"].Length;
+(byte[] Archive, byte[] Manifest) MakeCompact(long offset, long? driverLength = null, long? exeLength = null)
+{
+    using var output = new MemoryStream();
+    using (var zip = new ZipArchive(output, ZipArchiveMode.Create, true))
+    {
+        using var entry = zip.CreateEntry("MCTier.exe.br", CompressionLevel.NoCompression).Open();
+        using var brotli = new BrotliStream(entry, CompressionLevel.Optimal);
+        brotli.Write(restoredExecutable);
+    }
+    var bytes = output.ToArray();
+    return (bytes, JsonSerializer.SerializeToUtf8Bytes(new {
+        schemaVersion = 2, packageSha256 = Hash(bytes), entryPoint = "MCTier.exe",
+        files = new object[] {
+            new { path = "runtime/driver.sys", length = driverLength ?? embeddedDriver.Length, sha256 = Hash(embeddedDriver), entryPointOffset = offset },
+            new { path = "MCTier.exe", length = exeLength ?? restoredExecutable.Length, sha256 = Hash(restoredExecutable), brotli = true }
+        }
+    }));
+}
+var compact = MakeCompact(rangeOffset);
+var compactCache = Path.Combine(root, "compact");
+var compactExe = MCTierPayload.EnsureAvailable(compactCache, Open(compact));
+var compactDriver = Path.Combine(Path.GetDirectoryName(compactExe)!, "runtime/driver.sys");
+Check(File.ReadAllBytes(compactExe).SequenceEqual(restoredExecutable) &&
+      File.ReadAllBytes(compactDriver).SequenceEqual(embeddedDriver), "compact payload restores byte-identical executable and shared ranges");
+File.WriteAllText(compactDriver, "corrupted shared range");
+MCTierPayload.EnsureAvailable(compactCache, Open(compact));
+Check(File.ReadAllBytes(compactDriver).SequenceEqual(embeddedDriver), "compact payload repairs a damaged shared range");
+Reject(MakeCompact(-1), "negative-offset", "negative shared range offset is rejected");
+Reject(MakeCompact(rangeOffset, embeddedDriver.Length + 1), "range-overflow", "shared range outside the executable is rejected");
+Reject(MakeCompact(0, 0, restoredExecutable.Length - 1), "oversized-brotli", "Brotli expansion beyond manifest length is rejected");
 try { MCTierPayload.EnsureAvailable(Path.Combine(root, "missing"), _ => null); throw new Exception("Accepted missing resources"); }
 catch (InvalidDataException) { checks++; Console.WriteLine("PASS: missing embedded resources fail clearly"); }
 Check(!Directory.EnumerateFiles(root, "*.pending-*", SearchOption.AllDirectories).Any(), "no partial payload files remain");

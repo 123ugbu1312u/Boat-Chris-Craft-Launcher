@@ -67,6 +67,7 @@ public partial class PageSetupLaunch
             ((MyRadioBox)FindName("RadioRamType" + Config.Launch.MemoryAllocationMode)).Checked = true;
             SliderRamCustom.Value = Config.Launch.CustomMemorySize;
             SliderRamInitialCustom.Value = Config.Launch.CustomInitialMemorySize;
+            CheckRamOptimize.Checked = Config.Launch.OptimizeMemoryBeforeLaunch;
             RamType(Config.Launch.MemoryAllocationMode);
 
             // 高级设置

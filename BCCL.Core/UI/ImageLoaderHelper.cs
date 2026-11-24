@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -53,7 +54,7 @@ public static class ImageLoaderHelper {
             }
 
             // 异步转换图像
-            var bitmapImage = await Task.Run(() => _CreateBitmapFromBase64(base64Data));
+            var bitmapImage = await Task.Run(() => _CreateBitmap(Convert.FromBase64String(base64Data)));
             
             // 在 UI 线程上设置图像
             if (imageElement.Dispatcher.CheckAccess()) {
@@ -66,14 +67,27 @@ public static class ImageLoaderHelper {
         }
     }
 
-    /// <summary>
-    /// 从 Base64 字符串创建 BitmapImage
-    /// </summary>
-    /// <param name="base64Data">Base64 数据</param>
-    /// <returns>BitmapImage 对象</returns>
-    private static BitmapImage _CreateBitmapFromBase64(string base64Data) {
-        var imageBytes = Convert.FromBase64String(base64Data);
-        
+    public static BitmapImage? DecodeJavaServerLogo(string? favicon)
+    {
+        const string prefix = "data:image/png;base64,";
+        if (favicon is null || !favicon.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        try
+        {
+            var bytes = Convert.FromBase64String(favicon[prefix.Length..]);
+            // Check the PNG header and fixed Java favicon dimensions before invoking the image decoder.
+            if (bytes.Length < 24 || BinaryPrimitives.ReadUInt64BigEndian(bytes) != 0x89504e470d0a1a0a ||
+                !bytes.AsSpan(12, 4).SequenceEqual("IHDR"u8) ||
+                BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(16)) != 64 ||
+                BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(20)) != 64)
+                return null;
+            return _CreateBitmap(bytes);
+        }
+        catch { return null; }
+    }
+
+    private static BitmapImage _CreateBitmap(byte[] imageBytes) {
         using var ms = new MemoryStream(imageBytes);
         var bitmap = new BitmapImage();
         bitmap.BeginInit();

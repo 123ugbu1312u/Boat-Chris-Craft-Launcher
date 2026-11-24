@@ -13,7 +13,7 @@
                     </Grid>
                     <StackPanel Margin="26,25,26,24">
                         <TextBlock Text="BCCL  /  WORKSPACE" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrush3}" />
-                        <TextBlock Text="{DynamicResource Workbench.Hero}" FontSize="32" LineHeight="42" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}" Margin="0,16,0,16" />
+                        <TextBlock x:Name="LabWorkspaceSlogan" FontSize="32" LineHeight="42" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}" Margin="0,16,0,16" />
                         <TextBlock Text="{DynamicResource Workbench.Instance}" Foreground="{DynamicResource ColorBrushGray3}" FontSize="11" />
                         <TextBlock x:Name="LabWorkspaceVersion" FontSize="14" FontWeight="SemiBold" Margin="0,6,90,0" Foreground="{DynamicResource ColorBrush2}" TextTrimming="CharacterEllipsis" />
                     </StackPanel>
@@ -23,15 +23,15 @@
                 <TextBlock Text="{DynamicResource Workbench.Quick}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource ColorBrushGray1}" />
                 <TextBlock Text="{DynamicResource Workbench.QuickHint}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource ColorBrushGray3}" />
             </DockPanel>
-            <Grid Margin="0,0,0,20">
+            <Grid x:Name="WorkspaceShortcutGrid" Margin="0,0,0,20">
                 <Grid.ColumnDefinitions><ColumnDefinition /><ColumnDefinition /></Grid.ColumnDefinitions>
                 <Grid.RowDefinitions><RowDefinition /><RowDefinition /><RowDefinition /></Grid.RowDefinitions>
-                <local:MyButton Text="{DynamicResource Workbench.Library}" Height="58" Margin="0,0,6,12" Tag="instances" Click="WorkspaceAction_Click" ToolTip="{DynamicResource Workbench.LibraryHint}" />
-                <local:MyButton Grid.Column="1" Text="{DynamicResource Workbench.Install}" Height="58" Margin="6,0,0,12" Tag="install" Click="WorkspaceAction_Click" ToolTip="{DynamicResource Workbench.InstallHint}" />
-                <local:MyButton Grid.Row="1" Text="{DynamicResource Workbench.Mods}" Height="58" Margin="0,0,6,12" Tag="mods" Click="WorkspaceAction_Click" />
-                <local:MyButton Grid.Row="1" Grid.Column="1" Text="{DynamicResource Workbench.Packs}" Height="58" Margin="6,0,0,12" Tag="packs" Click="WorkspaceAction_Click" />
-                <local:MyButton Grid.Row="2" Text="{DynamicResource Workbench.Tasks}" Height="44" Margin="0,0,6,0" Tag="tasks" Click="WorkspaceAction_Click" />
-                <local:MyButton Grid.Row="2" Grid.Column="1" Text="{DynamicResource Workbench.Setup}" Height="44" Margin="6,0,0,0" Tag="setup" Click="WorkspaceAction_Click" />
+                <local:MyButton Height="58" Margin="0,0,6,12" Click="WorkspaceShortcut_Click" />
+                <local:MyButton Grid.Column="1" Height="58" Margin="6,0,0,12" Click="WorkspaceShortcut_Click" />
+                <local:MyButton Grid.Row="1" Height="58" Margin="0,0,6,12" Click="WorkspaceShortcut_Click" />
+                <local:MyButton Grid.Row="1" Grid.Column="1" Height="58" Margin="6,0,0,12" Click="WorkspaceShortcut_Click" />
+                <local:MyButton Grid.Row="2" Height="44" Margin="0,0,6,0" Click="WorkspaceShortcut_Click" />
+                <local:MyButton Grid.Row="2" Grid.Column="1" Height="44" Margin="6,0,0,0" Click="WorkspaceShortcut_Click" />
             </Grid>
             <StackPanel x:Name="PanCustom" />
             <local:MyCard Margin="0,0,0,15" Title="{DynamicResource Launch.Right.CommunityHint.Title}" x:Name="PanHint">

@@ -172,6 +172,18 @@
                             Margin="0,0,12,0"
                             ToolTip="{DynamicResource Setup.Launch.Memory.Initial.ToolTip}" />
                     </Grid>
+                    <Grid Margin="0,9,0,0" ToolTip="{DynamicResource Setup.Launch.Memory.Optimize.ToolTip}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{DynamicResource Setup.Launch.Memory.Optimize}" VerticalAlignment="Center" Margin="0,0,25,0" />
+                        <local:MyComboBox x:Name="ComboRamOptimize" Tag="VersionRamOptimize" Grid.Column="1" Height="28">
+                            <local:MyComboBoxItem Content="{DynamicResource Instance.Setup.FollowGlobal}" />
+                            <local:MyComboBoxItem Content="{DynamicResource Setup.Launch.Memory.Optimize.On}" />
+                            <local:MyComboBoxItem Content="{DynamicResource Setup.Launch.Memory.Optimize.Off}" />
+                        </local:MyComboBox>
+                    </Grid>
                     <Grid x:Name="PanRamDisplay" Margin="0,11,2,0" SnapsToDevicePixels="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition x:Name="ColumnRamUsed" Width="4.7*" />

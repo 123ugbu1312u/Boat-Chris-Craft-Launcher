@@ -82,6 +82,13 @@
             <sys:Boolean x:Key="GlassButtonsEnabled">True</sys:Boolean>
             <sys:Boolean x:Key="CapsuleButtonsEnabled">True</sys:Boolean>
             <Visibility x:Key="GlassButtonVisibility">Visible</Visibility>
+            <Visibility x:Key="GlassButtonBorderVisibility">Visible</Visibility>
+            <Color x:Key="GlassButtonBorderTint">Transparent</Color>
+            <LinearGradientBrush x:Key="GlassNavigationButtonBorderBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#f2ffffff" Offset="0" />
+                <GradientStop Color="#35ffffff" Offset="0.48" />
+                <GradientStop Color="#a6ffffff" Offset="1" />
+            </LinearGradientBrush>
             <SolidColorBrush x:Key="GlassButtonFill">#38fbfbfb</SolidColorBrush>
             <SolidColorBrush x:Key="GlassButtonHoverFill">#70e0eafd</SolidColorBrush>
             <SolidColorBrush x:Key="GlassButtonRedHoverFill">#60ffd4d4</SolidColorBrush>

@@ -675,7 +675,7 @@ public class MyPageRight : AdornerDecorator
     }
 
     // 查找列表中的第一个滚动条
-    private MyScrollBar GetFirstScrollViewer(IEnumerable<FrameworkElement> elements)
+    private MyScrollBar? GetFirstScrollViewer(IEnumerable<FrameworkElement> elements)
     {
         foreach (var Element in elements)
         {

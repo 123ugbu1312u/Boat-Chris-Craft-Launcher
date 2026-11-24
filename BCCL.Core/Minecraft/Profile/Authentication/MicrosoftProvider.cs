@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace BCCL.Core.Minecraft.Profile.Authentication;
 /// </summary>
 public sealed class MicrosoftProvider : IAuthenticateProvider
 {
+    public const string MinecraftLoginForbidden = "minecraft_login_forbidden";
+
     private const string DeviceEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode";
     private const string TokenEndpoint = "https://login.microsoftonline.com/consumers/oauth2/v2.0/token";
 
@@ -150,10 +153,19 @@ public sealed class MicrosoftProvider : IAuthenticateProvider
         if (string.IsNullOrWhiteSpace(userHash))
             throw new IdentityModelAuthenticationException("xsts_missing_user_hash", "XSTS response did not contain a user hash.");
 
-        var minecraft = await MojangUtils.AuthenticateAsync(xsts.Token, userHash, token, _httpClient).ConfigureAwait(false)
-                        ?? throw new IdentityModelAuthenticationException("minecraft_authentication_failed", "Minecraft authentication returned no token.");
-        if (string.IsNullOrWhiteSpace(minecraft.AccessToken))
-            throw new IdentityModelAuthenticationException("minecraft_authentication_failed", "Minecraft access token is empty.");
+        MojangResponse? minecraft;
+        try
+        {
+            minecraft = await MojangUtils.AuthenticateAsync(xsts.Token, userHash, token, _httpClient)
+                .ConfigureAwait(false);
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Forbidden)
+        {
+            throw new IdentityModelAuthenticationException(MinecraftLoginForbidden,
+                "Minecraft Services returned HTTP 403 at login_with_xbox.", ex);
+        }
+        if (string.IsNullOrWhiteSpace(minecraft?.AccessToken))
+            throw new IdentityModelAuthenticationException("minecraft_authentication_failed", "Minecraft did not return an access token.");
 
         var safe = new SafeProfile
         {

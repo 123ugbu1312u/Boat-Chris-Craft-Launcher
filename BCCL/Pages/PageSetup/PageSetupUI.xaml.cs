@@ -15,6 +15,7 @@ public partial class PageSetupUI
 {
     private readonly ThemePalette[] themePalettes = ThemePalette.Available(Basics.IsAprilFool);
     public string[] ThemeColors => themePalettes.Select(palette => Lang.Text(palette.LocalizationKey)).ToArray();
+    public string[] ButtonBorderColors => LiquidGlassTheme.ButtonBorderColorNames;
     
     public new bool isLoaded;
 
@@ -33,6 +34,7 @@ public partial class PageSetupUI
         PanBack.ScrollToHome();
 
         ModAnimation.AniControlEnabled += 1;
+        ComboButtonBorderColor.GetBindingExpression(ItemsControl.ItemsSourceProperty)?.UpdateTarget();
         Reload(); // #4826，在每次进入页面时都刷新一下
         ModAnimation.AniControlEnabled -= 1;
 
@@ -55,6 +57,8 @@ public partial class PageSetupUI
             CheckLiquidGlass.Checked = Config.Preference.LiquidGlass;
             CheckGlassButtons.Checked = Config.Preference.GlassButtons;
             CheckCapsuleButtons.Checked = Config.Preference.CapsuleButtons;
+            CheckButtonBorder.Checked = Config.Preference.GlassButtonBorder;
+            ComboButtonBorderColor.SelectedIndex = LiquidGlassTheme.ButtonBorderColorIndex;
             CheckNavigationClickAway.Checked = Config.Preference.NavigationClickAway;
             RefreshGlassSettings();
             ComboDarkMode.SelectedIndex = (int)Config.Preference.Theme.ColorMode;
@@ -135,7 +139,6 @@ public partial class PageSetupUI
             CheckHiddenSetupJava.Checked = uiHidden.SetupJava;
             CheckHiddenLauncherMisc.Checked = uiHidden.SetupLauncherMisc;
             CheckHiddenSetupUpdate.Checked = uiHidden.SetupUpdate;
-            CheckHiddenSetupGameLink.Checked = uiHidden.SetupGameLink;
             CheckHiddenSetupLog.Checked = uiHidden.SetupLog;
 
             // 子页面 工具
@@ -805,9 +808,6 @@ public partial class PageSetupUI
                     !HiddenForceShow && conf.SetupJava ? Visibility.Collapsed : Visibility.Visible;
                 ModMain.frmSetupLeft.ItemUpdate.Visibility =
                     !HiddenForceShow && conf.SetupUpdate ? Visibility.Collapsed : Visibility.Visible;
-                ModMain.frmSetupLeft.ItemGameLink.Visibility = !HiddenForceShow && conf.SetupGameLink
-                    ? Visibility.Collapsed
-                    : Visibility.Visible;
                 ModMain.frmSetupLeft.ItemLog.Visibility =
                     !HiddenForceShow && conf.SetupLog ? Visibility.Collapsed : Visibility.Visible;
 
@@ -815,7 +815,6 @@ public partial class PageSetupUI
                 {
                     (ModMain.frmSetupLeft.TextGameCategory,
                         !(conf.SetupLaunch && conf.SetupJava && conf.SetupGameManage)),
-                    (ModMain.frmSetupLeft.TextToolsCategory, !conf.SetupGameLink),
                     (ModMain.frmSetupLeft.TextLauncherCategory, !(conf.SetupUi && conf.SetupLauncherLanguage && conf.SetupLauncherMisc)),
                     (ModMain.frmSetupLeft.TextAboutCategory,
                         !(conf.SetupUpdate && conf.SetupLog))
@@ -845,8 +844,6 @@ public partial class PageSetupUI
                     setupCount += 1;
                 if (!conf.SetupUpdate)
                     setupCount += 1;
-                if (!conf.SetupGameLink)
-                    setupCount += 1;
                 if (!conf.SetupLog)
                     setupCount += 1;
                 ModMain.frmSetupLeft.PanItem.Visibility =
@@ -858,13 +855,6 @@ public partial class PageSetupUI
             {
                 ModMain.frmToolsLeft.ItemTest.Visibility =
                     !HiddenForceShow && conf.ToolsTest ? Visibility.Collapsed : Visibility.Visible;
-                
-                // 处理分类标题
-                var isToolsVisible = (!HiddenForceShow && !conf.ToolsTest) || HiddenForceShow;
-                ModMain.frmToolsLeft.TextToolsCategory.Visibility = isToolsVisible ? Visibility.Visible : Visibility.Collapsed;
-                if (isToolsVisible) ModMain.frmToolsLeft.TextToolsCategory.Opacity = 0.6;
-                
-                ModMain.frmToolsLeft.PanItem.Visibility = isToolsVisible ? Visibility.Visible : Visibility.Collapsed;
             }
 
             // 其他入口刷新
@@ -898,7 +888,6 @@ public partial class PageSetupUI
         CheckHiddenLauncherMisc.Checked = isChecked;
         CheckHiddenSetupJava.Checked = isChecked;
         CheckHiddenSetupUpdate.Checked = isChecked;
-        CheckHiddenSetupGameLink.Checked = isChecked;
         CheckHiddenSetupLog.Checked = isChecked;
     }
 
@@ -915,7 +904,6 @@ public partial class PageSetupUI
         CheckHiddenLauncherMisc.Checked = isChecked;
         CheckHiddenSetupJava.Checked = isChecked;
         CheckHiddenSetupUpdate.Checked = isChecked;
-        CheckHiddenSetupGameLink.Checked = isChecked;
         CheckHiddenSetupLog.Checked = isChecked;
     }
 
@@ -926,7 +914,7 @@ public partial class PageSetupUI
         var conf = Config.Preference.Hide;
         // 判断是否全部勾选
         var allChecked = conf.SetupLaunch && conf.SetupUi && conf.SetupLauncherLanguage && conf.SetupJava &&
-                         conf.SetupUpdate && conf.SetupGameLink &&
+                         conf.SetupUpdate &&
                          conf.SetupLog && conf.SetupLauncherMisc && conf.SetupGameManage;
         CheckHiddenPageSetup.Checked = allChecked;
     }
